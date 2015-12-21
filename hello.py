@@ -325,3 +325,4 @@ def main():
 #而如果在其他地方导入该hello模块时，if判断将失败，
 if __name__ == '__main__':
 	main()
+	print "git add"
