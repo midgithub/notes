@@ -10,9 +10,9 @@ import hashlib
 dic = {
   "assets": {},
   "engineVersion": "3.6", 
-  "packageUrl": "http://rbugs.v.pranagames.net:85/rbugs4/", 
-  "remoteManifestUrl": "http://rbugs.v.pranagames.net:85/rbugs4/project.manifest", 
-  "remoteVersionUrl": "http://rbugs.v.pranagames.net:85/rbugs4/version.manifest", 
+  "packageUrl": "http://", 
+  "remoteManifestUrl": "http://xx/project.manifest", 
+  "remoteVersionUrl": "http://xx/version.manifest", 
   "searchPaths": [], 
   "version": "0.1.9.3020"
 }
