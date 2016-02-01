@@ -1,0 +1,42 @@
+NPM是随同NodeJS一起安装的包管理工具：
+允许用户从NPM服务器下载别人编写的第三方包到本地使用。
+允许用户从NPM服务器下载并安装别人编写的命令行程序到本地使用。
+允许用户将自己编写的包或命令行程序上传到NPM服务器供别人使用
+
+npm install express      # 本地安装  C:\Users\qingsen\node_modules
+npm install express -g   # 全局安装
+
+本地安装
+1. 将安装包放在 ./node_modules 下（运行 npm 命令时所在的目录），如果没有 node_modules 目录，会在当前执行 npm 命令的目录下生成 node_modules 目录。
+2. 可以通过 require() 来引入本地安装的包。
+全局安装
+1. 将安装包放在 /usr/local 下。
+2. 可以直接在命令行里使用。
+3. 不能通过 require() 来引入本地安装的包。
+
+$ npm ls -g  查看所有全局安装的模块
+$ npm uninstall express
+$ npm update express
+
+package.json 位于模块的目录下，用于定义包的属性。
+name     - 包名。
+version  - 包的版本号。
+description   - 包的描述。
+homepage      - 包的官网 url 。
+author   - 包的作者姓名。
+contributors  - 包的其他贡献者姓名。
+dependencies  - 依赖包列表。如果依赖包没有安装，npm 会自动将依赖包安装在 node_module 目录下。
+repository    - 包代码存放的地方的类型，可以是 git 或 svn，git 可在 Github 上。
+main     - main 字段是一个模块ID，它是一个指向你程序的主要项目。就是说，如果你包的名字叫 express，然后用户安装它，然后require("express")。
+keywords - 关键字
+
+Node.js 异步编程依托于回调来实现,这样在执行代码时就没有阻塞或等待文件 I/O 操作。这就大大提高了 Node.js 的性能，可以处理大量的并发请求。
+Node.js 是单进程单线程应用程序，但是通过事件和回调支持并发，所以性能非常高。
+Node.js 的每一个 API 都是异步的，并作为一个独立线程运行，使用异步函数调用，并处理并发。
+Node.js 基本上所有的事件机制都是用设计模式中观察者模式实现。
+Node.js 单线程类似进入一个while(true)的事件循环，直到没有事件观察者退出，每个异步事件都生成一个事件观察者，如果有事件发生就调用该回调函数.
+
+Node.js 使用事件驱动模型，当web server接收到请求，就把它关闭然后进行处理，然后去服务下一个web请求。
+当这个请求完成，它被放回处理队列，当到达队列开头，这个结果被返回给用户。
+这个模型非常高效可扩展性非常强，因为webserver一直接受请求而不等待任何读写操作。（这也被称之为非阻塞式IO或者事件驱动IO）
+在事件驱动模型中，会生成一个主循环来监听事件，当检测到事件时触发回调函数。
