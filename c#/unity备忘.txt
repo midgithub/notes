@@ -8,3 +8,13 @@ this.gameObject.activeInHierarchy = false;//这个物体及其所有父物体(及祖先物体)的
 
 this.renderer.enabled = false;//是控制一个物体是否在屏幕上渲染或显示，而物体实际还是存在，只是相当于隐身，而物体本身的碰撞体还依然存在的。
 this.collider.enabled = false;//无效化碰撞器
+
+如果想实现两个刚体物理的实际碰撞效果时候用OnCollisionEnter，Unity引擎会自动处理刚体碰撞的效果。
+如果想在两个物体碰撞后自己处理碰撞事件用OnTriggerEnter。
+OnTriggerEnter必须有一个物体具有刚体
+
+OnCollisionEnter方法必须是在两个碰撞物体都不勾选isTrigger的前提下才能进入，反之只要勾选一个isTrigger那么就能进入OnTriggerEnter方法。
+OnCollisionEnter和OnTriggerEnter是冲突的不能同时存在的。
+
+[HideInInspector]表示将公有变量显示在面板上的序列化值隐藏起来。
+[SerializeField]表示将原本不会被序列化的私有变量和保护变量可以序列化，这么他们在下次读取时，就是你上次赋值的值。
