@@ -1,0 +1,5 @@
+//遍历子物体
+foreach (Transform child in transform)  
+{  
+    Debug.Log(child.gameObject.name);  
+}

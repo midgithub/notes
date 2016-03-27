@@ -1,0 +1,10 @@
+所有的Component，都会指向其所属的GameObject
+this.renderer ， this.transform ，this.gameObject
+
+（在场景中用find找不到该物体）
+this.gameObject.SetActive(false);// ! use this to write
+this.gameObject.activeSelf = false;//物体本身的active状态
+this.gameObject.activeInHierarchy = false;//这个物体及其所有父物体(及祖先物体)的activeself状态都为true该值为true，可见。
+
+this.renderer.enabled = false;//是控制一个物体是否在屏幕上渲染或显示，而物体实际还是存在，只是相当于隐身，而物体本身的碰撞体还依然存在的。
+this.collider.enabled = false;//无效化碰撞器
