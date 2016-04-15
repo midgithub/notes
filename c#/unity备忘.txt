@@ -21,6 +21,7 @@ OnCollisionEnter和OnTriggerEnter是冲突的不能同时存在的。
 [Range(0, 1)] [SerializeField] private float slider = .37f;
 
 SendMessage 最大的诟病是它的效率问题。使用十分方便，只是不可频繁使用。
+*一定要有接收者，否则会报错
 gameObject.SendMessage ("ApplyDamage", 5.0);// 所有附属于这个游戏物体的脚本只要有ApplyDamage函数的，都会调用之.
 BroadcastMessage  //对物体和所有子物体发送消息。
 SendMessageUpwards //向物体和父物体发送消息
