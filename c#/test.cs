@@ -1,8 +1,35 @@
 using System;
 //使用 System 命名空间
 //命名空间 可包括多个类
+delegate int NumDel(int n);
 namespace RectangleApplication
 {
+    //抽象类，抽象属性
+    public abstract class Person 
+    {
+      public abstract string Name 
+      { 
+         //访问器
+         get;
+         set;
+      }
+    }
+
+    class Student : Person
+   {
+    //抽象要实现
+    public override string Name
+      {
+         get
+         {
+            return name;
+         }
+         set
+         {
+            name = value;
+         }
+      }
+   }
     class Rectangle
     {
         // 成员变量
@@ -29,9 +56,18 @@ namespace RectangleApplication
             Console.WriteLine("Area: {0}", GetArea());
         }
     }
+
+    class DelegateCtrl{
+        public event NumDel numdel;
+        public void show(int n)
+        {
+            numdel(n);
+        }
+    }
     
-    class ExecuteRectangle
-    {	void test()
+    class ExecuteRectangle:Rectangle
+    {	
+        void test()
     	{	
     		object obj = 100;
     		//对象类型变量的类型检查是在编译时发生的，而动态类型变量的类型检查是在运行时发生的。
@@ -67,12 +103,35 @@ namespace RectangleApplication
 	            Console.WriteLine("Element[{0}] = {1}", i, j);
 	         }
     	}
-        static void Main(string[] args)
+        public static int getNum(int n)
         {
+            return n+1;
+        }
+        public static int getNum1(int n)
+        {
+            return n+1;
+        }
+        static void Main(string[] args)
+        {   
+            public event 
             Rectangle r = new Rectangle();
             r.Acceptdetails();
             r.Display();
             Console.ReadLine();
+
+            NumDel de1 = new NumDel(getNum);
+            de1 += getNum1;
+            /* NumDel de1;
+            de1 = getNum ;
+            de1 += getNum1; 
+            */
+            //两函数顺序执行
+            de1(1); 
+
+            DelegateCtrl dctrl = new DelegateCtrl();
+            dctrl.numdel += getNum;
+            dctrl.numdel += getNum1;
+            dctrl.show(1);
         }
     }
 }
