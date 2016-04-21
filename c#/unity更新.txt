@@ -2,9 +2,10 @@ BuildPipeline.BuildAssetBundles(outputPath);
 AssetBundle.mainAsset
 AssetBundle.LoadAsset
 
+string mUrl = Cdn + "AssetBundle";
 public static WWW LoadFromCacheOrDownload(string url, Hash128 hash);
-url,AssetBundleÃûÊÇ"variants/texture",
 È»¶øhash¾ÍÊÇĞèÒª½èÖúAssetBundleManifest.GetAssetBundleHashµÄ·½·¨À´»ñÈ¡ÁË.
+AssetBundle.LoadAsset("AssetBundleManifest")£¬¾Í¿ÉÒÔ°ÑÄÇ¸öÃ»ÓĞºó×ºÃûµÄÎÄ¼ş×ª³ÉAssetBundleManifest¶ÔÏómainfest¡£
 
 AssetBundleManifest,µÄÀà
 GetAllAsssetBundles()
@@ -22,7 +23,8 @@ assetbundle´ò°üÍê±Ïºó£¬¼ÓÔØmanifestÎÄ¼ş»ñÈ¡ËùÓĞ×ÊÔ´ĞÅÏ¢£¬Óëµ±Ç°ÒÑ´æÔÚµÄ×ÊÔ´ÁĞ±í½
 µ¼³öAssetBundleºÍ×Ô¶¯ÉèÖÃÃû³Æ£º
 Ã¿Ò»¸öĞ¡µÄ×ÊÔ´¶¼»áÓĞÒ»¸öÎ¨Ò»µÄ¹şÏ£IdµÄ£¬ÊÇÒ»´®ºÜ³¤µÄ×ÖÄ¸ºÍÊı×Ö×éºÏ¡£ÎÒÃÇ¿ÉÒÔÍ¨¹ıAssetDatabase.AssetPathToGUIDÀ´»ñµÃÕâ¸öID¡£.metaÎÄ¼ş guid×Ö¶Î
 
-AssetBundleµÄÁ´Ê½½á¹¹ºÍÔöÁ¿´ò°ü±íÏÖ£ºÒ»¸öĞ¡µÄ²¿·Ö¸Ä±äÁË£¬Ëü½«»á¸Ä±äµÄµØ·½Ö»ÓĞ×ÜµÄAssetBundle.manifest£¬»¹ÓĞÖ±½ÓÒÀÀµÓÚËü±¾ÉíµÄmanifest¡£ÆäËû²»ÒÀÀµµÄ²¿·ÖÊÇÃ»ÖØĞÂ´ò°üµÄ¡£
+AssetBundleµÄÁ´Ê½½á¹¹ºÍÔöÁ¿´ò°ü±íÏÖ£ºÒ»¸öĞ¡µÄ²¿·Ö¸Ä±äÁË£¬Ëü½«»á¸Ä±äµÄµØ·½Ö»ÓĞ×ÜµÄAssetBundle.mainfest£¬»¹ÓĞÖ±½ÓÒÀÀµÓÚËü±¾ÉíµÄmanifest¡£ÆäËû²»ÒÀÀµµÄ²¿·ÖÊÇÃ»ÖØĞÂ´ò°üµÄ¡£
+
 ³ıÁËmanifestÎÄ¼şÒÔÍâ£¬»¹ÓĞÒ»¸öÃ»ÓĞºó×ºÃû³ÆµÄAssetBundleÎÄ¼ş¡£Õâ¸öÎÄ¼şÆäÊµ²ÅÊÇ°üº¬ÁËËùÓĞµÄÒÀÀµ¹ØÏµµÄ  ×ÜµÄÒÀÀµ¹ØÏµÅäÖÃÎÄ¼ş£¬ ¸Õ²ÅÎÒÃÇÄÜÓÃtxt´ò¿ªµÄmanifestÎÄ¼ş£¬¶¼Ö»ÊÇÓÃÀ´×ö±¾µØÒÀÀµ¹ØÏµºÍÔöÁ¿´ò°üµÄÊ±ºòÓÃµÄ¡£
 ÎÒÃÇ¼ÓÔØAssetBundleµÄÊ±ºò£¬ÍêÈ«²»ĞèÒª¼ÓÔØÄÇĞ©manifestÎÄ¼şµÄ£¬Ö»ĞèÒªÄÇ¸öÃ»ÓĞºó×ºÃû³ÆµÄAssetBundleÎÄ¼ş£¨¾ßÌåÃû×ÖºÍÄãµ¼³öµÄÎÄ¼ş¼ĞÓĞ¹Ø£©¾ÍĞĞÁË£¬Ëü´ú±íµÄÊÇ¸ÃÏîÄ¿µÄËùÓĞAssetBundleµÄÒÀÀµ¹ØÏµ¡£
 

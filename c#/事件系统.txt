@@ -7,7 +7,7 @@ EventSystem组件主要负责处理输入、射线投射以及发送事件。
 
 BaseRaycaster也是一个基类，前面说的输入模块要检测到鼠标事件必须有射线投射组件才能确定目标对象。系统实现的射线投射类组件有PhysicsRaycaster, Physics2DRaycaster, GraphicRaycaster。
 
-UGUI中的事件系统：
+   UGUI中的事件系统：
 其实射线检测，肯定是从摄像机发起的，那么BaseRaycaster模块也一定和摄像机关系一定不简单。
 对于UI模块，在Canvas对象下我们可以看到GraphicRaycaster组件，所以Canvas上的所有UI对象，都可以接受输入模块发出的事件
 
@@ -32,3 +32,4 @@ public testSrc:Mono,IBeginDragHandler
 }
 2通过EventTrigger组件监听事件
 3）、动态添加EventTrigger组件或者修改组件
+button.onClick.AddListener(TestClick);

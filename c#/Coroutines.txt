@@ -1,0 +1,119 @@
+协程不是线程，也不是异步执行的。协程和 MonoBehaviour 的 Update函数一样也是在MainThread中执行的。使用协程你不用考虑同步和锁的问题。即协程是一个分部执行，遇到条件（yield return 语句）会挂起，直到条件满足才会被唤醒继续执行后面的代码。
+
+协程其实就是一个IEnumerator（迭代器），IEnumerator 接口有两个方法 Current 和 MoveNext() ，只有当MoveNext()返回 true时才可以访问 Current，否则会报错。迭代器方法运行到 yield return 语句时，会返回一个expression表达式并保留当前在代码中的位置。 当下次调用迭代器函数时执行从该位置重新启动。
+
+Unity在每帧做的工作就是：调用 协程（迭代器）MoveNext() 方法，如果返回 true ，就从当前位置继续往下执行。
+
+协程的运行确实是在LateUpdate之后
+MonoBehaviour.enabled = false 协程会照常运行，但 gameObject.SetActive(false) 后协程却全部停止，即使在Inspector把  gameObject 激活还是没有继续
+协程函数的地位完全是跟MonoBehaviour是一个层次的，不受MonoBehaviour的状态影响，但跟MonoBehaviour脚本一样受gameObject 控制执行：
+
+yield 后面可以有的表达式：
+a) null  the coroutine executes the next time that it is eligible
+b) WaitForEndOfFrame the coroutine executes on the frame, after all of the rendering and GUI is complete
+c) WaitForFixedUpdate  causes this coroutine to execute at the next physics step, after all physics is calculated
+d) WaitForSeconds  causes the coroutine not to execute for a given game time period
+e) WWW  waits for a web request to complete (resumes as if WaitForSeconds or null)
+f) Another coroutine  in which case the new coroutine will run to completion before the yielder is resumed
+
+值得注意的是 WaitForSeconds()受Time.timeScale影响，当Time.timeScale = 0f 时，yield return new WaitForSecond(x) 将不会满足。
+
+
+public class CoroutineCountdown : MonoBehaviour
+{
+    void Start()
+    {
+        StartCoroutine(delayDo()); //StopCoroutine
+    }
+    	 	
+    IEnumerator delayDo()
+    {
+        for(floattimer = 3; timer >= 0; timer -= Time.deltaTime)
+            Yield return 0;//用0或者null来yield的意思是告诉协程等待下一帧继续执行
+ 
+        dosomething();
+    }
+}
+
+//自定义 update
+IEnumerator SayHelloEveryFrame()
+{
+    while(true)
+    {
+        Debug.Log("Hello");
+ 
+        //2. Wait until next frame
+        Yield return 0;
+ 
+    }
+}
+
+IEnumerator CountSeconds()
+{
+    int seconds = 0;
+ 
+    while(true)
+    {
+        for(float timer = 0; timer < 1; timer += Time.deltaTime)
+            Yield return 0;
+ 
+        seconds++;
+        Debug.Log(seconds +" seconds have passed since the Coroutine started.");
+    }
+}
+
+//嵌套
+Public class TimerExample : MonoBehaviour  
+{  
+    voidStart()  
+    {  
+        StartCoroutine(SaySomeThings());  
+    }  
+   
+    //Say some messages separated by time  
+    IEnumerator SaySomeThings()  
+    {  
+        Debug.Log("The routine has started");  
+        Yield return StartCoroutine(Wait(1.0f));  
+        Debug.Log("1 second has passed since the last message");  
+        Yield return StartCoroutine(Wait(2.5f));  
+        Debug.Log("2.5 seconds have passed since the last message");  
+    }  
+   
+    //Our wait function  
+    IEnumerator Wait(float duration)  
+    {  
+        for(float timer = 0; timer < duration; timer += Time.deltaTime)  
+            Yield return 0;  
+    }  
+}
+//指定路径行走
+Public class MoveExample : MonoBehaviour  
+{  
+    ublic Vector3[] path;  
+    ublic float moveSpeed;  
+   
+    Void Start()  
+    {  
+        StartCoroutine(MoveOnPath(true));  
+    }  
+   
+    IEnumerator MoveOnPath(bool loop)  
+    {  
+        do  
+        {  
+            foreach(var point in path)  
+                Yield return StartCoroutine(MoveToPosition(point));  
+        }  
+        while(loop);  
+    }  
+   
+    IEnumerator MoveToPosition(Vector3 target)  
+    {  
+        while(transform.position != target)  
+        {  
+            transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);  
+            Yield return 0;  
+        }  
+    }  
+}
