@@ -27,5 +27,3 @@ AssetBundleµÄÁ´Ê½½á¹¹ºÍÔöÁ¿´ò°ü±íÏÖ£ºÒ»¸öÐ¡µÄ²¿·Ö¸Ä±äÁË£¬Ëü½«»á¸Ä±äµÄµØ·½Ö»ÓÐ×Üµ
 
 ³ýÁËmanifestÎÄ¼þÒÔÍâ£¬»¹ÓÐÒ»¸öÃ»ÓÐºó×ºÃû³ÆµÄAssetBundleÎÄ¼þ¡£Õâ¸öÎÄ¼þÆäÊµ²ÅÊÇ°üº¬ÁËËùÓÐµÄÒÀÀµ¹ØÏµµÄ  ×ÜµÄÒÀÀµ¹ØÏµÅäÖÃÎÄ¼þ£¬ ¸Õ²ÅÎÒÃÇÄÜÓÃtxt´ò¿ªµÄmanifestÎÄ¼þ£¬¶¼Ö»ÊÇÓÃÀ´×ö±¾µØÒÀÀµ¹ØÏµºÍÔöÁ¿´ò°üµÄÊ±ºòÓÃµÄ¡£
 ÎÒÃÇ¼ÓÔØAssetBundleµÄÊ±ºò£¬ÍêÈ«²»ÐèÒª¼ÓÔØÄÇÐ©manifestÎÄ¼þµÄ£¬Ö»ÐèÒªÄÇ¸öÃ»ÓÐºó×ºÃû³ÆµÄAssetBundleÎÄ¼þ£¨¾ßÌåÃû×ÖºÍÄãµ¼³öµÄÎÄ¼þ¼ÐÓÐ¹Ø£©¾ÍÐÐÁË£¬Ëü´ú±íµÄÊÇ¸ÃÏîÄ¿µÄËùÓÐAssetBundleµÄÒÀÀµ¹ØÏµ¡£
-
-¹«ÓÃ×ÊÔ´Òª¶ÀÁ¢´ò°ü£¬·ñÔò¹«ÓÃµÄ×ÊÔ´ÖØ¸´´òµ½¶à¸öÓÃµ½µÄ°üÖÐ£¬

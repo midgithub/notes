@@ -1,0 +1,39 @@
+公用资源不在一个独立的公用包中，要不Unity会把这个公用的资源重复打到多个用到的包中
+如果你公用的是一个FBX模型，你只给这个模型设置BundleName还不行，它用到的贴图，材质都要设，否则模型是公用了，贴图没有公用，结果贴图还是被打包到多个包中了
+
+每个角色可以有独立的AssetBundle，公用的一些UI资源可以打到一个AssetBundle里面，每个场景独立的UI资源可以打成独立的AssetBundle
+
+对比服务器上的清单，下载更新的AssetBundle
+ResourceMananger先读取resourcesinfo，知道了游戏中所有的Bundle和每个Bundle包含的资源，然后去外部存储查找这些Bundle是否存在，如果存在，就记录下这个Bundle的资源应该从外部的AssetBundle加载，如果不存在，就从内部的Resources加载。
+
+加载AssetBundle，我们直接使用WWW类而不用WWW.LoadFromCacheOrDownload, 因为我们的资源在游戏开始的时候已经下载到外部存储了，不要再Download也不要再Cache。注意WWW类加载是异步的，在游戏中我们需要同步加载资源的地方就要注意把资源预加载好存在ResourceManager中，不然等用的时候加载肯定要写异步代码了。大部分时候我们应该在一个场景初始化时就预加载好所有资源，用的时候直接从ResourceManager的缓存取就可以了。
+WWW www = new WWW ("Assets/StreamingAssets/Actor.assetbundle");
+
+public class ExampleClass : MonoBehaviour {
+    public string url = "http://images.earthcam.com/ec_metros/ourcams/fridays.jpg";
+    IEnumerator Start() {
+        WWW bundle= new WWW(url);
+        yield return Instantiate(bundle.assetBundle.Load("Prefab0")); 
+	bundle.assetBundle.Unload(false);
+    }
+}
+
+1.WWW 和 AssetBundle.CreateFromFile创建AssetBundle其实是创建了一个文件内存镜像，这时候是没有Asset的。
+文件内存镜像是通过AssetBundle.Unload(false)来释放的。
+2.AssetBundle.LoadAsset 和Resource.Load才真正创建出了Asset，Instaniate复制了这个Asset
+AssetBundle.Unload(true)不单会释放文件内存镜像，还会释放AssetBundle.Load创建的Assets，这个方法是不安全的，除非你能保证这些Assets没有Object在引用，否则就出问题了。
+Resources.UnloadAsset(obj) 释放指定Assets
+Resources.UnloadUnusedAssets() 没被引用的Assets都会被释放
+3.AssetBundle.CreateFromFile不能加载压缩过的AssetBundle，所以我们只能用WWW来异步加载AssetBundle。
+
+具体内存管理：
+1.创建时：用AssetBundle.load加载需要的asset加载完后立即AssetBundle.Unload(false),释放AssetBundle文件本身的内存镜像，但不销毁加载的Asset对象。
+2.释放时：如果有Instantiate的对象，用Destroy进行销毁
+  在合适的地方调用Resources.UnloadUnusedAssets,释放已经没有引用的Asset.
+如果需要立即释放内存加上GC.Collect()，否则内存未必会立即被释放，有时候可能导致内存占用过多而引发异常。
+这样可以保证内存始终被及时释放，占用量最少。也不需要对每个加载的对象进行引用。
+
+***系统在加载新场景时，所有的内存对象都会被自动销毁，包括你用AssetBundle.Load加载的对象和Instaniate克隆的。但是不包括AssetBundle文件自身的内存镜像，所以AssetBundle.load加载需要的asset加载完后立即AssetBundle.Unload(false)，保持镜像文件内存干净。
+
+为什么第一次Instantiate一个Prefab的时候都会卡一下，因为在你第一次Instantiate之前，相应的Asset对象还没有被创建，要加载系统内置的AssetBundle并创建Assets,第一次以后你虽然Destroy了，但Prefab的Assets对象都还在内存里，所以就很快了。
+**所以如果确定不再用该Assets对象，最好执行下 Resources.UnloadUnusedAssets()
