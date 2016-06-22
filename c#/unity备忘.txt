@@ -1,3 +1,7 @@
+unity 渲染顺序:
+1.Canvas 以overlay模式的渲染最上面，如果两个一样overlay的Canvas，谁的Sort Order大，谁渲染上面，Sort Order一样大的看谁先加载
+2.Canvas 以Camera模式:不同Camera的Depth(大的渲染最上面,一样大的先加载先渲染),同Camera的soringLayer(大的渲染最上面),同sortingLayer下面的 order in layer(大的渲染最上面)
+ 
 所有的Component，都会指向其所属的GameObject
 this.renderer ， this.transform ，this.gameObject
 

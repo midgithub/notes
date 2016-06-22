@@ -1,3 +1,9 @@
+ÌØĞ§£º
+ timescale = 0 »áÔİÍ£ÌØĞ§µ±Ç°×´Ì¬£¬Èç¹ûÖ»ÊÇactive(false)¸¸½Úµã£¬ËäÈ»¿´²»¼ûµ«ÊÇËü»¹ÊÇ¼ÌĞø²¥
+
+Ä£ĞÍ¶¯×÷£º
+timescale = 0 »áÔİÍ£¶¯×÷£¬»Ö¸´¼ÌĞø²¥¡£Ò»µ©active(false) »áÍ£Ö¹¶¯×÷£¬»Ö¸´ÎŞ·¨»Ö¸´
+
 Ğ­³Ì²»ÊÇÏß³Ì£¬Ò²²»ÊÇÒì²½Ö´ĞĞµÄ¡£Ğ­³ÌºÍ MonoBehaviour µÄ Updateº¯ÊıÒ»ÑùÒ²ÊÇÔÚMainThreadÖĞÖ´ĞĞµÄ¡£Ê¹ÓÃĞ­³ÌÄã²»ÓÃ¿¼ÂÇÍ¬²½ºÍËøµÄÎÊÌâ¡£¼´Ğ­³ÌÊÇÒ»¸ö·Ö²¿Ö´ĞĞ£¬Óöµ½Ìõ¼ş£¨yield return Óï¾ä£©»á¹ÒÆğ£¬Ö±µ½Ìõ¼şÂú×ã²Å»á±»»½ĞÑ¼ÌĞøÖ´ĞĞºóÃæµÄ´úÂë¡£
 
 Ğ­³ÌÆäÊµ¾ÍÊÇÒ»¸öIEnumerator£¨µü´úÆ÷£©£¬IEnumerator ½Ó¿ÚÓĞÁ½¸ö·½·¨ Current ºÍ MoveNext() £¬Ö»ÓĞµ±MoveNext()·µ»Ø trueÊ±²Å¿ÉÒÔ·ÃÎÊ Current£¬·ñÔò»á±¨´í¡£µü´úÆ÷·½·¨ÔËĞĞµ½ yield return Óï¾äÊ±£¬»á·µ»ØÒ»¸öexpression±í´ïÊ½²¢±£Áôµ±Ç°ÔÚ´úÂëÖĞµÄÎ»ÖÃ¡£ µ±ÏÂ´Îµ÷ÓÃµü´úÆ÷º¯ÊıÊ±Ö´ĞĞ´Ó¸ÃÎ»ÖÃÖØĞÂÆô¶¯¡£
@@ -7,6 +13,8 @@ UnityÔÚÃ¿Ö¡×öµÄ¹¤×÷¾ÍÊÇ£ºµ÷ÓÃ Ğ­³Ì£¨µü´úÆ÷£©MoveNext() ·½·¨£¬Èç¹û·µ»Ø true £¬¾Í´
 Ğ­³ÌµÄÔËĞĞÈ·ÊµÊÇÔÚLateUpdateÖ®ºó
 MonoBehaviour.enabled = false Ğ­³Ì»áÕÕ³£ÔËĞĞ£¬µ« gameObject.SetActive(false) ºóĞ­³ÌÈ´È«²¿Í£Ö¹£¬¼´Ê¹ÔÚInspector°Ñ  gameObject ¼¤»î»¹ÊÇÃ»ÓĞ¼ÌĞø
 Ğ­³Ìº¯ÊıµÄµØÎ»ÍêÈ«ÊÇ¸úMonoBehaviourÊÇÒ»¸ö²ã´ÎµÄ£¬²»ÊÜMonoBehaviourµÄ×´Ì¬Ó°Ïì£¬µ«¸úMonoBehaviour½Å±¾Ò»ÑùÊÜgameObject ¿ØÖÆÖ´ĞĞ£º
+Èç¹ûÊÇInvoke £¬ÄÇÃ´gameObject.SetActive(false) ºóÒ²»á¼ÌĞøÖ´ĞĞ
+Invoke ÊÜTime.timeScaleÓ°Ïì
 
 yield ºóÃæ¿ÉÒÔÓĞµÄ±í´ïÊ½£º
 a) null  the coroutine executes the next time that it is eligible

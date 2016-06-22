@@ -57,6 +57,23 @@ namespace RectangleApplication
         }
     }
 
+    public class Director
+    {
+        private static Director instance;
+        private Director() { }
+        public static Director Instance
+        {
+            get { return instance; }
+        }
+        static Director()
+        {
+            if (null == instance)
+            {
+                instance = new Director();
+            }
+        }
+    }
+
     class DelegateCtrl{
         public event NumDel numdel;
         public void show(int n)
