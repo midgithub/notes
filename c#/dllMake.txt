@@ -1,0 +1,43 @@
+1 c# .dll
+a.新建C#类库项目 (c# Class Library)
+b.项目属性 -> 应用程序 -> 目标框架：改为 .NET Framework 3.5
+c.生成解决方案,将Dll拷贝到Assets目录下任何一个目录都可以。一般是在Plugins目录中
+namespace DllTest
+{
+    public class DllSelf
+    {
+        public bool isExist()
+        {
+            return true;
+        }
+
+        public int addTwo(int a,int b)
+        {
+            return a + b;
+        }
+    }
+}
+using DllTest
+DllSelf dl = new DllSelf();
+        bool b = dl.isExist();
+     
+int r = dl.addTwo(2, 3);
+
+2 c++ .dll
+a.新建win32控制台应用程序，应用程序为dll,附加选项 空项目
+b.
+# define _DLLExport __declspec (dllexport)
+extern "C" int _DLLExport addTest( int x, int y );
+
+#include "DTest.h"
+
+int addTest(int x, int y )
+{
+	return x + y;
+}
+c.生成解决方案,将Dll拷贝到Plugins目录X86文件夹
+
+using System.Runtime.InteropServices;
+[DllImport("DTest")]
+   
+private static extern int addTest(int a,int b);
