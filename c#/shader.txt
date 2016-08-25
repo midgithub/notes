@@ -1,0 +1,6 @@
+Mesh :网格组件。用于设置物体外表形状。(.fbx)
+Mesh Filter组件（设置物体的mesh,即.fbx）:网格过滤器。就是为游戏对象添加一个外形。(在使用的时候必须同时提供一个Mesh Renderer组件，因为需要将其渲染出来，否则你不见他。)
+如果获取的网格拥有蒙皮信息（有蒙皮的.fbx）,Unity将自动创建一个skinned Mesh Renderer。
+Mesh Renderer :网格渲染器。用于渲染网格显示游戏对象(这里设置物体的Materials 和 shader 方式)
+
+Materials 材质球: 设置贴图和shader 方式(包含了渲染需要的信息)
