@@ -60,12 +60,12 @@ namespace RectangleApplication
     public class Director
     {
         private static Director instance;
-        private Director() { }
+        private Director() { }  //保证外部无法创建该类新对象
         public static Director Instance
         {
             get { return instance; }
         }
-        static Director()
+        static Director() //
         {
             if (null == instance)
             {

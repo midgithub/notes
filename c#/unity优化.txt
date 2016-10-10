@@ -35,3 +35,5 @@ UI一般影响GPU的因素包括：
 6.图片设置面板 Generate Mip Maps 不要打勾。其会为同一张纹理创建出很多不同大小的小纹理，构成一个纹理金字塔。而在游戏中可以根据距离物体的远近，来动态选择使用哪一个纹理
 7.如地板 物体设为static
 8.update里面避免GameObject.FindWithTag("")、GetComponent这样的调用，可以预先存起来
+9.背景音乐：取消Preload Audio Data（预加载音频数据）选项。然后把Override for Android选项勾上，并且设置Load Type为Streaming（音频剪辑将放入缓存区中，并且从缓存区中播放，一旦播放完载掉）。
+音效：Load Type设置为Decompress on Load
