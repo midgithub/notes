@@ -2,14 +2,6 @@ unity 渲染顺序:
 1.Canvas 以overlay模式的渲染最上面，如果两个一样overlay的Canvas，谁的Sort Order大，谁渲染上面，Sort Order一样大的看谁先加载
 2.Canvas 以Camera模式:不同Camera的Depth(大的渲染最上面,一样大的先加载先渲染),同Camera的soringLayer(大的渲染最上面),同sortingLayer下面的 order in layer(大的渲染最上面)
  
-所有的Component，都会指向其所属的GameObject
-this.renderer ， this.transform ，this.gameObject
-
-（在场景中用find找不到该物体）
-this.gameObject.SetActive(false);// ! use this to write
-this.gameObject.activeSelf = false;//物体本身的active状态
-this.gameObject.activeInHierarchy = false;//这个物体及其所有父物体(及祖先物体)的activeself状态都为true该值为true，可见。
-
 this.renderer.enabled = false;//是控制一个物体是否在屏幕上渲染或显示，而物体实际还是存在，只是相当于隐身，而物体本身的碰撞体还依然存在的。
 this.collider.enabled = false;//无效化碰撞器
 
@@ -25,7 +17,6 @@ OnCollisionEnter和OnTriggerEnter是冲突的不能同时存在的。
 [Range(0, 1)] [SerializeField] private float slider = .37f;
 
 SendMessage 最大的诟病是它的效率问题。使用十分方便，只是不可频繁使用。
-*一定要有接收者，否则会报错
 gameObject.SendMessage ("ApplyDamage", 5.0);// 所有附属于这个游戏物体的脚本只要有ApplyDamage函数的，都会调用之.
 BroadcastMessage  //对物体和所有子物体发送消息。
 SendMessageUpwards //向物体和父物体发送消息

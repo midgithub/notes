@@ -2,12 +2,17 @@
 # -*- coding: utf-8 -*-
 
 #第一行注释是为了告诉Linux/OS X系统，这是一个Python可执行程序，Windows系统会忽略这个注释；
-#第二行注释是为了告诉Python解释器，按照UTF-8编码读取源代码，否则，你在源代码中写的中文输出可能会有乱码。
+#第二行注释是为了告诉Python解释器(运行python就是启动CPython解释器 解释型语言,运行速度慢,不能加密)，按照UTF-8编码读取源代码，否则，你在源代码中写的中文输出可能会有乱码。
 
 import functools
 import sys   #import sys as "别名"
 import os
 #sys.path.append("..") 添加要搜索的目录
+
+try:
+    import cStringIO as StringIO
+except ImportError: # 导入失败会捕获到ImportError
+    import StringIO
 
 #模块名就是文件名，可以用包来组织模块(避免模块名冲突)
 #每一个包目录下面都会有一个__init__.py的文件，这个文件是必须存在的，否则，Python就把这个目录当成普通目录，而不是一个包
@@ -22,7 +27,7 @@ __author__ = "qingsen"
 
 #  my test start
 name = raw_input("enter your name:")
-print type(name)   # <type "str"> if type(name) == type("abc"); isinstance(name,str)
+print type(name)   # <type "str"> if type(name) == type("abc"); isinstance(name,str)  isinstance(x, (int, float))
 if name == "sen" :
 	print "qingsen"
 elif name == "ping" :
@@ -47,6 +52,7 @@ print u"中文"
 str1 = "i and %s %d" % ("you",37)
 print str1
 
+
 #列表 (可以改变内容的数组)  从 0 开始
 #是一种有序的集合，可以随时添加和删除其中的元素 []
 aList = [1,2,3,4]
@@ -58,9 +64,11 @@ aList[1] = 5 # [1,5,3,4]
 print aList
 del aList[1] 
 # list.remove(obj) list.append(obj)  list.extend(seq)  list.insert(index,obj) list.pop(index) 
+#for i, value in enumerate(['A', 'B', 'C']):  enumerate函数可以把一个list变成索引-元素对
+#    print i, value
 
 
-#元祖 测试  (不可以改变内容的数组)  ()
+#元祖 测试  (不可以改变内容的数组：指向不变)  ()
 aTuple = ("name1","name2","name3","name4")
 # aTuple[1] = "name4" 报错
 for value in aTuple:  #内建函数 sorted,reversed,enumerate,   zip(list1,list2)同时迭代两个序列
@@ -76,15 +84,21 @@ print range(1,6,2) #[1,3,5]
 
 #字典 {} table （key:value） key要用双引号
 aDict = {"name":"sen","id":37}
-for key in aDict:
+for key in aDict:    #for value in d.itervalues()   for k, v in d.iteritems()
 	print key,aDict[key]
 r = aDict.get("grad",-1)  #get方法，如果key不存在，可以返回None，或者自己指定的value
                           #aDict.pop(key)
 print r
 
-s = set([1, 1, 2, 2, 3, 3]) #set和dict类似,也是一组key的集合,但不存储value,由于key不能重复，所以在set中，没有重复的key。
+s = set([1, 1, 2, 2, 3, 3]) #set和dict类似,也是一组key的集合,但不存储value,由于key不能重复，所以在set中，没有重复的key。重复元素在set中自动被过滤
 print s
 #s.add(key)  s.remove(key)
+
+#不变对象来说（如str），调用对象自身的任意方法，也不会改变该对象自身的内容。相反，这些方法会创建新的对象并返回，这样，就保证了不可变对象本身永远是不可变的。
+#>>> isinstance('abc', Iterable) # isinstance str是否可迭代
+#True
+ #isinstance(123, Iterable) # 整数是否可迭代
+#False
 
 #列表生成式
 print[x * x for x in range(1, 11)] #[1,4,9,...]
@@ -108,7 +122,7 @@ f.next()
 for n in fib(5):
 	print n
 
-def fun1():
+def fun1():   #数据类型转换函数 int() str()
 	pass  #无操作
 
 def myAbs(x):
@@ -121,9 +135,11 @@ def myAbs(x):
 
 r1,r2 = myAbs(-2) #函数可以返回多个值
 print r1,r2
+R = myAbs(-2)
+print R # （2，"myAbs"） 返回多值其实就是返回一个tuple
 
-def power(x,n=2):  #默认参数
-	r = 1
+def power(x,n=2):  #默认参数  默认参数必须指向不变对象！
+	r = 1 
 	while n>0:
 		n = n -1
 		r = r*x
@@ -135,7 +151,8 @@ def sum(*prams):  #可以传入任意个参数
 		s = s + value
 	return s
 
-print sum(*(1,2,3)) #记得传参数时 *
+print sum(1,2)
+print sum(*(1,2,3)) #记得传参数时 *把list或tuple的元素变成可变参数传进去
 
   #*args是可变参数，args接收的是一个tuple；
   #**kw是关键字参数，kw接收的是一个dict
@@ -149,7 +166,7 @@ def fun2(x):
 print map(fun2,range(4)) #[0,1,4,9]
 print map(str,range(4))
 
-#reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)
+#reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4) 函数必须接收两个参数
 def sum1(x,y):
 	return x+y
 print reduce(sum1,[1,2,3,4,5]) #求和 15
@@ -208,6 +225,15 @@ class MyClass(object):
 		self.doInit()
 		self.__name = name
 		self.__id = 37
+	def __str__(self):
+		return "MyClass instance"
+
+	def __getattr__(self, attr): #在没有找到属性的情况下，才调用__getattr__
+        if attr=='age':
+            return lambda: 25
+    def __call__(self):
+        print('My name is %s.' % self.__name)  #实例本身上调用 如 c1()
+
 	def doInit(self):
 		print "init"
 	def getName(self):  #第一个参数一定要写self
@@ -218,6 +244,7 @@ class MyClass(object):
 		print "newName" + self.__name
 
 c1 = MyClass("c1")
+print c1 #MyClass instance  因为print 调用的是该类的  __str__()方法
 print c1.act
 c1.getName()
 c1.attr1 = "attr1"
@@ -231,14 +258,36 @@ ch1 = Child("ch1")
 print dir(ch1)  #列出属性和方法
 ch1.setName("ch2")
 
+class Fib(object):
+    def __init__(self):
+        self.a, self.b = 0, 1 # 初始化两个计数器a，b
+
+    def __iter__(self):
+        return self # 实例本身就是迭代对象，故返回自己
+
+    def next(self):
+        self.a, self.b = self.b, self.a + self.b # 计算下一个值
+        if self.a > 100000: # 退出循环的条件
+            raise StopIteration();
+        return self.a # 返回下一个值
+
+    def __getitem__(self, n):  #像list那样按照下标取出元素，需要实现__getitem__()方法
+        a, b = 1, 1
+        for x in range(n):
+            a, b = b, a + b
+        return a
+
+for n in Fib():
+	print n #1,1,2,3,5
+
 #try 执行出错，则后续代码不会继续执行，直接跳转至except语句块处理，执行完except后，如果有finally语句块，则执行finally语句块
 #当没有错误发生时，会自动执行else语句
 try:
 	pass
-except Exception, e:
-	raise
+except ZeroDivisionError, e:
+	raise ValueError('input error!') #抛出
 else:
-	pass
+	assert n != 0, 'n is zero!' #假设为真，否则抛出AssertionError
 finally:
 	pass
 
@@ -317,7 +366,7 @@ def main():
 	if len(args) == 1:
 		print 'welcome python world,%s' % (args[0]) #args[0] = "hello.py" 即文件名
 	elif len(args) == 2:
-		print 'welcome python world,%s' % (args[1]) #python hello.py sen
+		print 'welcome python world,%s' % (args[1]) #python hello.py sen, args[1] = sen
 	else:
 		print "too many args"
 
