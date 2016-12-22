@@ -219,12 +219,12 @@ print myInt("100",base=10) #base 要写
 #属性以__开头，就变成了一个私有属性
 #不能直接访问__name是因为Python解释器对外把__name变量改成了_MyClass__name
 class MyClass(object):
-	act = "doAct" #实例可以访问到，但是方法里不能访问
-	#self.attr = 0  这里不能用self. 来定义属性
+	act = "doAct" #类变量,实例可以访问到，但是方法里不能访问(除了类方法)
+	#self.attr = 0  这里不能用self. 来定义实例属性变量
 	#__slots__ = ("attr1")
 	def __init__(self,name): 
 		self.doInit()
-		self.__name = name
+		self.__name = name #实例变量
 		self.__id = 37
 	def __str__(self):
 		return "MyClass instance"
@@ -243,6 +243,14 @@ class MyClass(object):
 	def setName(self,name):
 		self.__name = name
 		print "newName" + self.__name
+
+	@staticmethod  #使用装饰器@staticmethod定义静态方法。类对象和实例都可以调用静态方法
+	def staticFunc():
+		pass
+
+	@classmethod
+    def hi(cls, x):  #第一个参数一定要写cls
+        print cls.act
 
 c1 = MyClass("c1")
 print c1 #MyClass instance  因为print 调用的是该类的  __str__()方法
