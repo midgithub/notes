@@ -27,7 +27,7 @@ class SpiderCtrl(object):
                 self.obj_urlctrl.add_new_urls(new_urls)
                 self.obj_outputer.add_data(html_data)
 
-                if count == 1000:
+                if count == 100:
                     break
             except:
                 print "serch fail"
