@@ -1,9 +1,14 @@
+UV mapping的作用是将一个2D贴图上的点按照一定规则映射到3D模型上，是3D渲染中最常见的一种顶点处理手段
+
 Mesh :网格组件。用于设置物体外表形状。(.fbx)
 Mesh Filter组件（设置物体的mesh,即.fbx）:网格过滤器。就是为游戏对象添加一个外形。(在使用的时候必须同时提供一个Mesh Renderer组件，因为需要将其渲染出来，否则你不见他。)
 如果获取的网格拥有蒙皮信息（有蒙皮的.fbx）,Unity将自动创建一个skinned Mesh Renderer。
 Mesh Renderer :网格渲染器。用于渲染网格显示游戏对象(这里设置物体的Materials 和 shader 方式)
-
 Materials 材质球定义了: 用于渲染的纹理，用于渲染的颜色，其它资源，例如一个着色器渲染所必需的立方体贴图
+Material(类型包括：2d物理材质，3d物理材质，用于着色的材质)
+Shader: 是一段规定好输入（颜色，贴图等）和输出（渲染器能够读懂的点和颜色的对应关系）的程序
+
+## Material指定一个Shader,Shader设置贴图和颜色等信息，Mesh Renderer负责渲染
 
 内置着色器:
                                                         Bumped凸起的        Parallax Bumped视差凸起 
@@ -24,7 +29,95 @@ reflective 反射（一个基本纹理，带用于定义反射区域的alpha通道，一个用于反射贴图的
 片段程序从上述寄存器中获取需要的数据：纹理坐标与光照信息等，并根据这些信息以及从应用程序传递的纹理信息进行每个片段的颜色计算（纹理查询），最后将处理后的数据传送块。
 3.fixed function shaders. 固定功能着色器
 
-shader渲染队列:Background, Geometry, AlphaTest, Transparent, Overlay
 
+shader = property(属性,即输入) + subshader(包含一个或者多个的Pass。平台先选择最优先可以使用的着色器，然后依次运行其中的Pass，然后得到输出的结果) + fallback(回滚，用来处理所有Subshader都不能运行的情况)
+Shader "Custom/surfaceShader1" {
+	Properties {
+		_Color ("Color", Color) = (1,1,1,1)  
+		_MainTex ("Albedo (RGB)", 2D) = "white" {}
+		_Glossiness ("Smoothness", Range(0,1)) = 0.5
+		_Metallic ("Metallic", Range(0,1)) = 0.0
+	}
+	SubShader {
+		Tags { "RenderType"="Opaque" }
+		LOD 200
+		
+		CGPROGRAM
+		// Physically based Standard lighting model, and enable shadows on all light types
+		#pragma surface surf Standard fullforwardshadows
+
+		// Use shader model 3.0 target, to get nicer looking lighting
+		#pragma target 3.0
+
+		sampler2D _MainTex;
+
+		struct Input {
+			float2 uv_MainTex;
+		};
+
+		half _Glossiness;
+		half _Metallic;
+		fixed4 _Color;
+
+		void surf (Input IN, inout SurfaceOutputStandard o) {
+			// Albedo comes from a texture tinted by color
+			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			o.Albedo = c.rgb;
+			// Metallic and smoothness come from slider variables
+			o.Metallic = _Metallic;
+			o.Smoothness = _Glossiness;
+			o.Alpha = c.a;
+		}
+		ENDCG
+	}
+	FallBack "Diffuse"
+}
+
+属性定义模版： _Name("Display Name", type) = defaultValue[{options}]
+1._Name 属性的名字，变量名，在之后整个Shader代码中将使用这个名字来获取该属性的内容
+2.Display Name 字符串将显示在Unity的材质（指定该shader）可视编辑器中作为可读的内容来编辑该变量
+3.type：
+	1.Color - 一种颜色，由RGBA（红绿蓝和透明度）四个量来定义；//(1,1,1,1)
+	2.2D - 一张2的阶数大小的贴图。这张贴图将在采样后被转为对应基于模型UV的每个像素的颜色，最终被显示出来；
+	3.Rect - 一个非2阶数大小的贴图；
+	4.Cube - （立方体纹理），简单说就是6张有联系的2D贴图的组合，主要用来做反射效果（比如天空盒和动态反射）
+	5.Range(min, max) - 一个介于最小值和最大值之间的浮点数
+	6.Float - 任意一个浮点数；
+	7.Vector - 一个四维数 //(x,y,z,w)
+2D/Rect/Cube - 对于贴图来说，默认值可以为一个代表默认tint颜色的字符串，可以是空字符串或者"white","black","gray","bump"中的一个 {option}:当我们需要打开特定选项时可以把其写在这对花括号内
+
+Tags: 指定了这个SubShader的渲染顺序
+  1。”Queue”标签。定义渲染顺序
+shader渲染队列:Background(1000), Geometry(2000), AlphaTest(2450), Transparent(3000), Overlay(4000)最后渲染所以在最上面
 Tags { "Queue"="Geometry-20" }	
 ZWrite Off
+  2.RenderType”标签。Unity可以运行时替换符合特定RenderType的所有Shader，Camera.RenderWithShader或者  Camera.SetReplacementShader配合使用
+  （1）”Opaque”：绝大部分不透明的物体都使用这个； 
+  （2）”Transparent”：绝大部分透明的物体、包括粒子特效都使用这个； 
+  （3）”Background”：天空盒都使用这个； 
+  （4）”Overlay”：GUI、镜头光晕都使用这个；	
+  3.”ForceNoShadowCasting”，值为”true”时，表示不接受阴影。
+  4.”IgnoreProjector”，值为”true”时，表示不接受Projector组件的投影。 
+
+
+LOD：Level of Detail的缩写,这个数值决定了我们能用什么样的Shade,在Unity的Quality Settings中我们可以设定允许的最大LOD，当     设定的LOD小于SubShader所指定的LOD时，这个SubShader将不可用。
+  VertexLit及其系列 = 100
+  Decal, Reflective VertexLit = 150
+  Diffuse = 200
+  Diffuse Detail, Reflective Bumped Unlit, Reflective Bumped VertexLit = 250
+  Bumped, Specular = 300
+  Bumped Specular = 400
+  Parallax = 500
+  Parallax Specular = 600
+
+ENDCG与CGPROGRAM是对应的,表明CG程序开始与结束（在写Unity的Shader时用的是Cg/HLSL语言）
+#pragma surface surfaceFunction lightModel [optionalparams] 编译指令
+  1.surface - 声明的是一个表面着色器
+  2.surfaceFunction - 着色器代码的方法的名字
+  3.lightModel - 使用的光照模型。
+sampler2D：在CG中，sampler2D就是和texture所绑定的一个数据容器接口，简单理解sampler2D就是GLSL中的2D贴图的类型
+##CG程序，要想访问在Properties中所定义的变量的话，必须使用和之前变量相同的名字进行声明
+
+CG规定了声明为表面着色器的方法第一个参数是一个Input结构，第二个参数是一个inout的SurfaceOutput结构。
+float2 ：表示被打包在一起的2到4个同类型数.
+CG程序中一个贴图变量（在我们例子中是_MainTex）之前加上uv两个字母就代表提取它的uv值（就是两个代表贴图上点的二维坐标 ）
