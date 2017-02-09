@@ -44,3 +44,114 @@ finally
 assert(expression ) 频繁的调用会极大的影响程序的性能，增加额外的开销
 assert的作用是现计算表达式 expression ，如果其值为假（即为0），那么它先向stderr打印一条出错信息，
 然后通过调用 abort 来终止程序运行。不为0，则继续执行后面的语句
+
+定义在函数内部的局部变量函数：
+Func<函数参数类型, 函数返回类型> getType = (x) =>
+{
+   return "";
+};
+
+反射：
+Type t = typeof(RefClass);
+MemberInfo[] minfos = t.GetMembers(); //默认返回公开的所有成员包括父类的
+//GetMembers(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public )
+foreach (MemberInfo minfo in minfos)
+{
+  Console.WriteLine(minfo.Name);
+}
+
+//字段
+RefClass rc = new RefClass(); //实例只能访问公有接口
+FieldInfo[] finfos = t.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+foreach (FieldInfo finfo in finfos)  //私有和保护的字段也能访问
+{
+  finfo.SetValue(rc, 100);
+  Console.WriteLine("字段名称：{0}  字段类型:{1} rc中的值为:{2}", finfo.Name, finfo.FieldType.ToString(), finfo.GetValue(rc));
+}
+
+//属性
+PropertyInfo[] finfos = t.GetProperties(...);
+ 7             foreach (PropertyInfo finfo in finfos)
+ 8             {
+ 9                 MethodInfo getinfo = finfo.GetGetMethod(true);  //get方法
+10                 Console.WriteLine("get方法的名称{0}  返回值类型:{1}  参数数量:{2}  MSIL代码长度:{3} 局部变量数量:{4}", getinfo.Name, getinfo.ReturnType.ToString(),
+11                     getinfo.GetParameters().Count(),
+12                     getinfo.GetMethodBody().GetILAsByteArray().Length, 
+13                     getinfo.GetMethodBody().LocalVariables.Count);
+14 
+15                 MethodInfo setinfo = finfo.GetSetMethod(true);  //set方法
+16                 Console.WriteLine("get方法的名称{0}  返回值类型:{1}  参数数量:{2}  MSIL代码长度:{3} 局部变量数量:{4}", setinfo.Name, setinfo.ReturnType.ToString(),
+17                     setinfo.GetParameters().Count(),
+18                     setinfo.GetMethodBody().GetILAsByteArray().Length,
+19                     setinfo.GetMethodBody().LocalVariables.Count);
+20 
+21                 setinfo.Invoke(rc, new object[] { 123 }); //通过调用set赋值
+22                 object obj = getinfo.Invoke(rc, null);  //通过调用get取值
+23                 Console.WriteLine("方法名:{0}  内部值:{1}", finfo.Name, obj);
+24             }
+
+//方法
+MethodInfo[] finfos = t.GetMethods(）
+foreach (MethodInfo finfo in finfos)
+ 8             {
+ 9                 if (finfo.GetParameters().Count() > 0 && finfo.GetParameters()[0].ParameterType == typeof(string) )
+10                 {
+11                     object obj = finfo.Invoke(rc, new[] { "123" }); //调用传入"123"，返回 obj
+12                     MethodBody mbody = finfo.GetMethodBody();
+13                     Console.WriteLine("拥有参数的方法名:{0}  返回值类型:{1}  参数1类型:{2}  参数1名称:{3}  方法调用后返回的值:{4}",
+14                         finfo.Name,
+15                         finfo.ReturnType.ToString(),
+16                         finfo.GetParameters()[0].ParameterType.ToString(),
+17                         finfo.GetParameters()[0].Name,
+18                         obj.ToString());
+19                 }
+20                 else
+21                 {
+22                     MethodBody mbody = finfo.GetMethodBody();
+23                     Console.WriteLine("没有参数的方法名:{0}  返回值类型:{1}",
+24                         finfo.Name,
+25                         finfo.ReturnType.ToString());
+26                 }
+27             }
+
+MemberInfo{
+   public abstract MemberTypes MemberType { get; } /成员类型
+   public abstract string Name { get; }  //成员名，及变量，函数名
+   public abstract Type ReflectedType { get; }
+   public abstract object[] GetCustomAttributes(bool inherit);
+}
+ public enum BindingFlags
+    {
+        Default = 0,
+        IgnoreCase = 1,
+        DeclaredOnly = 2,  //不包括父类的
+        Instance = 4,  //包含实例成员
+        Static = 8,
+        Public = 16,  //包含公开
+        NonPublic = 32, //包含非公开
+        FlattenHierarchy = 64,
+        InvokeMethod = 256,
+        CreateInstance = 512,
+        GetField = 1024,
+        SetField = 2048,
+        GetProperty = 4096,
+        SetProperty = 8192,
+        PutDispProperty = 16384,
+        PutRefDispProperty = 32768,
+        ExactBinding = 65536,
+        SuppressChangeType = 131072,
+        OptionalParamBinding = 262144,
+        IgnoreReturn = 16777216,
+    }
+ public enum MemberTypes
+    {
+        Constructor = 1,
+        Event = 2,
+        Field = 4, //字段（int a）
+        Method = 8, //方法
+        Property = 16, //属性(int Test2 { get; set; },Test2是属性 )
+        TypeInfo = 32,
+        Custom = 64,
+        NestedType = 128,
+        All = 191,
+    }
