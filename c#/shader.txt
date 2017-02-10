@@ -111,7 +111,7 @@ LOD：Level of Detail的缩写,这个数值决定了我们能用什么样的Shade,在Unity的Quality 
   Parallax Specular = 600
 
 ENDCG与CGPROGRAM是对应的,表明CG程序开始与结束（在写Unity的Shader时用的是Cg/HLSL语言）
-#pragma surface surfaceFunction lightModel [optionalparams] 编译指令
+#pragma surface surfaceFunction lightModel [optionalparams] 编译指令   // #pragma vertex vert  顶点着色器
   1.surface - 声明的是一个表面着色器
   2.surfaceFunction - 着色器代码的方法的名字
   3.lightModel - 使用的光照模型。
