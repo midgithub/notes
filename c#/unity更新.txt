@@ -1,7 +1,12 @@
 打包脚本（UnityEditor）：
-BuildPipeline.BuildAssetBundles("Assets/AssetBundles",BuildAssetBundleOptions.None,BuildTarget.xx);
+BuildPipeline.BuildAssetBundles("Assets/AssetBundles",BuildAssetBundleOptions.None,BuildTarget.xx); //推荐使用ChunkBasedCompression 压
+缩选项
 1.不同的平台单独打包，BuildTarget参数指定平台和打包策略，如果不指定，默认的webplayer
 2.生成包文件和与之对应的 .manifest清单文件。还有一个总的AssetBundle
+
+AssetBundle实现的机制是只会在内存中寻找其依赖资源所在的AssetBundle，并自动从中加载出所需的资源，所以要保证主体在加载时被依赖资源所在AssetBundle依然处于开启状态就可以正常加载资源了（即保证内存中有其依赖资源）
+
+Resources文件夹里的资源越多，程序的启动画面时间就越长，推荐采用AssetBundle进行资源的动态加载
 
 www.assetBundle.Unload(false);
 1.为true不仅内存中的AssetBundle对象包含的资源会被销毁。根据这些资源实例化而来的游戏内的对象也会销毁。
