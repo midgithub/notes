@@ -22,16 +22,17 @@ dotnetÓÐÒ»ÖÖ·ûºÅ·´Éä»úÖÆ£¬¿ÉÒÔÖ±½Ó¼ÓÔØÒ»¸ödll£¬È»ºó·´Éä³öÆäÖÐµÄÀàÐÍ½øÐÐ²Ù×÷¡£·ûº
 unityÓÐÁËºÜ¶àluaµÄ°ó¶¨¿â£¬Ò²ÓÐÁËuniluaÕâÑùµÄpure c#ÒÆÖ²ÊµÏÖ¡£
 Äã»¹ÓÐÒ»¸öÑ¡ÔñÊÇC#Light/Evil£¬ËûÊÇC#Óï·¨µÄ£¬pure c#ÊµÏÖµÄÒ»ÃÅÐÂÉú½Å±¾ÓïÑÔ£¬¾ÍÊÇÎªÁËUnity3DÂß¼­ÈÈ¸üÐÂ¶øÉú¡£
 
+ÔÚUnity»·¾³ÀïÄÚÇ¶Ò»¸öLuaÐéÄâ»ú£¬¾­³£±ä¶¯µÄºÍ¶ÔÖ´ÐÐÐ§ÂÊÃ»ÒªÇóµÄÂß¼­ÓÃLuaÊµÏÖ£¨luajit lua´úÂë½âÊÍÆ÷£©
+C#½Å±¾Ê×ÏÈ»á±»±àÒë³ÉIL´úÂë£¬È»ºóÔÙÓÉCLR´ÓÄÚ´æÖÐ¶ÁÈ¡ÕâÐ©IL´úÂë²¢½«Æä×ª»¯ÎªÔ­Éú´úÂë£¬ÕâÊÇ.NET³ÌÐòµÄÔËÐÐ»úÖÆ£¬¶øMonoÊÇ.NETÔÚ¿ªÔ´ÉçÇøÖÐµÄÒ»ÖÖÊµÏÖ£¬Mono¶ÔC#´úÂëµÄ±àÒë·ÖÎªÁ½ÖÖ£¬¼´¼´Ê±±àÒëJIT£¨¶¯Ì¬£©ºÍÌáÇ°±àÒëAOT£¨¾²Ì¬£©
+IOS²¢·Ç°ÑJIT£¨just in time¼´Ê±±àÒë£©½ûÖ¹ÊÇIOS·âÁËÄÚ´æ£¨»òÕß¶Ñ£©µÄ¿ÉÖ´ÐÐÈ¨ÏÞ£¬Ïàµ±ÓÚ·âËøÁËJITÕâÖÖ±àÒë·½Ê½
 
 IOS²»ÄÜÈÈ¸üÐÂ£¬²»ÊÇÒòÎª²»ÄÜÓÃ·´Éä£¬ÊÇÒòÎª
 System.Reflection.Assembly.Load ÎÞ·¨Ê¹ÓÃ
 System.Reflection.Emit ÎÞ·¨Ê¹ÓÃ
 System.CodeDom.Compiler ÎÞ·¨Ê¹ÓÃ
 ÕâÈý¸ö²»ÄÜÓÃ£¬¾Í°Ñ´«Í³dotnet¶¯Ì¬Â·¾¶¿ÓËÀÁË
-ÎªÉ¶¡°ÕâÈý¸ö²»ÄÜÓÃ£¬¾Í°Ñ´«Í³dotnet¶¯Ì¬Â·¾¶¿ÓËÀÁË¡±ÄØ
-¶¯Ì¬ÔØÈëdll»òÕßcsµÄ·½·¨¾ÍÕâ¼¸¸ö, IOS ÏÂ²»ÄÜ¶¯Ì¬ÔØÈëdll»òÕßcs ÎÄ¼þ£¬ÒÑ¾­±àÒë½øÈ¥µÄÃ»ÊÂ¡£
+¶¯Ì¬ÔØÈëdll»òÕßcsµÄ·½·¨¾ÍÕâ¼¸¸ö, IOS ÏÂ²»ÄÜ¶¯Ì¬ÔØÈëdll»òÕßcs ÎÄ¼þ£¨iOSÊÇ²»ÔÊÐí²»Í¨¹ýAppStore¸üÐÂ´úÂë£©
 =========================================================
 
-¾¡Á¿Ö»°ÑU3Dµ±Ò»¸öäÖÈ¾ÒýÇæÀ´¿´´ý, ²»È»Äã»á·¢ÏÖÈÈ¸ü×ÊÔ´ºÜ±¯¾ç, ×ÊÔ´Ò»¶¨ÒªÓëÂß¼­·Ö¿ª, ÒòÎªU3DÓÃµÄÊÇÀàµÄÐòÁÐ»¯, ºóÆÚ¸Ä¶¯»áµ¼ÖÂÇ°Ãæµ¼³öµÄ×ÊÔ´²»ÄÜÓÃ¡£¾ÍºÍ¿ª·¢AS3ÓÎÏ·²î²»¶àÁË¡£¿ÉÒÔÕâÃ´Àí½â
-1.prefab¾¡Á¿²»È¥°ó¶¨½Å±¾£¬¾¡Á¿ÔÚ´úÂëÀïAddComponent<½Ó¿ÚÊµÏÖ½Å±¾>£¬ÔÚÊµÀýprefabµÄGetComponent<½Ó¿Ú½Å±¾>.½Ó¿Ú²Ù×÷¡£
-2.prefab¿ÉÒÔ°ó¶¨ÄÇÐ©²»»áÔÙ¸Ä¶¯µÄ½Å±¾¡£
+¾¡Á¿Ö»°ÑU3Dµ±Ò»¸öäÖÈ¾ÒýÇæÀ´¿´´ý, ²»È»Äã»á·¢ÏÖÈÈ¸ü×ÊÔ´ºÜ±¯¾ç, ×ÊÔ´Ò»¶¨ÒªÓëÂß¼­·Ö¿ª, ÒòÎªU3DÓÃµÄÊÇÀàµÄÐòÁÐ»¯, ºóÆÚ¸Ä¶¯»áµ¼ÖÂÇ°Ãæµ¼³öµÄ×ÊÔ´²»ÄÜÓÃ
+1.prefab¾¡Á¿²»È¥°ó¶¨½Å±¾£¬¾¡Á¿ÔÚ´úÂëÀïAddComponent<½Ó¿ÚÊµÏÖ½Å±¾>£¬ÔÚÊµÀýprefabµÄGetComponent<½Ó¿Ú½Å±¾>.½Ó¿Ú²Ù×÷¡£µ«¿ÉÒÔ°ó¶¨ÄÇÐ©²»»áÔÙ¸Ä¶¯µÄ½Å±¾¡£
