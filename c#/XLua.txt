@@ -80,3 +80,90 @@ obj:TestEvent('-', lua_event_callback1)
 
 newGameObj:AddComponent(typeof(CS.UnityEngine.ParticleSystem))
 obj:GetComponent("InputField")
+
+//协程（引用文件 顺序）
+local util = require 'xlua.util'
+
+local gameobject = CS.UnityEngine.GameObject('Coroutine_Runner')
+local cs_coroutine_runner = gameobject:AddComponent(typeof(CS.Coroutine_Runner))
+local function async_yield_return(to_yield, cb)
+    cs_coroutine_runner:YieldAndCallback(to_yield, cb)  //有c#来执行协程
+end
+
+local yield_return = util.async_to_sync(async_yield_return) --require 'cs_coroutine'.yield_return 
+
+local co = coroutine.create(function()
+    print('coroutine start!')
+    local s = os.time()
+    yield_return(CS.UnityEngine.WaitForSeconds(3))
+    print('wait interval:', os.time() - s)
+    
+    local www = CS.UnityEngine.WWW('http://www.qq.com')
+    yield_return(www)
+	if not www.error then
+        print(www.bytes)
+	else
+	    print('error:', www.error)
+	end
+end)
+
+coroutine.resume(co)
+
+
+hotfix:
+HotfixFlag.Stateless(默认,可以运行的任意时刻执行函数替换)
+xlua.hotfix(CS.HotfixCalc, 'Add', function(self, a, b)
+   return a + b
+end)
+
+HotfixFlag.Stateful（在类增加一个LuaTable类型的字段(中间层面增加，不会改源代码),一开始就执行替换）
+xlua.hotfix(CS.StatefullTest, {
+                ['.ctor'] = function(csobj) --构造函数的热补丁并不是替换，而是执行原有逻辑后调用lua
+                    return {evt = {}, start = 0}
+                end;
+                set_AProp = function(self, v)
+                    print('set_AProp', v)
+                    self.AProp = v
+                end;
+                get_AProp = function(self)
+                    return self.AProp
+                end;
+                get_Item = function(self, k)
+                    print('get_Item', k)
+                    return 1024
+                end;
+                set_Item = function(self, k, v)
+                    print('set_Item', k, v)
+                end;
+                add_AEvent = function(self, cb)
+                    print('add_AEvent', cb)
+                    table.insert(self.evt, cb)
+                end;
+                remove_AEvent = function(self, cb)
+                   print('remove_AEvent', cb)
+                   for i, v in ipairs(self.evt) do
+                       if v == cb then
+                           table.remove(self.evt, i)
+                           break
+                       end
+                   end
+                end;
+                Start = function(self)
+                    print('Start')
+                    for _, cb in ipairs(self.evt) do
+                        cb(self.start, 2)
+                    end
+                    self.start = self.start + 1
+                end;
+                StaticFunc = function(a, b, c)
+                   print(a, b, c)
+                end;
+                GenericTest = function(self, a)
+                   print(self, a)
+                end;
+                Finalize = function(self)  --析构函数的热补丁不是替换，而是开头调用lua函数后继续原有逻辑
+                   print('Finalize', self)
+                end
+           })
+        ");
+        
