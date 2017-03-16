@@ -8,6 +8,10 @@ requireÊµ¼ÊÉÏÊÇµ÷Ò»¸ö¸öµÄloaderÈ¥¼ÓÔØ£¬ÓÐÒ»¸ö³É¹¦¾Í²»ÔÙÍùÏÂ³¢ÊÔ£¬È«Ê§°ÜÔò±¨ÎÄ¼þÕ
 ·ÅResourcesÏÂµÄluaÎÄ¼þµÃ¼ÓÉÏtxtºó×º
 ½¨ÒéµÄ¼ÓÔØLua½Å±¾·½Ê½ÊÇ£ºÕû¸ö³ÌÐò¾ÍÒ»¸öDoString("require 'main'")£¬È»ºóÔÚmain.lua¼ÓÔØÆäËü½Å±¾
 
+//luaÎÄ¼þÖ»ÄÜ·ÅÔÚStreamingAssets»òResourcesÎÄ¼þÏÂ£¬Èç¹ûÊÇ·ÅResourcesÏÂºó×ºÎª.lua.txt
+//¿ª·¢Ê±°ÑluaÎÄ¼þ·Å StreamingAssetsÄ¿Â¼ÏÂ£¬µçÄÔ²âÊÔÓÃÒ»¸ömain.lua¼ÓÔØËùÓÐDoString("require 'main'")£¬ÕýÊ½µÄ±éÀúÕâ¸ölua°üÀïµÄËùÓÐÎÄ¼þ£¬¶ÁÈ¡Ã¿¸öÎÄ¼þÎÄ±¾DoString
+//µçÄÔÉÏÏëÒª²âÊÔ hotfix ,Ã¿´Î¸ÄÍêc#´úÂë,±ØÐëÖØÐÂgeneral code ,inject
+
 luaenv.AddLoader((ref string filename) => {
    if (filename == "InMemory")
    {
