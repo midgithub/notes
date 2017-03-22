@@ -1,0 +1,3 @@
+package.loaded["src/Event"] = nil  
+require('UITable')  --require:多次调用返回同一个指针  package: 返回不同指针
+加载机制:

@@ -155,3 +155,44 @@ MemberInfo{
         NestedType = 128,
         All = 191,
     }
+
+
+特性（Attribute）：附加的声明性信息
+1.AttributeUsage ：描述了如何使用一个自定义特性类
+ 2 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)] //Help特性只能被放在class的前面
+ 3 public class HelpAttribute : Attribute 
+ 4 { 
+	public double version;
+ 5     public HelpAttribute(String Description_in)  //构造函数的参数是自定义特性的定位参数
+ 6     { 
+ 7         this.description = Description_in; 
+	   version = 1.0;   //[Help("BaseClass"), version = 1.1)]
+ 8     } 
+ 9     protected String description; 
+10     public String Description 
+11     { 
+12         get 
+13         { 
+14             return this.description; 
+15         } 
+16     } 
+17 }
+AttributeTargets：Assembly,Module,Class,Struct,Enum,Constructor,Method,Property,Field,Event,Interface,Parameter,Delegate
+AllowMultiple = false。它规定了特性不能被重复放置多次
+Inherited, 表明当特性被放置在一个基类上时，它能否被派生类所继承。
+[Help("BaseClass")] 
+2 public class Base 
+3 { 
+4 } 
+5 [Help("DeriveClass")] 
+6 public class Derive : Base 
+7 { 
+8 }
+inherited设置为true，AllowMultiple设置为false。因此基类的Help特性被派生类Help特性覆盖了。
+inherited设置为true，AllowMultiple设置为true. 派生类既有基类的Help特性
+
+2.Conditional  指示编译器应忽略方法调用或属性，除非已定义指定的条件编译符号
+[Conditional("DEBUG"), Conditional("TEST1")]
+
+3.Obsolete
+[Obsolete("弃用提示语", true)] true：编译错误 false:警告，该方法还可以调用

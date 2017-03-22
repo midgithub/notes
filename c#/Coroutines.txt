@@ -8,7 +8,7 @@ timescale = 0 会暂停动作，恢复继续播。一旦active(false) 会停止动作，恢复无法恢复
 
 协程其实就是一个IEnumerator（迭代器），IEnumerator 接口有两个方法 Current 和 MoveNext() ，只有当MoveNext()返回 true时才可以访问 Current，否则会报错。迭代器方法运行到 yield return 语句时，会返回一个expression表达式并保留当前在代码中的位置。 当下次调用迭代器函数时执行从该位置重新启动。
 
-Unity在每帧做的工作就是：调用 协程（迭代器）MoveNext() 方法，如果返回 true ，就从当前位置继续往下执行。
+Unity在每帧做的工作就是：调用 协程（迭代器）MoveNext() 方法，移到集合的下一个元素。如果成功则返回为 true；如果超过集合结尾，则返回false，就从当前位置继续往下执行。
 
 协程的运行确实是在LateUpdate之后
 MonoBehaviour.enabled = false 协程会照常运行，但 gameObject.SetActive(false) 后协程却全部停止，即使在Inspector把  gameObject 激活还是没有继续
@@ -25,7 +25,36 @@ e) WWW  waits for a web request to complete (resumes as if WaitForSeconds or nul
 f) Another coroutine  in which case the new coroutine will run to completion before the yielder is resumed
 
 值得注意的是 WaitForSeconds()受Time.timeScale影响，当Time.timeScale = 0f 时，yield return new WaitForSecond(x) 将不会满足。
+{
+  Debug.Log("1");
+        
+  StartCoroutine(test()); //因为前面没yield return 所以StartCoroutine调用到 协程函数yield return 或是协程MoveNext一次就可执行下面代码
+  Debug.Log("2");
+}
+IEnumerator test()
+    {
+        
+    Debug.Log("3");
+    yield return StartCoroutine(request);
+    Debug.Log("4");
+}
+//1 3 MoveNext(1次) 2 (如果上次MoveNext返回false则不调，否则一直调MoveNext到false) 4
 
+{
+  Debug.Log("1");
+        
+  yield return StartCoroutine(test());
+  Debug.Log("2");
+}
+IEnumerator test()
+    {
+        
+    Debug.Log("3");
+    yield return StartCoroutine(request); //因为前面yield return ,所以后面的协程执行完（函数执行完或是MoveNext到false）才可执行下面代码
+    Debug.Log("4");
+}
+//1 3 MoveNext(一直调到false) 4 2
+//第一次执行到yield return会先执行后面的协程（函数或MoveNext）
 
 public class CoroutineCountdown : MonoBehaviour
 {
