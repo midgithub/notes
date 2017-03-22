@@ -37,9 +37,6 @@ public class ScaleAndRotate : MonoBehaviour
 
 	}
 	
-
-
-
 	void Update () {
 
 		//没有触摸
@@ -90,4 +87,17 @@ public class ScaleAndRotate : MonoBehaviour
 		oldTouch2 = newTouch2;
 	}
 
+}
+
+//粒子 缩放大小,速度，生命
+var systems = GetComponentsInChildren<ParticleSystem>();
+foreach (ParticleSystem system in systems)
+{
+    ParticleSystem.EmissionModule emission = system.emission; //粒子某个模块属性
+    ParticleSystem.MainModule mainModule = system.main;
+    mainModule.startSizeMultiplier = multiplier;
+    mainModule.startSpeedMultiplier = multiplier;
+    mainModule.startLifetimeMultiplier = Mathf.Lerp(multiplier, 1, 0.5f);
+    system.Clear();
+    system.Play();
 }
