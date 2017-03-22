@@ -38,3 +38,14 @@ UI一般影响GPU的因素包括：
 8.update里面避免GameObject.FindWithTag("")、GetComponent这样的调用，可以预先存起来
 9.背景音乐：取消Preload Audio Data（预加载音频数据）选项。然后把Override for Android选项勾上，并且设置Load Type为Streaming（音频剪辑将放入缓存区中，并且从缓存区中播放，一旦播放完载掉）。
 音效：Load Type设置为Decompress on Load
+
+在屏幕外的物体，和active(false) 的物体unity不会去绘制(不会调drawcall)
+Static Batching:
+条件：1.相同材质（网格可以不一样） 2.不能移动 
+unity尽可能多的网格结合到一个静态网格中，将其作为一个drawcall 提交，所以可能会 增加内存
+
+Dynamic Batching
+条件：1.网格少于900个顶点
+      2.不能镜像了（-1,1,1）
+      3.同一材质，完全光照贴图的位置
+      4.不使用Multi-pass着色器的情况（）	 

@@ -8,8 +8,9 @@ requireÊµ¼ÊÉÏÊÇµ÷Ò»¸ö¸öµÄloaderÈ¥¼ÓÔØ£¬ÓĞÒ»¸ö³É¹¦¾Í²»ÔÙÍùÏÂ³¢ÊÔ£¬È«Ê§°ÜÔò±¨ÎÄ¼şÕ
 ·ÅResourcesÏÂµÄluaÎÄ¼şµÃ¼ÓÉÏtxtºó×º
 ½¨ÒéµÄ¼ÓÔØLua½Å±¾·½Ê½ÊÇ£ºÕû¸ö³ÌĞò¾ÍÒ»¸öDoString("require 'main'")£¬È»ºóÔÚmain.lua¼ÓÔØÆäËü½Å±¾
 
-//luaÎÄ¼şÖ»ÄÜ·ÅÔÚStreamingAssets»òResourcesÎÄ¼şÏÂ£¬Èç¹ûÊÇ·ÅResourcesÏÂºó×ºÎª.lua.txt
-//¿ª·¢Ê±°ÑluaÎÄ¼ş·Å StreamingAssetsÄ¿Â¼ÏÂ£¬µçÄÔ²âÊÔÓÃÒ»¸ömain.lua¼ÓÔØËùÓĞDoString("require 'main'")£¬ÕıÊ½µÄ±éÀúÕâ¸ölua°üÀïµÄËùÓĞÎÄ¼ş£¬¶ÁÈ¡Ã¿¸öÎÄ¼şÎÄ±¾DoString
+//StreamingAssetsÏÂµ¼²»³ö°ü£¬´ò°üÊ±È«²¿ÓÃ .txtÎÄ¼ş£¬LoadAllAssets<TextAsset>() ¼ÓÔØµÄÊÇÎÄ±¾×ÊÔ´
+//require luaÎÄ¼şÖ»ÄÜ·ÅÔÚStreamingAssets»òResourcesÎÄ¼şÏÂ£¬Èç¹ûÊÇ·ÅResourcesÏÂºó×ºÎª.lua.txt
+//¿ª·¢Ê±°ÑluaÎÄ¼ş·Å StreamingAssetsÄ¿Â¼ÏÂ£¬µçÄÔ²âÊÔÓÃÒ»¸ömain.lua.txt¼ÓÔØËùÓĞ£¬ÔÙDoString("require 'main'")¾ÍĞĞ£¬ÕıÊ½µÄ±éÀúÕâ¸ölua°üÀïµÄËùÓĞÎÄ¼ş£¬¶ÁÈ¡Ã¿¸öÎÄ¼şÎÄ±¾DoString,´ò°ü¼ÇµÃmain.lua.txt requireÆÁ±Î
 //µçÄÔÉÏÏëÒª²âÊÔ hotfix ,Ã¿´Î¸ÄÍêc#´úÂë,±ØĞëÖØĞÂgeneral code ,inject
 
 luaenv.AddLoader((ref string filename) => {
