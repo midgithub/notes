@@ -1,6 +1,11 @@
 //遍历子物体
-foreach (Transform child in transform)  
+foreach (Transform child in transform)  //不包括自己
 {  
+    Debug.Log(child.gameObject.name);  
+}
+
+foreach (Transform child in transform.GetComponentsInChildren<Transform>())  //包括自己
+{   
     Debug.Log(child.gameObject.name);  
 }
 
