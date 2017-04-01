@@ -9,6 +9,61 @@ foreach (Transform child in transform.GetComponentsInChildren<Transform>())  //°
     Debug.Log(child.gameObject.name);  
 }
 
+ÉäÏß£º
+Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+RaycastHit hit;
+bool isCollider = Physics.Raycast(ray, out hit, 1<<LayerMask.NameToLayer("Fish"));
+if (isCollider)
+{
+    //hit.collider.transform  colliderËùÔÚ½Úµã
+    //hit.transform  collider Ò»Ö±ÍùÉÏ¸ù½Úµã
+}
+
+×ø±ê×ª»»£º
+1.3dÏà»úÍ¬Ò»Ïà»ú²»Í¬z
+pos = Camera.main.WorldToScreenPoint(pos);
+pos = new Vector3(pos.x / Screen.width, pos.y / Screen.height, z);
+pos = Camera.main.ViewportToWorldPoint(pos);
+
+1.2d×ª3d
+_endPos = InfoSrc.cam_ui.WorldToScreenPoint(InfoSrc.GoldLabPos);
+_endPos.z = 0;
+_endPos = new Vector3(_endPos.x / Screen.width, _endPos.y / Screen.height, transform.position.z);
+_endPos = Camera.main.ViewportToWorldPoint(_endPos);
+
+Ïß³Ì£º
+void Start () {
+    Thread t = new Thread(ThreadCall); //ĞÂÏß³Ì
+    t.Start(); //¿ªÊ¼Ïß³Ì£¬µ÷ÓÃ ThreadCall
+}
+void Update () {
+    OnLoomUpdate();
+}
+private void ThreadCall()
+{
+    //µ÷ÓÃ QueueOnMainThread£¬°ÑĞÂÏß³Ì´¦ÀíµÄ¶«Î÷ ±äÏàÔÚÖ÷Ïß³Ì´¦Àí
+    this.QueueOnMainThread(() =>
+    {
+        Debug.Log("ThreadCall");
+        Transform bg = transform.FindChild("targetImg");
+    });   
+}
+
+ÊÂ¼ş£º
+//Action:ÎŞ·µ»ØÖµ   Func:ÓĞ·µ»ØÖµ  predicate:·µ»ØboolĞÍ
+public static event Action<string> _serverDataEvent; 
+1.Í¬¸öº¯Êı¿ÉÒÔ±»¶à´ÎÌí¼Ó¶à´Îµ÷ÓÃ£¬°´Ìí¼ÓË³ĞòÖ´ĞĞº¯Êı
+2.Îª¿ÕÊ±¼õÈ¥Ò»¸öº¯Êı²¢²»»á±¨´í£¬ËµÃ÷ÄÚ²¿ÓĞ×öÅĞ¶Ï´¦Àí});
+
+°´Å¥£º
+//button.onClick.RemoveAllListeners(); //Ö»ÄÜÒÆ³ı´úÂëAddListenerÌí¼ÓµÄÊÂ¼ş£¬ÎŞ·¨ÒÆ³ı ui ÉÏÔ¤¼ÓµÄÊÂ¼ş
+button.onClick.AddListener(delegate ()
+{
+    Debug.Log(i+"´úÂëÌí¼Ó°´Å¥ÊÂ¼ş ²¢ÇÒ×Ô¶¯´¥·¢°´Å¥ÊÂ¼ş");
+});
+//¿ÉÒÔµ÷ÓÃÊÂ¼şÏµÍ³ ×Ô¶¯´¥·¢°´Å¥ÊÂ¼ş
+ExecuteEvents.Execute<IPointerClickHandler>(_btnAuto, new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
+
 ÈÆxz·½Ïò×ª
 transform.RotateAround(b.transform.position,new Vector3 (1,0,1),60*Time.deltaTime);
 transform.Rotation(Vector3.up*90) =  transform.localRotation.y=90;
@@ -94,7 +149,7 @@ public class ScaleAndRotate : MonoBehaviour
 
 }
 
-//Á£×Ó Ëõ·Å´óĞ¡,ËÙ¶È£¬ÉúÃü
+//Á£×Ó Ëõ·Å´óĞ¡,ËÙ¶È£¬ÉúÃü£¬²ã¼¶
 var systems = GetComponentsInChildren<ParticleSystem>();
 foreach (ParticleSystem system in systems)
 {
@@ -105,4 +160,14 @@ foreach (ParticleSystem system in systems)
     mainModule.startLifetimeMultiplier = Mathf.Lerp(multiplier, 1, 0.5f);
     system.Clear();
     system.Play();
+    
+
+    //Renderer r = system.GetComponent<Renderer>();
+    //r.sortingOrder = zorder;
+    float d = system.startDelay;
+    if (d > _delay)
+    {
+        system.startDelay = d - _delay;
+     }
 }
+[ExecuteInEditMode] ±à¼­Ä£Ê½ÏÂÖ´ĞĞ£¬°ÑÎïÌåÀ­µ½HierarchyÃæ°å
