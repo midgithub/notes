@@ -51,6 +51,48 @@ Func<函数参数类型, 函数返回类型> getType = (x) =>
    return "";
 };
 
+
+类：sealed 不可继承
+调用父类构造函数 初始化成员变量
+public 类名(double l, double w) : base(l, w)
+{ }
+与父类同名函数可以
+public void Display()
+{
+   base.Display();
+   //anyting
+}
+
+1.静态多态性 函数名相同 参数不同
+void print(int i){}
+void print(double f){}
+
+2.动态多态性（通过 抽象类 和 虚方法 实现）
+abstract class Shape
+{
+  public abstract int area();
+}
+或
+public virtual int area()
+{
+ Console.WriteLine("父类的面积：");
+ return 0;
+}
+子类实现：
+public override int area ()
+{
+ return (width * height); 
+}
+
+接口：(子类必须实现所有接口成员)
+public interface BaseFish2
+{
+   // 接口成员
+   void Swim(); 默认是 public
+   double func2();
+}
+transform.GetComponent<BaseFish2>().Swim();  //可以用 接口父类 获取组件，可以调用 在子类中实现的接口方法
+**transform.GetComponent<BaseFish>().Swim(); //可以用 父类 获取组件，但是访问的是父类成员，不会调用到子类成员
 反射：
 Type t = typeof(RefClass);
 MemberInfo[] minfos = t.GetMembers(); //默认返回公开的所有成员包括父类的

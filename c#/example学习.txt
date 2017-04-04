@@ -1,0 +1,28 @@
+1.RollerBall:
+float value = Input.GetAxis ("Horizontal"); //一个轴具有-1和1之间的值
+bool down = Input.GetButton("Jump");  //如果制定的按钮按下，返回True
+
+m_Rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x)*m_MovePower); //旋转方向参照左手定则
+Physics.Raycast(transform.position, -Vector3.up, 1) //发射点，方向，长度，地下是否有地板
+
+protected virtual void Awake()
+{
+    // do anything
+}
+protected override void Awake()
+{
+    base.Awake();
+    // do anything
+}
+
+Toggle(复选框) .isOn 跟按钮一样可以加事件监听，可以触发监听的物体很多事（看下拉选项）
+
+AudioListener.volume 全局音量大小（0没声）
+
+2.Particles
+Button button
+var image = button.targetGraphic as Image;
+image.sprite = sp;
+
+Button Transiton: spriteswap(可以指定按钮不同状态不同的图片)
+	          color tint(颜色)

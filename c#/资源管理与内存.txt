@@ -4,25 +4,12 @@
 4. Unity自身的内存回收是需要经过跨两个场景,如果使用Prefab在调用assetBundle.Unload (true)时候可以释放显存
 （Unity会隔一个场景卸载内存，为了不让主场景和副本场景的资源同时在内存中，构建一个单独的Loading场景异步加载下一个场景）
 
-公用资源不在一个独立的公用包中，要不Unity会把这个公用的资源重复打到多个用到的包中
 如果你公用的是一个FBX模型，你只给这个模型设置BundleName还不行，它用到的贴图，材质都要设，否则模型是公用了，贴图没有公用，结果贴图还是被打包到多个包中了
-
-每个角色可以有独立的AssetBundle，公用的一些UI资源可以打到一个AssetBundle里面，每个场景独立的UI资源可以打成独立的AssetBundle
 
 对比服务器上的清单，下载更新的AssetBundle
 ResourceMananger先读取resourcesinfo，知道了游戏中所有的Bundle和每个Bundle包含的资源，然后去外部存储查找这些Bundle是否存在，如果存在，就记录下这个Bundle的资源应该从外部的AssetBundle加载，如果不存在，就从内部的Resources加载。
 
 加载AssetBundle，我们直接使用WWW类而不用WWW.LoadFromCacheOrDownload, 因为我们的资源在游戏开始的时候已经下载到外部存储了，不要再Download也不要再Cache。注意WWW类加载是异步的，在游戏中我们需要同步加载资源的地方就要注意把资源预加载好存在ResourceManager中，不然等用的时候加载肯定要写异步代码了。大部分时候我们应该在一个场景初始化时就预加载好所有资源，用的时候直接从ResourceManager的缓存取就可以了。
-WWW www = new WWW ("Assets/StreamingAssets/Actor.assetbundle");
-
-public class ExampleClass : MonoBehaviour {
-    public string url = "http://images.earthcam.com/ec_metros/ourcams/fridays.jpg";
-    IEnumerator Start() {
-        WWW bundle= new WWW(url);
-        yield return Instantiate(bundle.assetBundle.Load("Prefab0")); 
-	bundle.assetBundle.Unload(false);
-    }
-}
 
 1.WWW 和 AssetBundle.CreateFromFile创建AssetBundle其实是创建了一个文件内存镜像，这时候是没有Asset的。
 文件内存镜像是通过AssetBundle.Unload(false)来释放的。
@@ -33,15 +20,30 @@ Resources.UnloadUnusedAssets() 没被引用的Assets都会被释放
 3.AssetBundle.CreateFromFile不能加载压缩过的AssetBundle，所以我们只能用WWW来异步加载AssetBundle。
 
 具体内存管理：
-1.创建时：用AssetBundle.load加载需要的asset加载完后立即AssetBundle.Unload(false),释放AssetBundle文件本身的内存镜像，但不销毁加载的Asset对象。
-2.释放时：如果有Instantiate的对象，用Destroy进行销毁
+释放时：如果有Instantiate的对象，用Destroy进行销毁
   在合适的地方调用Resources.UnloadUnusedAssets,释放已经没有引用的Asset.
-如果需要立即释放内存加上GC.Collect()，否则内存未必会立即被释放，有时候可能导致内存占用过多而引发异常。
-这样可以保证内存始终被及时释放，占用量最少。也不需要对每个加载的对象进行引用。
-
-***系统在加载新场景时，所有的内存对象都会被自动销毁，包括你用AssetBundle.Load加载的对象和Instaniate克隆的。但是不包括AssetBundle文件自身的内存镜像，所以AssetBundle.load加载需要的asset加载完后立即AssetBundle.Unload(false)，保持镜像文件内存干净。
+  如果需要立即释放内存加上GC.Collect()，否则内存未必会立即被释放，有时候可能导致内存占用过多而引发异常。
+  这样可以保证内存始终被及时释放，占用量最少。也不需要对每个加载的对象进行引用。
 
 为什么第一次Instantiate一个Prefab的时候都会卡一下，因为在你第一次Instantiate之前，相应的Asset对象还没有被创建，要加载系统内置的AssetBundle并创建Assets,第一次以后你虽然Destroy了，但Prefab的Assets对象都还在内存里，所以就很快了。
 **所以如果确定不再用该Assets对象，最好执行下 Resources.UnloadUnusedAssets()
 
 在new WWW(url)的时候，会开辟一块内存存储解压后的Bundle，而在资源被Load出来之后，又会开辟一块内存来存储Asset资源，WWW.LoadFromCacheOrDownload(url)的功能和new WWW(url)一样，但LoadFromCacheOrDownload是将Bundle解压到磁盘空间而不是内存中，所以LoadFromCacheOrDownload返回的WWW对象，本身并不会占用过多的内存（只是一些索引信息，每个资源对应的磁盘路径，在Load时从磁盘取出），针对手机上内存较小的情况，使用WWW.LoadFromCacheOrDownload代替new WWW可以有效地节省内存
+
+打包策略：（手动加载包也需手动卸载保证各资源包引用计数正确）
+1.场景也会依赖包，退出时也要删除，所以一个场景要一个包，切换场景要异步加载场景，
+  可以考虑用固定loading场景来做场景切换，但是还会有卡顿是因为进场景加载完资源后显卡要准备绘制工作，这是无法更改的，优化有物体先隐藏后显示等策略
+2.在配置文件大小不大的情况下可以 所有配置一个包，游戏开始前把该包加载好，后面进入界面就可以不用异步加载了
+3. 每个预设一个包（因为预设里不能引用其它预设只是引用资源，所以如果该资源不在某个资源包里，那可能内存里会有两份该资源，所以下面的公共图片资源要打个包）
+4.common图片一个包（不需要手动加载，会根据依赖自动加载），每种icon一个包
+5.一个字体一个包（在没代码修改字体的情况下，无需手动加载该包）
+6.一个音效一个包
+7.如果只是hotfix，lua所有文件一个包,进游戏前DoString所有文本
+注意点：
+0.其它预设里最好不要有模型，可以代码加载模型预设，如果一定要，导入的模型也要单独打个包，避免造成内存两份
+1.加载资源时要确保所依赖的资源所在的bd已经被加载，这时所依赖资源会自动从包里加载出来引用
+2.AssetBundle.Unload(true)不单会释放文件内存镜像，还会释放AssetBundle.Load创建的Assets，场景切换不会自动释放内存镜像和load出来的对象
+3.压缩后打出来的包大小跟包里的资源有关
+4.无被引用的资源不在特殊文件夹下 build时不会被加载
+5.场景里不要有Ui,如果一定要有，该UI不要拉预设打包（这时应该不会再手动pushlayer）
+6.公用资源不在一个独立的公用包中，Unity会把这个公用的资源重复打到多个用到的包中
