@@ -31,6 +31,11 @@ _endPos.z = 0;
 _endPos = new Vector3(_endPos.x / Screen.width, _endPos.y / Screen.height, transform.position.z);
 _endPos = Camera.main.ViewportToWorldPoint(_endPos);
 
+//ui图片跟鼠标走
+Vector3 worldPos = _cam.ScreenToWorldPoint(Input.mousePosition); //uicam
+Vector3 localPos = transform.parent.InverseTransformPoint(worldPos);
+transform.localPosition = localPos;
+
 线程：
 void Start () {
     Thread t = new Thread(ThreadCall); //新线程

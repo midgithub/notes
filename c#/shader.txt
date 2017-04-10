@@ -10,6 +10,8 @@ Shader: 是一段规定好输入（颜色，贴图等）和输出（渲染器能够读懂的点和颜色的对应关
 
 ## Material指定一个Shader,Shader设置贴图和颜色等信息，Mesh Renderer负责渲染
 
+Shader就是材质模版。 Material就是一个材质实例。 每一个Material你可以认为是一个材质实例的序列化存储
+
 内置着色器:
                                                         Bumped凸起的        Parallax Bumped视差凸起 
       (VertexLit顶点光亮  diffuse漫反射  glossy光滑) (diffuse  specular镜面) (diffuse specular)
@@ -30,7 +32,16 @@ reflective 反射（一个基本纹理，带用于定义反射区域的alpha通道，一个用于反射贴图的
 3.fixed function shaders. 固定功能着色器
 
 
-shader = property(属性,即输入) + subshader(包含一个或者多个的Pass。平台先选择最优先可以使用的着色器，然后依次运行其中的Pass，然后得到输出的结果) + fallback(回滚，用来处理所有Subshader都不能运行的情况)
+Rendering Mode: (材质要有对应的资源文件，拉图片文件到物体inspector窗口，会自动在所在文件夹同级目录下生成Materials文件夹里创建同名材质球，并替换原物体材质球)
+渲染模式    意思    适用对象举例      说明
+Opaque      不透明    石头         适用于所有的不透明的物体
+Cutout    镂空(皮下空的)  破布         透明度不是0%就是100%，不存在半透明的区域。
+Fade        隐现     物体隐去      与下面Transparent的区别为高光反射会随着透明度而消失。
+Transparent 透明       玻璃        适用于像彩色玻璃一样的半透明物体，高光反射不会随透明而消失。
+
+
+
+shader = property(属性,即输入) + subshader(包含一个或者多个的Pass(多次提交材质并绘制)。平台先选择最优先可以使用的着色器，然后依次运行其中的Pass，然后得到输出的结果) + fallback(回滚，用来处理所有Subshader都不能运行的情况)
 Shader "Custom/surfaceShader1" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)  
@@ -91,7 +102,7 @@ Tags: 指定了这个SubShader的渲染顺序
 shader渲染队列:Background(1000),Geometry(几何2000),AlphaTest(2450),Transparent(3000),Overlay(4000)最后渲染所以在最上面
 Tags { "Queue"="Geometry-20" }	
 ZWrite Off
-  2.RenderType”标签。Unity可以运行时替换符合特定RenderType的所有Shader，Camera.RenderWithShader或者  Camera.SetReplacementShader配合使用
+  2.RenderType”标签。Unity可以运行时替换符合特定RenderType的所有Shader，Camera.RenderWithShader或者  Camera.SetReplacementShader配合使用(用处：把物体渲染成红绿热成像模式等)
   （1）”Opaque”：绝大部分不透明的物体都使用这个； 
   （2）”Transparent”：绝大部分透明的物体、包括粒子特效都使用这个； 
   （3）”Background”：天空盒都使用这个； 
