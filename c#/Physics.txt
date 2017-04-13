@@ -1,0 +1,13 @@
+射线和线段的开销非常小，撇开这个可以发现，性能消耗的顺序是这样的
+
+从小到大：
+
+CheckXXX -> OverlapXXX -> XXXCast
+
+其中Check系列方法的开销极小，和射线差不多
+
+
+从投射物来看，从小到大分别是：Box > Sphere > Capsule
+
+Linecast(Vector3 start, Vector3 end);
+IgnoreCollision(Collider collider1, Collider collider2, [DefaultValue("true")] bool ignore);

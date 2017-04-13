@@ -1,3 +1,15 @@
+¹âÕÕÏµÍ³£¬ÓÉÒÔÏÂÈý²¿·Ö×é³É£ºEnlighten(¾²Ì¬È«¾Ö¹âÕÕ) + Probes(¶¯Ì¬È«¾Ö¹âÕÕ) + Screen Space Reflection
+Probes:
+1.Light Probes:ÓÃÓÚÌá¹©¶¯Ì¬ÎïÌåµÄ¹âÕÕÐÅÏ¢£¬½«Æäºæ±ºÔÚÌùÍ¼ÖÐ,Èç¹ûÃ»ÓÐ·ÅÖÃ¹âÌ½Í·£¬¶¯Ì¬¶ÔÏó¾ÍÎÞ·¨½ÓÊÜÈ«¾Ö¹âÕÕµÄÐÅÏ¢£¬Ôì³É¶¯Ì¬¶ÔÏó±È³¡¾°»¹Òª°µ
+2.Reflection Probes:¶ÔÖÜÎ§È¡Ñù²¢°Ñ½á¹ûÐ´µ½·½ÌåÌùÍ¼£¬¿ÉÒÔÈÃÖÜÎ§¾­¹ýµÄÎïÌåµÃµ½»·¾³µÄ·´ÉäÓ°Ïñ(Ó°ÏìÐ§ÄÜ£¬ÉÙÓÃ)
+ÊµÊ±µÄ·´ÉäÌ½Í·»á¶ÔËùÓÐ¿É¼ûµÄÎïÌåÈ¡Ñù,¶ÔÐ§ÄÜ¼«Îª.²»Àû×îºÃÓÃºæ±ºµÄ£¬¡±ReflectionProbe Static¡±¶ÔÏó²Å»á±»·´ÉäÌ½Í·È¡Ñù
+
+È«¾Ö¹âÕÕÃ÷:£¨Ïê½âUnity 5 È«¾Ö¹âÕÕÏµÍ³EnlightenÎÊÌâ£©
+1.Precomputed Realtime GI£¨Ô¤¼ÆËãÊµÊ±È«¾Ö¹âÕÕÃ÷£©£¬¼ò³Æ£ºÊµÊ±GI.Ò²ÐèÒªÔ¤ÏÈµÄBake¹ý³Ì,µ«²»Ô¤¼ÆËã³¡¾°ÖÐ¹âÏßµÄ·´ÉäÐÅÏ¢£¬¶øÊÇÔ¤¼ÆËã³¡¾°ÖÐ¾²Ì¬ÎïÌå±íÃæËùÓÐ¿ÉÄÜµÄ·´Éä¹âÂ·£¬È»ºóÔÚÓÎÏ·ÔËÐÐÊ±½áºÏµÆ¹âµÄÎ»ÖÃ¡¢·½ÏòµÈÐÅÏ¢ÊµÊ±¼ÆËã³öÈ«¾Ö¹âÕÕµÄ½á¹û¡£ Ô¤¼ÆËãGIÐèÒªµÆ¹âÀàÐÍÊÇRealtime£¬Bounce IntensityÊÇÖ¸È«¾Ö¹âÕÕÖÐµÄ¼ä½Ó¹âÇ¿¶È£¨È«¾Ö¹âÕÕÀí½âÎªÖ±½Ó¹âÕÕÓë¼ä½Ó¹âÕÕÁ½²¿·Ö¡£Ö±½Ó¹âÕÕÖ¸Ö±½Ó´Ó¹âÔ´Éäµ½ÎïÌåÉÏµÄ¹â£¬¶ø¼ä½Ó¹âÕÕÖ¸´ÓÆäËûÎïÌå±íÃæ·´Éä¶øÀ´µÄ¹â£©£¬Ä¬ÈÏÖµÊÇ1£¬ÒâË¼¾ÍÊÇËµÒ»ÕµRealtimeµÆ¹âÄ¬ÈÏÊÇÊ¹ÓÃÔ¤¼ÆËãGIµÄ£¬ËùÒÔ¿´ÆðÀ´ÄãºÃÏñÖ»Ê¹ÓÃÁËRealtimeµÄµÆ¹â£¬µ«ÊÇÕæÕýÔËÐÐµÄÊ±ºòÈ´ÆäÊµÊÇÔÚÊ¹ÓÃÈ«¾Ö¹âÕÕÏµÍ³£¡£¨¼ä½Ó¹âÕÕÍ¼£©
+2.Bake GI,ligtmapºæ±º·½Ê½ £¨Static Lightmap£©
+
+*×Ü½á* Unity 5ÖÐµÆ¹âÓÐ¸öÐÂÊôÐÔBounce Intensity£¬Õâ¸öÖµÖ»Òª´óÓÚ0ÏµÍ³¾Í»áÈÏÎªÄãÐèÒªÊ¹ÓÃÔ¤¼ÆËãGI¼ÆËãÕâ¸öµÆ¹â£¬¶øÈç¹û´ËÊ±Precomputed Realtime GIÃ»ÓÐ±»¹´Ñ¡£¬¶øBake GI¹´Ñ¡ÁËÄÇÃ´Unity»á°ÑÕâ¸öµÆ¹âÒ²ºæ±ºµ½lightmapÖÐÈ¥¡£
+
 UnityµÄµÆÔ´(Ö±½Ó¹âÔ´, Í¶ÉäµÆ, µã¹âÔ´)¶¼ÊÇÊµÊ±µÄ£¬ÊµÊ±ÕÕÃ÷ÀïµÄ¹âÏß²»»á·´Éä£¨Ã»¹âÏßµÄµØ·½È«ºÚ£©
 È«¾Ö¹âÕÕÎª¼ä½Ó¹âÔ´£¨ºæÅà»áÔÚ³¡¾°Í¬¼¶Ä¿Â¼´´½¨Í¬ÃûÎÄ¼þ¼Ð´æ·ÅºæÅàÊý¾Ý£©
 
@@ -5,4 +17,8 @@ UnityµÄµÆÔ´(Ö±½Ó¹âÔ´, Í¶ÉäµÆ, µã¹âÔ´)¶¼ÊÇÊµÊ±µÄ£¬ÊµÊ±ÕÕÃ÷ÀïµÄ¹âÏß²»»á·´Éä£¨Ã»¹âÏ
 Ò»¸ö²ÄÖÊµÄdraw callÊýÔÚshaderÖ»»æÖÆÒ»´ÎµÄÇé¿öÏÂÔÚN¸öµÆ¹â¾Í»á±ä³É N´Îdraw callµ÷ÓÃ
 µ¼ÈëµÄÄ£ÐÍ¶¼ÒªÔÚÊôÐÔ´°¿ÚÖÐModelµÄ Generate Lightmap UVs¹´Ñ¡ÉÏ£¬ÕâÊÇÈÃlightmapÆ¥ÅäÄãµÄUV
 
-Ö»ÓÐ¾²Ì¬¶ÔÏó»á±»ÄÉÈëGIÔ¤¼ÆËã£¬ÒªÈÃÔ¤¼ÆËãÆô¶¯Ê×ÏÈ±ØÐë×îÉÙÒªÓÐÒ»¸ö¾²Ì¬¶ÔÏó
+Ö»ÓÐ¾²Ì¬¶ÔÏó(LightMap Static)»á±»ÄÉÈëGIÔ¤¼ÆËã£¬ÒªÈÃÔ¤¼ÆËãÆô¶¯Ê×ÏÈ±ØÐë×îÉÙÒªÓÐÒ»¸ö¾²Ì¬¶ÔÏó
+
+UnityÓÐÁ½ÖÖÒõÓ°ÊµÏÖ·½Ê½£ººæÅàÒõÓ°ÓëÊµÊ±ÒõÓ°
+ºæÅàÒõÓ°£ºÕæÊµ¹ý¶É£¬ÊÇÒ»ÖÖÀëÏß¼ÆËã£¬Ëü²ÉÓÃ¹âÏß×·×ÙËã·¨À´Ä£ÄâÏÖÊµÊÀ½çÖÐ¹âµÄÎïÀíÌØÐÔ£¬Èç·´Éä£¬ÕÛÉä¼°Ë¥¼õ£¬¹âÎÞ·¨µ½´ïµÄµØ·½½ÔÎªÒõÓ°£»µ«ÓÉÓÚÆä¼ÆËãÁ¿¾Þ´ó£¬ËùÒÔºæ±ºÏµÍ³ËæÖ®µ®Éú£¬Éú³É¼ÇÂ¼¹âÕÕÐÅÏ¢µÄLightmap£¬äÖÈ¾¾²Ì¬ÎïÌå£¬Shadow MappingäÖÈ¾¶¯Ì¬ÎïÌå¡£
+ÊµÊ±ÒõÓ°ÊÇÒ»ÖÖ¸ü¼Ó¾«¼òµÄÄ£Äâ£¬ËüºöÂÔµôÁË¹âµÄÖÚ¶àÎïÀíÌØÐÔ£¬ÀûÓÃÊýÑ§·½·¨ÈËÎªµØÈ¥ÖÆÔìÒõÓ°
