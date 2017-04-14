@@ -26,6 +26,14 @@ GC.GetGeneration(P)得到指定的对象对应的代,总共有三代。
 GC.Collect();//让垃圾回收器对所有的代进行回收。
 GC.Collect(1)//回收第0代和第1代回收。
 
+Hashtable 和 Dictionary <K, V> 类型 
+
+1）：单线程程序中推荐使用 Dictionary, 有泛型优势, 且读取速度较快, 容量利用更充分.
+2）：多线程程序中推荐使用 Hashtable, 默认的 Hashtable 允许单线程写入, 多线程读取, 对 Hashtable 进一步调用 Synchronized()方法可以获得完全线程安全的类型. 而Dictionary 非线程安全, 必须人为使用 lock 语句进行保护, 效率大减.
+3）：Dictionary 有按插入顺序排列数据的特性 (注: 但当调用 Remove() 删除过节点后顺序被打乱), 因此在需要体现顺序的情境中使用 Dictionary 能获得一定方便.
+
+HashTable的优点就在于其索引的方式，速度非常快。如果以任意类型键值访问其中元素会快于其他集合，特别是当数据量特别大的时候，应用场合有：做对象缓存，树递归算法的替代，和各种需提升效率的场合。
+
 try
 {
    int result = 10/ 0; // 引起异常的语句

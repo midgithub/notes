@@ -9,6 +9,8 @@ foreach (Transform child in transform.GetComponentsInChildren<Transform>())  //∞
     Debug.Log(child.gameObject.name);  
 }
 
+gameObject.GetComponent(System.Type.GetType("SUIFW.Test", true, true));
+
 …‰œﬂ£∫
 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 RaycastHit hit;
