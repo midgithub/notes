@@ -36,8 +36,20 @@ UI一般影响GPU的因素包括：
 6.图片设置面板 Generate Mip Maps 不要打勾。其会为同一张纹理创建出很多不同大小的小纹理，构成一个纹理金字塔。而在游戏中可以根据距离物体的远近，来动态选择使用哪一个纹理
 7.如地板 物体设为static
 8.update里面避免GameObject.FindWithTag("")、GetComponent这样的调用，可以预先存起来
-9.背景音乐：取消Preload Audio Data（预加载音频数据）选项。然后把Override for Android选项勾上，并且设置Load Type为Streaming（音频剪辑将放入缓存区中，并且从缓存区中播放，一旦播放完载掉）。
-音效：Load Type设置为Decompress on Load
+9.背景音乐：取消Preload Audio Data（预加载音频数据）选项。然后把Override for Android选项勾上，并且设置Load Type为Streaming（音频剪辑将放入缓存区中，并且从缓存区中播放，一旦播放完载掉）。使用.ogg或.mp3的压缩格式
+音效：Load Type设置为Decompress on Load，使用.wav和.aif的未压缩音频格式。
+
+10. 减少FPS，在ProjectSetting-> Quality中的
+VSync Count 参数会影响你的FPS，EveryVBlank相当于FPS=60，EverySecondVBlank = 30；
+这两种情况都不符合游戏的FPS的话，我们需要手动调整FPS，首先关闭垂直同步这个功能，然后在代码的Awake方法里手动设置FPS（Application.targetFrameRate = 45;）
+
+因为垂直同步的存在，才能使得游戏进程和显示器刷新率同步，使得画面更加平滑和稳定。
+取消了垂直同步信号，固然可以换来更快的速度，但是在图像的连续性上势必打折扣。
+
+11. 当我们设置了FPS后，再调整下Fixed timestep这个参数，
+这个参数在ProjectSetting->Time中，目的是减少物理计算的次数，来提高游戏性能。
+
+12.粒子特效：粒子数，粒子大小，粒子纹理去掉alpha通道
 
 在屏幕外的物体，和active(false) 的物体unity不会去绘制(不会调drawcall)
 Static Batching:
