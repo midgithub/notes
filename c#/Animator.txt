@@ -1,0 +1,16 @@
+1.ctrl+6 对象:弹出Animation编辑窗口，提示创建Animator and Animation Clip,点create，在保存目录下创建了与对象同名的Animator文件（.controller）和刚才起名的Animation文件（.anim），同时就会在该对象上添加Animator 组件（无Avatar）。点击红点即可编辑动作
+2.点击 .anim 文件 ，可以设置动画是否循环等设置
+3.Animator窗口：
+a. Layers: 使用“动画层”来管理身体不同部分的复杂状态机。比如：你可以使用下半身（动画）层来管理走动/跑动；使用上半身(动画)层来控制投掷/设计动作。
+b.状态机包括状态、状态转移和事件，并且在大的状态机中可以设置一个小的子状态机。
+11.Animation State:点击某个状态，设置 Motion 动作（.anim）Speed 速度，Foot IK 脚部动画约束，Transitions（从这个状态产生的状态转移） 状态转移到别的状态，Has Exit Time就是必须过度的时间，处于这个时间时，是不允许任何对动画的操作的
+我们要的都是立即切换，所以不要勾选 
+
+用法：
+AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0); //0:第一层 当前所处状态（有过度的还是原来的状态）
+bool isName = stateInfo.IsName("noAnimator1"); //状态名
+bool isTag = stateInfo.IsTag("an1"); //状态tag
+bool loop = stateInfo.loop //状态对应.anim 是否loop
+float speed= stateInfo.speed //状态对应.anim 动画播放速度
+float length = stateInfo.length //状态对应.anim 动画播完所需时间长度  length * speed = 正常动画时间长
+stateInfo.normalizedTime //动画进度值（有过度的切换到该状态时normalizedTime并不为0）
