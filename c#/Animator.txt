@@ -1,3 +1,20 @@
+Unity3D支持下面几种模型格式:
+.fbx(推荐) .obj(不支持动画等特性，一般只用于静态物体) .max.mb .blend
+
+模型需要使用到Light Mapping烘焙系统时，需要勾选Generate Lightmap UVs选项来开启第二套uv。
+
+骨骼的类型：None：表示没有骨骼，Legacy：表示为老版本动画系统的骨骼，Generic：表示为通用的骨骼，
+Humanoid：表示为人形骨骼（设置为人形骨骼可以使用Mecanim专门为人形骨骼开发的各种功能了）。
+
+『Animations』Tab 设置：
+1.Anim.Compression：Keyframe Reduction 这个是『压缩关键帧』，就是 Unity 会自行重采样动画的关键帧，还有两个选项『Off 和 Optimal』，一个是关闭动画压缩，一个是最优化压缩（应该是压缩效率最高，动画效果失真度可能也较高）
+Rotation Error，Position Error 和 Scale Error，这个三个参数默认都是 0.5，越小呢精度就越高也就是说动画的失真度越小。
+2.Loop Time：循环动画，Loop Pose 用于控制动画循环播放时，从结束帧切换到起始帧时，动画的动作可以无缝的衔接上，
+Cycly Offset 就是用于控制循环的时候起始帧偏移用的
+3.Root Transform Rotation：a.Bake Into Pose:打钩,动画播放的过程中，该物体的 Transform 中的 Rotation 值不会因为动画中物体做了任何旋转而发生改变，
+而是会保持一个恒定的值，和该动画播放之前的旋转值保持一致;
+4.Root Transform Position:有位移的动画打钩（Animator的Root Motion要打钩），没位移的动画（如待机）不要打钩，
+
 1.ctrl+6 对象:弹出Animation编辑窗口，提示创建Animator and Animation Clip,点create，在保存目录下创建了与对象同名的Animator文件（.controller）和刚才起名的Animation文件（.anim），同时就会在该对象上添加Animator 组件（无Avatar）。点击红点即可编辑动作
 2.点击 .anim 文件 ，可以设置动画是否循环等设置
 3.Animator窗口：
