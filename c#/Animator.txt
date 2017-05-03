@@ -13,15 +13,28 @@ Rotation Error£¬Position Error ºÍ Scale Error£¬Õâ¸öÈý¸ö²ÎÊýÄ¬ÈÏ¶¼ÊÇ 0.5£¬Ô½Ð¡ÄØ¾
 Cycly Offset ¾ÍÊÇÓÃÓÚ¿ØÖÆÑ­»·µÄÊ±ºòÆðÊ¼Ö¡Æ«ÒÆÓÃµÄ
 3.Root Transform Rotation£ºa.Bake Into Pose:´ò¹³,¶¯»­²¥·ÅµÄ¹ý³ÌÖÐ£¬¸ÃÎïÌåµÄ Transform ÖÐµÄ Rotation Öµ²»»áÒòÎª¶¯»­ÖÐÎïÌå×öÁËÈÎºÎÐý×ª¶ø·¢Éú¸Ä±ä£¬
 ¶øÊÇ»á±£³ÖÒ»¸öºã¶¨µÄÖµ£¬ºÍ¸Ã¶¯»­²¥·ÅÖ®Ç°µÄÐý×ªÖµ±£³ÖÒ»ÖÂ;
-4.Root Transform Position:ÓÐÎ»ÒÆµÄ¶¯»­´ò¹³£¨AnimatorµÄRoot MotionÒª´ò¹³£©£¬Ã»Î»ÒÆµÄ¶¯»­£¨Èç´ý»ú£©²»Òª´ò¹³£¬
+4.Root Transform Position: ÓÐÎ»ÒÆµÄ¶¯×÷²»´ò¹³£¨AnimatorµÄRoot MotionÒª´ò¹³£©£¬Ã»Î»ÒÆµÄ¶¯»­£¨Èç´ý»ú£©´ò¹³,
+
+(Bake Into Pose:ÔË¶¯ÐÅÏ¢ºæ±ºµ½¶¯»­µÄ¹Ç÷ÀÔË¶¯ÖÐ,¸Ã¶¯»­²¥·ÅµÄ¹ý³ÌÖÐÐÞ¸Ä¸Ãºæ±º¶ÔÓ¦µÄÐÅÏ¢ÎÞ×÷ÓÃ£¬ÓÃ¶¯×÷µÄÐ§¹û£¬µ«transform¶ÔÓ¦µÄ²»»á±»¸Ä±ä£¬
+		ÇÐ»»µ½ÆäËû¶¯»­µÄÊ±ºòºÍ¸Ã¶¯»­²¥·ÅÖ®Ç°µÄ±£³ÖÒ»ÖÂ)£¬ÓÅÏÈ¼¶¸ßÓÚapplyRootMotion true
+applyRootMotion true:½ö½ö×÷ÓÃÓÚ GameObject ÔÚ X ºÍ Z ÖáÉÏµÄÎ»ÒÆ±ä»»£¨¶¯×÷Î»ÒÆ×÷ÓÃÓëÎïÌåÎ»ÒÆ,transformµÄposition±»¶¯×÷¸Ä±ä£©£¬²»Ó°Ïì Y ÖáÉÏµÄÎ»ÒÆ
+                False£¬Ö»ÄÜ¿´µ½¶¯»­ÔÚÔ­µØÆðÌøÈ»ºóÔÙÂäµØ£¬¶¯»­ÖÐÔ­±¾Ó¦ÓÐµÄÔÚË®Æ½·½ÏòµÄÎ»ÒÆ¾ÍÃ»ÓÐÁË£»
+**Apply Root MotionµÄÑ¡Ïî£¬¸ÃÑ¡ÏîÃ»ÓÐ¹´Ñ¡Ê±£¬ÎÒÃÇµÄ¶¯»­»á°´ÕÕÊÀ½ç×ø±êÀ´ÒÆ¶¯£¬¼´ÎÒÃÇµÄAnimationÉÏµÄÊýÖµ»áÖ±½ÓÉè¶¨µ½Ä¿±êµÄpositionÖ®ÉÏ£¬
+                          ¶øÈç¹û¹´Ñ¡£¬ÔòÊÇÔÚÄ¿±êµÄpositionÖ®ÉÏÌí¼ÓÎÒÃÇµÄ¶¯»­Éè¶¨µÄÊýÖµ¡£
+**Bake Into Pose£º²»¹´Ñ¡±íÊ¾¶¯»­²úÉúµÄÐý×ª»òÎ»ÒÆ£¨¾ßÌå¿´ÊÇÄÄ¸öÑ¡ÏîÏÂÃæ£©»áÓ¦ÓÃµ½²¥·Å¶¯»­µÄÖ÷Ìå¶ÔÏóÉÏ£¬¹´Ñ¡Ôò±íÊ¾²»»áÓ¦ÓÃµ½²¥·Å¶¯»­µÄÖ÷Ìå¶ÔÏóÉÏ¡£
 
 1.ctrl+6 ¶ÔÏó:µ¯³öAnimation±à¼­´°¿Ú£¬ÌáÊ¾´´½¨Animator and Animation Clip,µãcreate£¬ÔÚ±£´æÄ¿Â¼ÏÂ´´½¨ÁËÓë¶ÔÏóÍ¬ÃûµÄAnimatorÎÄ¼þ£¨.controller£©ºÍ¸Õ²ÅÆðÃûµÄAnimationÎÄ¼þ£¨.anim£©£¬Í¬Ê±¾Í»áÔÚ¸Ã¶ÔÏóÉÏÌí¼ÓAnimator ×é¼þ£¨ÎÞAvatar£©¡£µã»÷ºìµã¼´¿É±à¼­¶¯×÷
 2.µã»÷ .anim ÎÄ¼þ £¬¿ÉÒÔÉèÖÃ¶¯»­ÊÇ·ñÑ­»·µÈÉèÖÃ
 3.Animator´°¿Ú£º
 a. Layers: Ê¹ÓÃ¡°¶¯»­²ã¡±À´¹ÜÀíÉíÌå²»Í¬²¿·ÖµÄ¸´ÔÓ×´Ì¬»ú¡£±ÈÈç£ºÄã¿ÉÒÔÊ¹ÓÃÏÂ°ëÉí£¨¶¯»­£©²ãÀ´¹ÜÀí×ß¶¯/ÅÜ¶¯£»Ê¹ÓÃÉÏ°ëÉí(¶¯»­)²ãÀ´¿ØÖÆÍ¶ÖÀ/Éè¼Æ¶¯×÷¡£
 b.×´Ì¬»ú°üÀ¨×´Ì¬¡¢×´Ì¬×ªÒÆºÍÊÂ¼þ£¬²¢ÇÒÔÚ´óµÄ×´Ì¬»úÖÐ¿ÉÒÔÉèÖÃÒ»¸öÐ¡µÄ×Ó×´Ì¬»ú¡£
-11.Animation State:µã»÷Ä³¸ö×´Ì¬£¬ÉèÖÃ Motion ¶¯×÷£¨.anim£©Speed ËÙ¶È£¬Foot IK ½Å²¿¶¯»­Ô¼Êø£¬Transitions£¨´ÓÕâ¸ö×´Ì¬²úÉúµÄ×´Ì¬×ªÒÆ£© ×´Ì¬×ªÒÆµ½±ðµÄ×´Ì¬£¬Has Exit Time¾ÍÊÇ±ØÐë¹ý¶ÈµÄÊ±¼ä£¬´¦ÓÚÕâ¸öÊ±¼äÊ±£¬ÊÇ²»ÔÊÐíÈÎºÎ¶Ô¶¯»­µÄ²Ù×÷µÄ
-ÎÒÃÇÒªµÄ¶¼ÊÇÁ¢¼´ÇÐ»»£¬ËùÒÔ²»Òª¹´Ñ¡ 
+11.Animation State:µã»÷Ä³¸ö×´Ì¬£¬ÉèÖÃ Motion ¶¯×÷£¨.anim£©Speed ËÙ¶È£¬Foot IK ½Å²¿¶¯»­Ô¼Êø£¨·´Ïò¶¯Á¦Ñ§£©£¬Transitions£¨´ÓÕâ¸ö×´Ì¬²úÉúµÄ×´Ì¬×ªÒÆ£© ×´Ì¬×ªÒÆµ½±ðµÄ×´Ì¬£¬
+Has Exit Time¾ÍÊÇ±ØÐë¹ý¶ÈµÄÊ±¼ä£¬´¦ÓÚÕâ¸öÊ±¼äÊ±£¬ÊÇ²»ÔÊÐíÈÎºÎ¶Ô¶¯»­µÄ²Ù×÷µÄÎÒÃÇÒªµÄ¶¼ÊÇÁ¢¼´ÇÐ»»£¬ËùÒÔ²»Òª¹´Ñ¡ £¬Write Defaults£º¶¯»­²¥·ÅÍê±ÏºóÊÇ·ñ½«×´Ì¬ÖØÖÃÎªÄ¬ÈÏ×´Ì¬
+Solo£º¹´Ñ¡±íÊ¾µ±Ç°¹ý¶ÉÎªÎ¨Ò»¹ý¶É£¬¼´µ±Ç°×´Ì¬Ö»ÄÜ¹ý¶Éµ½Õâ¸öÏîÄ¿Ö¸ÏòµÄ×´Ì¬£»
+Mute£º¹´Ñ¡±íÊ¾Ê¹Õâ¸ö¶¯»­¹ý¶É¹Ø±Õ£¬¼´µ±Ç°×´Ì¬²»ÄÜ¹ý¶Éµ½Õâ¸öÏîÄ¿Ö¸ÏòµÄ×´Ì¬£»
+
+Update Mode£º¸üÐÂÄ£Ê½£ºNormal±íÊ¾Ê¹ÓÃUpdate½øÐÐ¸üÐÂ£¬Animate Physics±íÊ¾Ê¹ÓÃFixUpdate½øÐÐ¸üÐÂ£¨Ò»°ãÓÃÔÚºÍÎïÌåÓÐ½»»¥µÄÇé¿öÏÂ£©
+                       Unscale Time±íÊ¾ÎÞÊÓtimeScale½øÐÐ¸üÐÂ£¨Ò»°ãÓÃÔÚUI¶¯»­ÖÐ£©
 
 ÓÃ·¨£º
 AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0); //0:µÚÒ»²ã µ±Ç°Ëù´¦×´Ì¬£¨ÓÐ¹ý¶ÈµÄ»¹ÊÇÔ­À´µÄ×´Ì¬£©
