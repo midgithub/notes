@@ -1,0 +1,37 @@
+角色控制器主要用于第三人称或第一人称游戏主角控制，并不使用刚体物理效果。
+
+Height：角色的胶囊碰撞器高度
+Slope Limit：碰撞器只能爬小于等于该值的斜坡。
+Step Offset：角色可以迈上的最高台阶高度
+Min Move Distance：移动的距离小于该值，那角色就不会移动，避免颤抖现象 。 推荐 为0 
+Skin width：皮肤厚度决定了两个碰撞器可以互相渗入的深度。较大的皮肤厚值度会导致颤抖。
+           小的皮肤厚度值会导致角色被卡住。推荐 半径（Radius）的10%左右
+
+1.控制器不会对加在它自身上的力做出反应，也不会自动推开其他刚体。角色控制器不受力的影响
+2.想让角色控制器推开其他刚体或者对象，你可以在对象附加的脚本中添加 OnControllerColliderHit() 函数
+
+使用：
+摄像机游览场景的时候，需要控制摄像机不穿透场景中的物体，这需要用到碰撞。物理引擎中有两类的情况可以检测到碰撞，一种是一方是刚体+碰撞器和另一方碰撞器碰撞（参加碰撞器和刚体），另一种就是Character Controller与其他的碰撞器碰撞的时候。
+
+OnControllerColliderHit要被触发，需要在同一脚本中同时要调用角色控制器的Move函数
+controller.Move(mMoveDir); //调用Move函数时才运动
+
+SimpleMove(Vector3):以一定的速度移动。将忽略Y轴上的速度,重力被自动应用,返回值是是否着地。
+
+/角色控制器组件在与具有Collider组件对象之间的碰撞
+void OnControllerColliderHit(ControllerColliderHit hit)
+{
+
+	//判断碰撞的对象是否具备刚体组件
+	GameObject hitObject = hit.collider.gameObject;
+	Rigidbody rigidbody = hitObject.rigidbody;
+	if(rigidbody != null && !rigidbody.isKinematic)
+	{
+		//地面也具备刚体组件，这里判断一下
+		if(!hitObject.name.Equals("Terrain") )
+		{
+			rigidbody.AddForce(new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z) * 10);
+		}
+	}
+
+}

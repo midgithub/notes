@@ -5,6 +5,23 @@ bool down = Input.GetButton("Jump");  //如果制定的按钮按下，返回True
 m_Rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x)*m_MovePower); //旋转方向参照左手定则
 Physics.Raycast(transform.position, -Vector3.up, 1) //发射点，方向，长度，地下是否有地板
 
+//数组排序
+RaycastHit[] m_Hits = Physics.RaycastAll(m_Ray, m_OriginalDist - sphereCastRadius);
+RayHitComparer m_RayHitComparer = new RayHitComparer();
+Array.Sort(m_Hits, m_RayHitComparer);
+
+public class RayHitComparer : IComparer
+{
+    public int Compare(object x, object y)
+    {
+        return ((RaycastHit) x).distance.CompareTo(((RaycastHit) y).distance);
+    }
+}
+
+//鼠标
+Cursor.lockState Cursor.visible Cursor.SetCursor()
+
+
 protected virtual void Awake()
 {
     // do anything
@@ -24,5 +41,37 @@ Button button
 var image = button.targetGraphic as Image;
 image.sprite = sp;
 
-Button Transiton: spriteswap(可以指定按钮不同状态不同的图片)
+Button Transiton: 设置为spriteswap模式(可以指定按钮不同状态不同的图片)
 	          color tint(颜色)
+
+//简单放大粒子
+var systems = GetComponentsInChildren<ParticleSystem>();
+foreach (ParticleSystem system in systems)
+{
+    system.startSize *= multiplier;
+    system.startSpeed *= multiplier;
+    system.startLifetime *= Mathf.Lerp(multiplier, 1, 0.5f);
+
+    system.Clear(); 
+    system.Play(); //重新运用粒子
+}
+
+//物体收到瞬间爆炸力
+var cols = Physics.OverlapSphere(transform.position, r);
+var rigidbodies = new List<Rigidbody>();
+foreach (var col in cols)
+{
+    if (col.attachedRigidbody != null && !rigidbodies.Contains(col.attachedRigidbody))
+    {
+        rigidbodies.Add(col.attachedRigidbody);
+    }
+}
+foreach (var rb in rigidbodies)
+{
+    rb.AddExplosionForce(explosionForce=4, 爆炸位置一般是爆炸点, 爆炸受影响半径, 1*multiplier, ForceMode.Impulse);
+}
+
+//两个向量直接角度
+var v1 = new Vector3(1, 0, 0);
+var v2 = new Vector3(-1, 1, 0);
+Debug.Log(Vector3.Angle(v2, v1));
