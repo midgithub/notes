@@ -13,17 +13,37 @@ Rotation Error£¬Position Error ºÍ Scale Error£¬Õâ¸öÈý¸ö²ÎÊýÄ¬ÈÏ¶¼ÊÇ 0.5£¬Ô½Ð¡ÄØ¾
 Cycly Offset ¾ÍÊÇÓÃÓÚ¿ØÖÆÑ­»·µÄÊ±ºòÆðÊ¼Ö¡Æ«ÒÆÓÃµÄ
 3.Root Transform Rotation£ºa.Bake Into Pose:´ò¹³,¶¯»­²¥·ÅµÄ¹ý³ÌÖÐ£¬¸ÃÎïÌåµÄ Transform ÖÐµÄ Rotation Öµ²»»áÒòÎª¶¯»­ÖÐÎïÌå×öÁËÈÎºÎÐý×ª¶ø·¢Éú¸Ä±ä£¬
 ¶øÊÇ»á±£³ÖÒ»¸öºã¶¨µÄÖµ£¬ºÍ¸Ã¶¯»­²¥·ÅÖ®Ç°µÄÐý×ªÖµ±£³ÖÒ»ÖÂ;
-4.Root Transform Position:ÓÐÎ»ÒÆµÄ¶¯»­´ò¹³£¨AnimatorµÄRoot MotionÒª´ò¹³£©£¬Ã»Î»ÒÆµÄ¶¯»­£¨Èç´ý»ú£©²»Òª´ò¹³£¬
+4.Root Transform Position: ÓÐÎ»ÒÆµÄ¶¯×÷²»´ò¹³£¨AnimatorµÄRoot MotionÒª´ò¹³£©£¬Ã»Î»ÒÆµÄ¶¯»­£¨Èç´ý»ú£©´ò¹³,
+
+(Bake Into Pose:ÔË¶¯ÐÅÏ¢ºæ±ºµ½¶¯»­µÄ¹Ç÷ÀÔË¶¯ÖÐ,¸Ã¶¯»­²¥·ÅµÄ¹ý³ÌÖÐÐÞ¸Ä¸Ãºæ±º¶ÔÓ¦µÄÐÅÏ¢ÎÞ×÷ÓÃ£¬ÓÃ¶¯×÷µÄÐ§¹û£¬µ«transform¶ÔÓ¦µÄ²»»á±»¸Ä±ä£¬
+		ÇÐ»»µ½ÆäËû¶¯»­µÄÊ±ºòºÍ¸Ã¶¯»­²¥·ÅÖ®Ç°µÄ±£³ÖÒ»ÖÂ)£¬ÓÅÏÈ¼¶¸ßÓÚapplyRootMotion true
+applyRootMotion true:½ö½ö×÷ÓÃÓÚ GameObject ÔÚ X ºÍ Z ÖáÉÏµÄÎ»ÒÆ±ä»»£¨¶¯×÷Î»ÒÆ×÷ÓÃÓëÎïÌåÎ»ÒÆ,transformµÄposition±»¶¯×÷¸Ä±ä£©£¬²»Ó°Ïì Y ÖáÉÏµÄÎ»ÒÆ
+                False£¬Ö»ÄÜ¿´µ½¶¯»­ÔÚÔ­µØÆðÌøÈ»ºóÔÙÂäµØ£¬¶¯»­ÖÐÔ­±¾Ó¦ÓÐµÄÔÚË®Æ½·½ÏòµÄÎ»ÒÆ¾ÍÃ»ÓÐÁË£»
+**Apply Root MotionµÄÑ¡Ïî£¬¸ÃÑ¡ÏîÃ»ÓÐ¹´Ñ¡Ê±£¬ÎÒÃÇµÄ¶¯»­»á°´ÕÕÊÀ½ç×ø±êÀ´ÒÆ¶¯£¬¼´ÎÒÃÇµÄAnimationÉÏµÄÊýÖµ»áÖ±½ÓÉè¶¨µ½Ä¿±êµÄpositionÖ®ÉÏ£¬
+                          ¶øÈç¹û¹´Ñ¡£¬ÔòÊÇÔÚÄ¿±êµÄpositionÖ®ÉÏÌí¼ÓÎÒÃÇµÄ¶¯»­Éè¶¨µÄÊýÖµ¡£
+**Bake Into Pose£º²»¹´Ñ¡±íÊ¾¶¯»­²úÉúµÄÐý×ª»òÎ»ÒÆ£¨¾ßÌå¿´ÊÇÄÄ¸öÑ¡ÏîÏÂÃæ£©»áÓ¦ÓÃµ½²¥·Å¶¯»­µÄÖ÷Ìå¶ÔÏóÉÏ£¬¹´Ñ¡Ôò±íÊ¾²»»áÓ¦ÓÃµ½²¥·Å¶¯»­µÄÖ÷Ìå¶ÔÏóÉÏ¡£
 
 1.ctrl+6 ¶ÔÏó:µ¯³öAnimation±à¼­´°¿Ú£¬ÌáÊ¾´´½¨Animator and Animation Clip,µãcreate£¬ÔÚ±£´æÄ¿Â¼ÏÂ´´½¨ÁËÓë¶ÔÏóÍ¬ÃûµÄAnimatorÎÄ¼þ£¨.controller£©ºÍ¸Õ²ÅÆðÃûµÄAnimationÎÄ¼þ£¨.anim£©£¬Í¬Ê±¾Í»áÔÚ¸Ã¶ÔÏóÉÏÌí¼ÓAnimator ×é¼þ£¨ÎÞAvatar£©¡£µã»÷ºìµã¼´¿É±à¼­¶¯×÷
 2.µã»÷ .anim ÎÄ¼þ £¬¿ÉÒÔÉèÖÃ¶¯»­ÊÇ·ñÑ­»·µÈÉèÖÃ
 3.Animator´°¿Ú£º
 a. Layers: Ê¹ÓÃ¡°¶¯»­²ã¡±À´¹ÜÀíÉíÌå²»Í¬²¿·ÖµÄ¸´ÔÓ×´Ì¬»ú¡£±ÈÈç£ºÄã¿ÉÒÔÊ¹ÓÃÏÂ°ëÉí£¨¶¯»­£©²ãÀ´¹ÜÀí×ß¶¯/ÅÜ¶¯£»Ê¹ÓÃÉÏ°ëÉí(¶¯»­)²ãÀ´¿ØÖÆÍ¶ÖÀ/Éè¼Æ¶¯×÷¡£
 b.×´Ì¬»ú°üÀ¨×´Ì¬¡¢×´Ì¬×ªÒÆºÍÊÂ¼þ£¬²¢ÇÒÔÚ´óµÄ×´Ì¬»úÖÐ¿ÉÒÔÉèÖÃÒ»¸öÐ¡µÄ×Ó×´Ì¬»ú¡£
-11.Animation State:µã»÷Ä³¸ö×´Ì¬£¬ÉèÖÃ Motion ¶¯×÷£¨.anim£©Speed ËÙ¶È£¬Foot IK ½Å²¿¶¯»­Ô¼Êø£¬Transitions£¨´ÓÕâ¸ö×´Ì¬²úÉúµÄ×´Ì¬×ªÒÆ£© ×´Ì¬×ªÒÆµ½±ðµÄ×´Ì¬£¬Has Exit Time¾ÍÊÇ±ØÐë¹ý¶ÈµÄÊ±¼ä£¬´¦ÓÚÕâ¸öÊ±¼äÊ±£¬ÊÇ²»ÔÊÐíÈÎºÎ¶Ô¶¯»­µÄ²Ù×÷µÄ
-ÎÒÃÇÒªµÄ¶¼ÊÇÁ¢¼´ÇÐ»»£¬ËùÒÔ²»Òª¹´Ñ¡ 
+11.Animation State:µã»÷Ä³¸ö×´Ì¬£¬ÉèÖÃ Motion ¶¯×÷£¨.anim£©Speed ËÙ¶È£¬Foot IK ½Å²¿¶¯»­Ô¼Êø£¨·´Ïò¶¯Á¦Ñ§£¬¹Ç÷À×Ó½Úµã´ø¶¯¹Ç÷À¸¸½Úµã£©£¬Transitions£¨´ÓÕâ¸ö×´Ì¬²úÉúµÄ×´Ì¬×ªÒÆ£© ×´Ì¬×ªÒÆµ½±ðµÄ×´Ì¬£¬
 
-ÓÃ·¨£º
+Has Exit Time ¾ÍÊÇ±ØÐë¹ý¶ÈµÄÊ±¼ä£¬´¦ÓÚÕâ¸öÊ±¼äÊ±£¬ÊÇ²»ÔÊÐíÈÎºÎ¶Ô¶¯»­µÄ²Ù×÷µÄ,ÔÚ¶¯»­×ª»»Ê±»áµÈ´ýµ±Ç°¶¯»­²¥·ÅÍê±Ï²Å»á×ª»»µ½ÏÂÒ»¸ö¶¯»­£¬
+Èç¹ûµ±Ç°¶¯»­ÊÇÑ­»·¶¯»­»áµÈ´ý±¾´Î²¥·ÅÍê±ÏÊ±×ª»»£¬ËùÒÔ¶ÔÓÚÐèÒªÁ¢¼´×ª»»¶¯»­µÄÇé¿öÊ±¼ÇµÃÒªÈ¡Ïû¹´Ñ¡¡£
+µ±ÎÒµ±Ç°µÄ¶¯»­²¥·ÅÍê±Ïºó¾Í×Ô¶¯×ª»»µ½¼ýÍ·ËùÖ¸µÄÏÂÒ»¸ö×´Ì¬£¨Ã»ÓÐÆäËûÌø×ªÌõ¼þ£©£¬´ËÊ±±ØÐë¹´Ñ¡¸ÃÑ¡Ïî£¬
+·ñÔò¶¯»­²¥·ÅÍê±Ïºó¾Í»á¿¨ÔÚ×îºóÒ»Ö¡£¬Èç¹ûÊÇÑ­»·¶¯»­¾Í»áÒ»Ö±Ñ­»·²¥·Å¡£
+
+Write Defaults£º¶¯»­²¥·ÅÍê±ÏºóÊÇ·ñ½«×´Ì¬ÖØÖÃÎªÄ¬ÈÏ×´Ì¬
+
+Solo£º¹´Ñ¡±íÊ¾µ±Ç°¹ý¶ÉÎªÎ¨Ò»¹ý¶É£¬¼´µ±Ç°×´Ì¬Ö»ÄÜ¹ý¶Éµ½Õâ¸öÏîÄ¿Ö¸ÏòµÄ×´Ì¬£»
+Mute£º¹´Ñ¡±íÊ¾Ê¹Õâ¸ö¶¯»­¹ý¶É¹Ø±Õ£¬¼´µ±Ç°×´Ì¬²»ÄÜ¹ý¶Éµ½Õâ¸öÏîÄ¿Ö¸ÏòµÄ×´Ì¬£»
+
+Update Mode£º¸üÐÂÄ£Ê½£ºNormal±íÊ¾Ê¹ÓÃUpdate½øÐÐ¸üÐÂ£¬Animate Physics±íÊ¾Ê¹ÓÃFixUpdate½øÐÐ¸üÐÂ£¨Ò»°ãÓÃÔÚºÍÎïÌåÓÐ½»»¥µÄÇé¿öÏÂ£©
+                       Unscale Time±íÊ¾ÎÞÊÓtimeScale½øÐÐ¸üÐÂ£¨Ò»°ãÓÃÔÚUI¶¯»­ÖÐ£©
+
+ÓÃ·¨£º£¨Mecanim¶¯»­ÏµÍ³Ñ§Ï°±Ê¼Ç£¨Áù£©£©
 AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0); //0:µÚÒ»²ã µ±Ç°Ëù´¦×´Ì¬£¨ÓÐ¹ý¶ÈµÄ»¹ÊÇÔ­À´µÄ×´Ì¬£©
 bool isName = stateInfo.IsName("noAnimator1"); //×´Ì¬Ãû
 bool isTag = stateInfo.IsTag("an1"); //×´Ì¬tag
@@ -31,3 +51,14 @@ bool loop = stateInfo.loop //×´Ì¬¶ÔÓ¦.anim ÊÇ·ñloop
 float speed= stateInfo.speed //×´Ì¬¶ÔÓ¦.anim ¶¯»­²¥·ÅËÙ¶È
 float length = stateInfo.length //×´Ì¬¶ÔÓ¦.anim ¶¯»­²¥ÍêËùÐèÊ±¼ä³¤¶È  length * speed = Õý³£¶¯»­Ê±¼ä³¤
 stateInfo.normalizedTime //¶¯»­½ø¶ÈÖµ£¨ÓÐ¹ý¶ÈµÄÇÐ»»µ½¸Ã×´Ì¬Ê±normalizedTime²¢²»Îª0£©
+
+//½«Ãû³Æ×ª»»Îª¹þÏ£Öµ¿ÉÒÔÌá¸ßË÷ÒýµÄËÙ¶È
+private int runState = Animator.StringToHash("Base Layer.Run");
+stateInfo.fullPathHash == runState //ÓÃ¸Ã·½·¨ÅÐ¶Ïµ±Ç°×´Ì¬
+
+ private int moveSpeed = Animator.StringToHash("moveSpeed");
+float speed = Input.GetAxis("Vertical");
+_animator.SetFloat(moveSpeed, speed);
+
+State Machine Behavior£º
+Í¨¹ýAnimatorµÄGetBehavior·½·¨»ñÈ¡µ½Ö¸¶¨µÄState Machine BehaviourµÄÊµÀý
