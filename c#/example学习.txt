@@ -75,3 +75,22 @@ foreach (var rb in rigidbodies)
 var v1 = new Vector3(1, 0, 0);
 var v2 = new Vector3(-1, 1, 0);
 Debug.Log(Vector3.Angle(v2, v1));
+
+move = transform.InverseTransformDirection(move); //变换方向从世界坐标到自身坐标
+move = Vector3.ProjectOnPlane(move, m_GroundNormal); //move投影在与 m_GroundNormal 正交的平面上的向量
+move = Vector3.Reflect(move, m_GroundNormal); //返回 move 在与 m_GroundNormal 正交的屏幕的反射向量
+
+ThirdPerson：
+//检查着地
+if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, 0.3f))
+{
+	m_GroundNormal = hitInfo.normal;
+	m_IsGrounded = true;
+	m_Animator.applyRootMotion = true; //着地则使用动画位移
+}
+else
+{
+	m_IsGrounded = false;
+	m_GroundNormal = Vector3.up;
+	m_Animator.applyRootMotion = false;
+}
