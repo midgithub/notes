@@ -43,6 +43,7 @@ Mute：勾选表示使这个动画过渡关闭，即当前状态不能过渡到这个项目指向的状态；
 Update Mode：更新模式：Normal表示使用Update进行更新，Animate Physics表示使用FixUpdate进行更新（一般用在和物体有交互的情况下）
                        Unscale Time表示无视timeScale进行更新（一般用在UI动画中）
 
+Trigger：本质上也是一个bool类型的参数，但是其值默认为false，且设置为true后系统会自动将其还原为false；
 用法：（Mecanim动画系统学习笔记（六））
 AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0); //0:第一层 当前所处状态（有过度的还是原来的状态）
 bool isName = stateInfo.IsName("noAnimator1"); //状态名
