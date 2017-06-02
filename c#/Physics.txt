@@ -2,7 +2,7 @@
 
 从小到大：
 
-CheckXXX -> OverlapXXX -> XXXCast
+CheckXXX -> OverlapXXX(Collider[]) -> XXXCast(out RaycastHit,返回bool)
 
 其中Check系列方法的开销极小，和射线差不多
 

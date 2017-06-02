@@ -4,7 +4,7 @@ Unity3D支持下面几种模型格式:
 模型需要使用到Light Mapping烘焙系统时，需要勾选Generate Lightmap UVs选项来开启第二套uv。
 
 骨骼的类型：None：表示没有骨骼，Legacy：表示为老版本动画系统的骨骼，Generic：表示为通用的骨骼，
-Humanoid：表示为人形骨骼（设置为人形骨骼可以使用Mecanim专门为人形骨骼开发的各种功能了）。
+Humanoid：表示为人形骨骼（设置为人形骨骼可以使用Mecanim专门为人形骨骼开发的各种功能了）。满足人形骨骼的可以配置骨骼
 
 『Animations』Tab 设置：
 1.Anim.Compression：Keyframe Reduction 这个是『压缩关键帧』，就是 Unity 会自行重采样动画的关键帧，还有两个选项『Off 和 Optimal』，一个是关闭动画压缩，一个是最优化压缩（应该是压缩效率最高，动画效果失真度可能也较高）
@@ -66,3 +66,8 @@ _animator.SetFloat(moveSpeed, speed);
 
 State Machine Behavior：
 通过Animator的GetBehavior方法获取到指定的State Machine Behaviour的实例
+
+使用过程注意点：
+1.Animations:动作模型 model不要导进材质球
+2.Based Upon: original: 按资源的数据朝向    body orientation:按上身点的朝向  offset：调整朝向偏移量
+3.在地面的时候使用applyRootMotion ，竖直位移不使用更符合物理

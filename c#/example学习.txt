@@ -94,3 +94,7 @@ else
 	m_GroundNormal = Vector3.up;
 	m_Animator.applyRootMotion = false;
 }
+
+//设置天空盒
+Lighting窗口，Scene中有Skybox属性，设置material
+可能代码更改场景天空盒 RenderSettings.skybox = mat;
