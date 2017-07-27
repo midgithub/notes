@@ -35,3 +35,42 @@ void OnControllerColliderHit(ControllerColliderHit hit)
 	}
 
 }
+
+
+//NavMeshAgent
+Radius：保持跟障碍物的距离，要比自身范围大点
+Stopping distance：接近目标到这个距离时，代理将停止（小等于攻击距离）
+Auto Braking：将在到达目的地时减速
+
+设置行走的遮罩层（Cost属性：数值越大，从此寻路的消耗越大，寻路物体在区域消耗数值一样的情况下，会选择最优（最近）路面寻路，但如果寻路区域的消耗数值不同，会根据消耗的数值，越小越最优进行寻路。）
+
+//转向
+transform.LookAt(new Vector3(point.x, transform.position.y, point.z));
+//设置寻路的目标点
+agent.SetDestination(point);
+//播放动画，判断是否到达了目的地，播放空闲或者跑步动画
+//播放动画，判断是否到达了目的地，播放空闲或者跑步动画
+if (agent.remainingDistance == 0)
+{
+    Debug.Log("到达目的地");
+}
+else
+{
+    
+}
+
+NavMeshObstacle 分为两种模式，一种是普通模式，通过设置半径和高度来确定一个范围，阻档NavMeshAgent移动，一种是Carve模式，在导航网格上，根据模型的大小，挖出一个“洞”，使模型范围内的导航网格消失，这样NavMeshAgent就不能经过次区域了。
+
+Move Threshold:当模式为Carve时，此物体的移动距离超过这个阀值后，更新当前的导航网格（从新挖洞）。
+Carve：是否打开在导航网格挖洞的模式
+
+Carve模式的一些总结：
+1.在Bake场景的时候，Navigation窗口的Bake页面有一个高度值，场景中的导航网格通常作为一个平面，当NavMeshObstacle 距离小于这个高度时，
+才会在导航网格上挖洞，否则NavMeshObstacle 还是以普通模式存在的。
+2.NavMeshObstacle 在刚创建的时候最好先关闭NavMeshObstacle 这个组件，但需要是再打开，在跟NavMeshAgent混用时，不能共用（同时激活状态），
+
+怪物AI:
+1.给要寻路的对象加上NavMeshAgent和 NavMeshObstacle组件,NavMeshObstacle去掉勾选，处于不激活状态
+2.代码逻辑判断，当对象到达目标位置时 就先设置NavMeshAgent不启用，NavMeshObstacle为启用，
+这样后面跟上来的 怪或兵就会自动判断到前面有阻挡物 自动避让 重新寻找新的位置
+3.当 重新选择目标时，逻辑代码编写NavMeshObstacle先不启用，然后设置NavMeshAgent启用，设置新的目的地就可以了

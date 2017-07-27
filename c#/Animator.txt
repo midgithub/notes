@@ -71,3 +71,6 @@ State Machine Behavior：
 1.Animations:动作模型 model不要导进材质球
 2.Based Upon: original: 按资源的数据朝向    body orientation:按上身点的朝向  offset：调整朝向偏移量
 3.在地面的时候使用applyRootMotion ，竖直位移不使用更符合物理
+4.StateMachineBehaviour 可以挂在layer下,可以监听该层下所有state的开始结束刷新，而挂在state下只能监听该state的开始结束刷新
+OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+string name = animator.name.Split('(')[0]; //animator 对应 Transform 名字，即gameobject的name

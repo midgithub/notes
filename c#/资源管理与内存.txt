@@ -43,7 +43,7 @@ Resources.UnloadUnusedAssets() 没被引用的Assets都会被释放
 注意点：
 0.其它预设里最好不要有模型，可以代码加载模型预设，如果一定要，导入的模型也要单独打个包，避免造成内存两份
 1.加载资源时要确保所依赖的资源所在的bd已经被加载，这时所依赖资源会自动从包里加载出来引用
-2.AssetBundle.Unload(true)不单会释放文件内存镜像，还会释放AssetBundle.Load创建的Assets，场景切换不会自动释放内存镜像和load出来的对象
+2.AssetBundle.Unload(true)不单会释放文件内存镜像，还会释放AssetBundle.Load创建的Assets，场景切换不会自动释放内存镜像和load出来的对象（指针不为空,Texture2D/Texture对象 先要用Resources.UnloadAsset(texture)释放，再Resources.Load的对象指针置为空LoadObjs[i] = null）,只会释放Instantiate对象（指针为空）
 3.压缩后打出来的包大小跟包里的资源有关
 4.无被引用的资源不在特殊文件夹下 build时不会被加载
 5.场景里不要有Ui,如果一定要有，该UI不要拉预设打包（这时应该不会再手动pushlayer）
