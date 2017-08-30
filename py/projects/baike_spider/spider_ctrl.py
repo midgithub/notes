@@ -1,6 +1,7 @@
 # coding:utf8
 
-# alt+enter 快捷创建类或方法
+# alt+enter 快捷创建类或方法 或者下载包
+#右键该文件 run 开始运行该工程
 from baike_spider import download_ctrl
 from baike_spider import html_parse
 from baike_spider import output_data

@@ -41,3 +41,48 @@ using System.Runtime.InteropServices;
 [DllImport("DTest")]
    
 private static extern int addTest(int a,int b);
+
+3.jar()  //快捷：alt+enter 导入相关包
+a.new project Jar2Unity sen.com Empty Activity
+b.File -> New -> New Module -> 选择 Android Library(InterfaceUnity),
+把app 和InterfaceUnity src 下test 删除，app/src/main/res/ layout下的activity_main.xml删掉，目前不需要这个布局文件 
+c.到unity \Editor\Data\PlaybackEngines\AndroidPlayer\Variations找对应的 classes.jar放到 interfaceunity\libs 下
+修改这个库对应的build.gradle文件，在dependencies节点下添加一行：compile files('libs/classes.jar') 或右键open module setting/ dependencies
+d.interfaceunity 新建类 MainFace，把app下的MainFace MainActivity 剪切到interfaceunity 下改包名
+ import com.unity3d.player.UnityPlayerActivity; MainActivity 继承于 UnityPlayerActivity
+e.屏蔽compile 'com.android.support:appcompat-v7:26.+'和testCompile 'junit:junit:4.12'
+f.File -> invalidated and restart
+g.InterfaceUnity的build.gradle 文件后面追加以下代码
+task makeJar(type: Copy) {
+    delete 'build/libs/android2u3d.jar'
+    from('build/intermediates/bundles/release/')
+    into('build/libs/')
+    include('classes.jar')
+    rename ('classes.jar', 'android2u3d.jar')
+}
+在Terminal窗口中输入 gradlew makeJar 来导出 android2u3d.jar
+
+makeJar.dependsOn(build)
+c# -> java
+//package com.sen.sharetest;
+AndroidJavaClass jc = new AndroidJavaClass("com.sen.sharetest.CallJava"); //java类 只能访问静态属性方法，调用实例方法没无效但不报错
+jc.GetStatic<string>("tryStaticProp");
+
+Dictionary<string, string> dic = new Dictionary<string, string>();
+dic.Add("id", "37");
+dic.Add("age", "27");
+
+AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
+foreach (KeyValuePair<string, string> pair in dic)
+{
+    map.Call<string>("put", pair.Key, pair.Value);
+}
+jc.CallStatic<string>("getMapLength","qing",map);//函数名，参数
+
+AndroidJavaObject jo = new AndroidJavaObject("com.sen.sharetest.CallJava", "unity3d jo build"); //java类实例对象，构造函数参数
+jo.Get<string>("tryProp"); //字段
+jo.Call<string>("TryPublic", "unity3d input");
+jo.GetStatic<string>("tryStaticProp");  //用实例访问静态方法
+
+java -> c#
+UnitySendMessage("androidInterface", "showLog", "a#b#c"); //回调unity 方法,gameobjectName,methodName,param(只能字符串参数)

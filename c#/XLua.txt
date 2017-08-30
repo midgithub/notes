@@ -33,8 +33,8 @@ LuaTable scriptEnv;  //脚本代码块，将上面文本赋值给该变量，不用一定要 Dispose
 Action luaStart; //引用 lua里的start函数 ，不用一定要 Dispose
 
 LuaTable meta = luaEnv.NewTable();
-meta.Set("__index", luaEnv.Global);
-scriptEnv.SetMetaTable(meta);
+meta.Set("__index", luaEnv.Global);  //保留原来的_G(全局变量所在的table,如print等方法都在_G里,包括导出到lua的表 如CS.UnityEngine)
+scriptEnv.SetMetaTable(meta); //设置元表，所以scriptEnv里代码块可以使用 _G 里的东西
 meta.Dispose();  
 
 scriptEnv.Set("self", this); //Set(name,object) 对lua 脚本变量赋值
@@ -44,7 +44,8 @@ foreach (var injection in injections)
   scriptEnv.Set(injection.name, injection.value);
 }
 
-luaEnv.DoString(luaScript.text, "LuaBehaviour", scriptEnv); //scriptEnv 赋值代码块
+luaEnv.DoString(luaScript.text, "LuaBehaviour", scriptEnv); //scriptEnv 赋值代码块,所以可以访问 文本里的函数
+scriptEnv.Set("speed", 30);  // 赋值完代码块，才可以访问 文本里的字段和函数(非 local的)
 
 Action luaAwake = scriptEnv.Get<Action>("awake"); //可以指定返回类型
 scriptEnv.Get("start", out luaStart);   //获取 lua 函数（local 类型的不能获取到） 在该脚本里调用

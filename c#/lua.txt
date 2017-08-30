@@ -1,3 +1,80 @@
 package.loaded["src/Event"] = nil  
 require('UITable')  --require:多次调用返回同一个指针  package: 返回不同指针
 加载机制:
+
+
+元表与元方法:
+Lua在创建一个新的table时 不会创建元表。
+setmetatable( t1,t2 ) 设置t1的元表为t2。
+getmetatable( t ) 获取t的元表。
+
+1、算术类的元方法：__add（加）、__sub（减）、__mul（乘）、__div（除）、__unm（相反数）、__mod（取模）、__pow（乘幂）、__concat（连接操作符）
+2、关系类的元方法：__eq（等于）、__lt（小于）、__le（小于等于）
+3、库定于的元方法：__tostring（print时调用）、__metatable（设置后不可修改元表）
+4、table访问的元方法：__index（查询table）、__newindex（修改table的字段）、__mode（弱引用table）
+
+local mt = {};
+    mt.__add = function(t1, t2)
+        print("两个table相加的结果就是...神经病啊！table有什么好相加的啊！");
+    end
+mt.__index = function(mytable, key)
+    if key == "key2" then
+      return "metatablevalue"
+    else
+      return nil
+    end
+  end
+local t1 = {};
+setmetatable(t1, mt);
+
+Lua查找一个表元素时的规则，其实就是如下3个步骤:
+1.在表中查找，如果找到，返回该元素，找不到则继续
+2.判断该表是否有元表，如果没有元表，返回nil，有元表则继续。
+3.判断元表有没有__index方法，如果__index方法为nil，则返回nil；如果__index方法是一个表，则重复1、2、3；如果__index方法是一个函数，则返回该函数的返回值。
+
+lua中其实是没有类的，有的只是表(table)，而类之间的继承也就是将父类的表连到了一起，派生类中没有找到的属性和方法就通过元表查找父类
+--可以用cocos 里封装的 class 方法实现类
+father = {  
+    house=1  
+}  
+father.__index = father -- 把father的__index方法指向自己,没有这句，下面打印为 nil
+  
+son = {  
+    car=1  
+}  
+setmetatable(son, father)  
+print(son.house)  --1
+
+--lua提供了一种更为便利的语法，即将点（.）替换为冒号（：），这样可以在定义和调用函数时隐藏参数。
+Account = {}
+function Account.withdraw(self,v)
+    self.balance = self.balance + v
+end
+
+ function Account:withdraw(v)
+     self.balance = self.balance + v
+ end
+
+
+Coroutine
+Lua中的协程和多线程很相似，每一个协程有自己的堆栈，自己的局部变量，可以通过yield-resume实现在协程间的切换。
+不同之处是：Lua协程是非抢占式的多线程，必须手动在不同的协程间切换，且同一时刻只能有一个协程在运行。
+并且Lua中的协程无法在外部将其停止，而且有可能导致程序阻塞。
+
+local co = coroutine.create(function(name)
+    print(name);
+    coroutine.yield("yield param"); --相当于return 
+end);
+local result, msg = coroutine.resume(co, "resume param");  
+print("msg:" .. msg); --msg:yield param
+
+--resume运行在保护模式下，因此，如果协同程序内部存在错误，Lua并不会抛出错误，而是将错误返回给resume函数。
+--resume第二个参数为将会传递给协同程序的函数。
+--resume函数有两个返回值，一个代表协同程序是否正确执行，一个代表错误信息。
+--如果协同程序正确执行，错误信息这个返回值msg自然就是nil了。
+--yield函数的参数可以传递到resume的第二个返回值里,前提是，resume函数的第一个返回值是true。
+
+--在启动coroutine的时候，resume的参数是传给主程序的；在唤醒yield的时候，参数是传递给yield的
+co = coroutine.create(function (a, b) print("co", a, b, coroutine.yield()) end)
+coroutine.resume(co, 1, 2)        --没输出结果，注意两个数字参数是传递给函数的
+coroutine.resume(co, 3, 4, 5)        --co 1 2 3 4 5，这里的两个数字参数由resume传递给yield　
