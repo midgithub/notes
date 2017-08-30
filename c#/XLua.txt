@@ -44,7 +44,7 @@ foreach (var injection in injections)
   scriptEnv.Set(injection.name, injection.value);
 }
 
-luaEnv.DoString(luaScript.text, "LuaBehaviour", scriptEnv); //scriptEnv 赋值代码块,所以可以访问 文本里的函数
+luaEnv.DoString(luaScript.text, "LuaBehaviour", scriptEnv); //scriptEnv 赋值代码块,使代码模块化，而不是全局化,所以可以访问 文本里的函数
 scriptEnv.Set("speed", 30);  // 赋值完代码块，才可以访问 文本里的字段和函数(非 local的)
 
 Action luaAwake = scriptEnv.Get<Action>("awake"); //可以指定返回类型
@@ -121,6 +121,8 @@ coroutine.resume(co)
 
 
 hotfix:
+public int tick = 0; //如果是private的，在lua设置xlua.private_accessible(CS.HotfixTest)后即可访问
+
 HotfixFlag.Stateless(默认,可以运行的任意时刻执行函数替换)
 xlua.hotfix(CS.HotfixCalc, 'Add', function(self, a, b)
    return a + b

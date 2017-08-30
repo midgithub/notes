@@ -1,15 +1,22 @@
-Father={ lovenumber=0}
-function Father:new(p)
-  p=p or {}     
-  --将新对象实例的元表指向Father，这样就可以以Father为模板了
-  setmetatable(p,self)
-  --将Father的__index字段指向自己，以便新对象在找不到指定的key时可以被重定向，即访问Father拥有的key
+Father={}
+Father.numBer = 0  --类属性，所有对象共享  调用用类名：Role.numBer
+
+--lua提供了一种更为便利的语法，即将点（.）替换为冒号（：），这样可以在定义和调用函数时隐藏参数。
+function Father:new(name)  --Father.new(self,name)
+  self.name = name
+  self.lovenumber = 0
   self.__index=self
-  return p
+  Father.numBer = Father.numBer + 1
+
+  opt = {}     
+  --将新对象实例的元表指向Father，这样就可以以Father为模板了
+  setmetatable(opt,self)
+  --将Father的__index字段指向自己，以便新对象在找不到指定的key时可以被重定向，即访问Father拥有的key
+  return opt
 end
 
 function Father:toString()
-  print("I love my son!")
+  print("I love my son!"..self.name)
 end
 
 function Father:Loving(v)
@@ -17,16 +24,17 @@ function Father:Loving(v)
    return self.lovenumber
 end
 
-f1=Father:new{name="jianjian"}
-f2=Father:new{name="baba",}
+local f1=Father:new("jianjian")
+print(f1:toString())
 print(f1:Loving(100))
+print(f1.name.."Father.numBer"..Father.numBer)
+
+local f2=Father:new("baba")
+print(f2:toString())
 print(f2:Loving(200))
---输出答案
---100
---200
+print(f1.name.."Father.numBer"..Father.numBer)
 
 --单例
-Father.numBer = 0  --类属性，所有对象共享  调用用类名：Role.numBer
 function Father:Instance()  
     if self.instance == nil then  
         self.instance = self:new()  
@@ -34,8 +42,8 @@ function Father:Instance()
     return self.instance  
 end 
 
-s1 = Father:Instance()  
-s2 = Father:Instance()  
+local s1 = Father:Instance()  
+local s2 = Father:Instance()  
 if s1 == s2 then  
     print("两个对象是相同的实例")  
 end  
