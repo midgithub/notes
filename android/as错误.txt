@@ -1,0 +1,16 @@
+gradle dependency cache may be corrupt:
+gradle-wrapper.properties里修改了gradle的版本，与之前没有报错的gradle版本一致
+  http\://services.gradle.org/distributions/gradle-2.10-all.zip  
+(gradle-3.3-all.zip)不能下载改成2.10
+
+修改Manifest.xml
+<activity
+    android:name=".MainActivity"
+    android:theme="@style/Theme.AppCompat">  //没有这个会闪退
+
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.LAUNCHER"/>
+    </intent-filter>
+</activity>

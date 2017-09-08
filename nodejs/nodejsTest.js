@@ -10,6 +10,8 @@ function main () {
 	//globalVar();
 	serverTest();
 	asyncTest();
+
+	inheritsTest();
 }
 function globalVar () {
 	//js在浏览器中有且仅有一个全局window对象。而在Node.js环境中,也有唯一的全局对象global
@@ -130,6 +132,34 @@ function eventTest () {
 	// EventEmitter 定义了一个特殊的事件 error，它包含了错误的语义，我们在遇到 异常的时候通常会触发 error 事件。
 	// 当 error 被触发时，EventEmitter 规定如果没有响 应的监听器，Node.js 会把它当作异常，退出程序并输出错误信息。
 	// 我们一般要为会触发 error 事件的对象设置监听器，避免遇到错误后整个程序崩溃。
+}
+
+function inheritsTest () {
+	var util = require('util'); 
+	function Base() { 
+		this.name = 'base'; 
+		this.base = 1991; 
+		this.sayHello = function() { 
+		console.log('Hello ' + this.name); 
+		}; 
+	} 
+	Base.prototype.showName = function() { 
+		console.log(this.name);
+	}; 
+	function Sub() { 
+		this.name = 'sub'; 
+	} 
+
+	util.inherits(Sub, Base); //Sub 仅仅继承了Base 在原型中定义的函数，而构造函数内部创造的 base 属 性和 sayHello 函数都没有被 Sub 继承。
+
+	var objBase = new Base(); 
+	objBase.showName(); 
+	objBase.sayHello(); 
+	console.log(objBase); 
+	var objSub = new Sub(); 
+	objSub.showName(); 
+	//objSub.sayHello(); //报错，不错在该方法
+	console.log(objSub);
 }
 
 main()
