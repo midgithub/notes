@@ -1,0 +1,6 @@
+Nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。
+nginx是一个反向代理的web服务器，因此它其实必须依赖一个真正的web服务器才能执行动态的网页内容，
+因此这里php就是使用fastcgi来充当这个真正的web服务器，它运行在9000端口上
+
+apache+PHP和ngnix+php的区别
+apache一般是把php当做自己的一个模块来启动；而ngnix则是把http请求变量转发给php进程，即php独立进程，与ngnix通信，这种方式叫做FastCGI运行方式。

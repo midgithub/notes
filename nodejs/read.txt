@@ -5,6 +5,7 @@ NPM是随同NodeJS一起安装的包管理工具：
 
 npm install express      # 本地安装  C:\Users\qingsen\node_modules
 npm install express -g   # 全局安装
+可以指定文件夹(在此处打开命令窗口)，在执行 npm install xx,安装模块都指定文件夹下
 
 本地安装
 1. 将安装包放在 ./node_modules 下（运行 npm 命令时所在的目录），如果没有 node_modules 目录，会在当前执行 npm 命令的目录下生成 node_modules 目录。

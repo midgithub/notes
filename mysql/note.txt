@@ -1,3 +1,8 @@
 最高权限的密码:102261013028
 
-data可能在C:\ProgramData\MySQL\MySQL Server 5.7\Data
+data可能在C:\ProgramData\MySQL\MySQL Server 5.7\Data (ProgramData 可能是隐藏文件夹)
+
+MySQLWorkbench:数据库图形管理工具
+
+对于Node.js程序，访问MySQL也是通过网络发送SQL命令给MySQL服务器。这个访问MySQL服务器的软件包通常称为MySQL驱动程序。
+不同语言需要实现自己的驱动，MySQL官方提供了Java、.Net、Python、Node.js、C++和C的驱动程序，官方的Node.js驱动目前仅支持5.7以上版本
