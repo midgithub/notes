@@ -12,6 +12,7 @@ function main () {
 	asyncTest();
 
 	inheritsTest();
+	bufferTest();
 }
 function globalVar () {
 	//js在浏览器中有且仅有一个全局window对象。而在Node.js环境中,也有唯一的全局对象global
@@ -114,7 +115,7 @@ function eventTest () {
 	   console.log('连接成功。');
 	  
 	   // 触发 data_received 事件 
-	   eventEmitter.emit('data_received' ,'qingsen');
+	   eventEmitter.emit('data_received' ,'qingsen'); //'qingsen' data_received事件函数参数
 	}
 	 
 	// 使用匿名函数绑定 data_received 事件
@@ -127,6 +128,14 @@ function eventTest () {
 	var t = setTimeout(function() {   //返回一个代表定时器的句柄值
 		eventEmitter.emit('connection');
 	}, 1000); 
+
+	//对象方法：
+	// addListener(event, listener)  on(event, listener)  once(event, listener)
+	// removeListener(event, listener)  removeAllListeners([event])
+	// setMaxListeners(n)   默认监听器超过 10 个就会输出警告信息。 setMaxListeners 函数用于提高监听器的默认限制的数量。
+	// listeners(event)  返回指定事件的监听器数组。
+	// emit(event, [arg1], [arg2], [...])
+	// 类方法  EventEmitter.listenerCount(emitter, event) 返回指定事件的监听器数量。
 
 	console.log("程序执行完毕。");
 	// EventEmitter 定义了一个特殊的事件 error，它包含了错误的语义，我们在遇到 异常的时候通常会触发 error 事件。
@@ -158,8 +167,24 @@ function inheritsTest () {
 	console.log(objBase); 
 	var objSub = new Sub(); 
 	objSub.showName(); 
-	//objSub.sayHello(); //报错，不错在该方法
+	//objSub.sayHello(); //报错，不存在该方法
 	console.log(objSub);
+}
+
+function bufferTest() {
+	//var buf = new Buffer("www.runoob.com", "utf-8"); //new Buffer([10, 20, 30, 40, 50]);
+	var buf = new Buffer(256);
+	//写入缓冲区
+	var len = buf.write("www.runoob.com"); //14
+	//从缓冲区读取数据
+	buf.toString('utf8',0,5) //www.r
+	//buf.length  返回 Buffer 对象所占据的内存长
+	
+	// 剪切缓冲区
+    var buffer2 = buf.slice(0,2);
+
+	//缓冲区合并
+	//Buffer.concat(buffer1,buffer2);
 }
 
 main()

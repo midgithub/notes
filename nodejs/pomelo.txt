@@ -1,2 +1,50 @@
-服务器的对外接口只有两类， 一类是接收客户端的请求， 叫做handler， 一类是接收RPC请求(服务器间请求)， 叫做remote
+服务器的对外接口只有两类， 一类是接收客户端的请求， 叫做handler(前台服务器)，
+ 一类是接收RPC请求(服务器间请求)， 叫做remote(后台服务器)
 
+handler接口固定：function(msg,session,next)
+msg为客户端要传递的参数，格式为json
+session由pomelo自动传递
+next(null,{code: 200, msg: msg.uid}),null代表错误信息，没错误信息，就返回null
+
+servers.json(配置前台服务)
+"connector": [{"id":"connector-1","host":"127.0.0.1","port":3150,"clientPort":3010,"frontend":true}
+"chat": [{"id":"chat-1","host":"127.0.0.1","port":3180}],
+
+adminServer.json（配置后台服务）
+{  
+    "type":"chat",  
+    "token":"agarxhqb98rpajloaxn34ga8xrunpagkjwlaw3ruxnpaagl29w4rmm"  
+} 
+
+Pomelo服务器提供两类connector：sioconnector和hybridconnector，分别对于基于socket.io和二进制的通讯
+1. sioconnector:支持基于socket.io的通讯协议，也是Pomelo框架默认采用的connector
+2. hybridconnector:支持socket和websocket，使用二进制通讯协议，并且支持route字典压缩和protobuf压缩的connector，需要在app.js中显式配置()
+app.configure('production|development', 'connector', function() {
+	app.set('connectorConfig', {
+		connector: pomelo.connectors.hybridconnector,
+
+1.pomelo.request(url, msg, function(data){})
+2.pomelo.notify(url, msg)
+3.pomelo.on(route, function(data){})
+
+
+会话机制Session:
+1.SessionService 是只存在于前端服务器（frontend），session 以每个客户端请求自增1的形式生成 ,用于管理连接 pomelo的客户端
+2.LocalSessionService 由于SessionService只存在于前端服务器（frontend），如果想在后端服务器（Backend）操作SessionService的话，就需要一个代理类（因为这是两个进程）
+这个就是从前端服务器复制出来用于backend进行操作的SessionService，
+
+广播:
+var channelService = this.app.get('channelService')
+hanelService保存自定义的频道名,每个频道里保存前端服务器的ID:sid 和每个用户的ID:uid在groups,
+groups[sid]取得所有通过同一个前端服务器登陆的uid
+
+1.匿名Channel推送：
+channelService.pushMessageByUids(pushEvent, msg, users, cb) //route：消息路由如"onCharge"；msg：发送到客户端的消息；uids：接收消息的客户端列表，格式 [{uid: userId, sid: frontendServerId}]；cb：回调函数 cb(err)。
+根据uids将消息推送给客户端，如果uids中的sid未指定，则忽略相应的客户端
+
+2.显式Channel推送：
+var channel = channelService.getChannel(channel, true); //true:信道不存在时，则创建新的信道
+channel.add(uid,sid)  //uid:用户编号；sid：用户连接到的前端服务id。添加指定用户到信道
+       .leave(uid,sid)
+       .getMembers()
+       .pushMessage(route,msg,cb)  //route：推送事件名如“onChat”，msg：要推送的消息，cb：回调函数。
