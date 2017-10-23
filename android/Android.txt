@@ -1,0 +1,11 @@
+res目录:所有的资源文件都会在R.java文件下生成对应的资源id
+assets目录:通过AssetManager以二进制流的形式来读取
+
+Activity:
+android 系统使用Task(栈）来存储Activity
+1.打开一个application的时候，该application的task来到前台，如果没有该application的task存在(application最近没有被打开过)，
+一个新的task将会被创建同时应用程序的主activity作为根activity在stack中打开
+2.当前的activity启动另一个activity的时候，新的activity被推到栈顶并获得焦点，之前的activity仍然在stack中，但是被stop了,系统保留其UI的当前状态
+3.按返回键，当前的activity从栈顶被弹出(被destroy了)，之前的activity 恢复(resume)。栈中的activities重不会重新被排序，只有进栈和出栈
+4.onPause()和onStop()被调用的前提是： 打开了一个新的Activity！而前者是旧Activity还可见的状态；后者是旧Activity已经不可见！
+5.生命周期函数不能手动调用，只有finish（）关闭某个Activity
