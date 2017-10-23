@@ -1,15 +1,24 @@
 ¹âÕÕÏµÍ³£¬ÓÉÒÔÏÂÈý²¿·Ö×é³É£ºEnlighten(¾²Ì¬È«¾Ö¹âÕÕ) + Probes(¶¯Ì¬È«¾Ö¹âÕÕ) + Screen Space Reflection
 Probes:
-1.Light Probes:ÓÃÓÚÌá¹©¶¯Ì¬ÎïÌåµÄ¹âÕÕÐÅÏ¢£¬½«Æäºæ±ºÔÚÌùÍ¼ÖÐ,Èç¹ûÃ»ÓÐ·ÅÖÃ¹âÌ½Í·£¬¶¯Ì¬¶ÔÏó¾ÍÎÞ·¨½ÓÊÜÈ«¾Ö¹âÕÕµÄÐÅÏ¢£¬Ôì³É¶¯Ì¬¶ÔÏó±È³¡¾°»¹Òª°µ
-2.Reflection Probes:¶ÔÖÜÎ§È¡Ñù²¢°Ñ½á¹ûÐ´µ½·½ÌåÌùÍ¼£¬¿ÉÒÔÈÃÖÜÎ§¾­¹ýµÄÎïÌåµÃµ½»·¾³µÄ·´ÉäÓ°Ïñ(Ó°ÏìÐ§ÄÜ£¬ÉÙÓÃ)
+1.Light Probes:Ê¹¶¯Ì¬ÎïÌåÄÜÊÜ¾²Ì¬ÎïÌåµÄgiÓ°Ïì£¬½«Æäºæ±ºÔÚÌùÍ¼ÖÐ,Èç¹ûÃ»ÓÐ·ÅÖÃ¹âÌ½Í·£¬¶¯Ì¬¶ÔÏó¾ÍÎÞ·¨½ÓÊÜÈ«¾Ö¹âÕÕµÄÐÅÏ¢£¬Ôì³É¶¯Ì¬¶ÔÏó±È³¡¾°»¹Òª°µ
+2.Reflection Probes:¶ÔÖÜÎ§È¡Ñù²¢°Ñ½á¹ûÐ´µ½·½ÌåÌùÍ¼£¬¿ÉÒÔÈÃÖÜÎ§¾­¹ýµÄÎïÌåµÃµ½»·¾³µÄ·´ÉäÓ°Ïñ£¬±»ÌùÉÏÕâ¸öcubemap(Ó°ÏìÐ§ÄÜ£¬ÉÙÓÃ)
 ÊµÊ±µÄ·´ÉäÌ½Í·»á¶ÔËùÓÐ¿É¼ûµÄÎïÌåÈ¡Ñù,¶ÔÐ§ÄÜ¼«Îª.²»Àû×îºÃÓÃºæ±ºµÄ£¬¡±ReflectionProbe Static¡±¶ÔÏó²Å»á±»·´ÉäÌ½Í·È¡Ñù
 
 È«¾Ö¹âÕÕÃ÷:£¨Ïê½âUnity 5 È«¾Ö¹âÕÕÏµÍ³EnlightenÎÊÌâ£©
-1.Ô¤¼ÆËãÈ«¾Ö¹âÕÕ:Precomputed Realtime GI£¨Ô¤¼ÆËãÊµÊ±È«¾Ö¹âÕÕÃ÷£©£¬¼ò³Æ£ºÊµÊ±GI.Ò²ÐèÒªÔ¤ÏÈµÄBake¹ý³Ì,µ«²»Ô¤¼ÆËã³¡¾°ÖÐ¹âÏßµÄ·´ÉäÐÅÏ¢£¬¶øÊÇÔ¤¼ÆËã³¡¾°ÖÐ¾²Ì¬ÎïÌå±íÃæËùÓÐ¿ÉÄÜµÄ·´Éä¹âÂ·£¬È»ºóÔÚÓÎÏ·ÔËÐÐÊ±½áºÏµÆ¹âµÄÎ»ÖÃ¡¢·½ÏòµÈÐÅÏ¢ÊµÊ±¼ÆËã³öÈ«¾Ö¹âÕÕµÄ½á¹û¡£ Ô¤¼ÆËãGIÐèÒªµÆ¹âÀàÐÍÊÇRealtime£¬Bounce IntensityÊÇÖ¸È«¾Ö¹âÕÕÖÐµÄ¼ä½Ó¹âÇ¿¶È£¨È«¾Ö¹âÕÕÀí½âÎªÖ±½Ó¹âÕÕÓë¼ä½Ó¹âÕÕÁ½²¿·Ö¡£Ö±½Ó¹âÕÕÖ¸Ö±½Ó´Ó¹âÔ´Éäµ½ÎïÌåÉÏµÄ¹â£¬¶ø¼ä½Ó¹âÕÕÖ¸´ÓÆäËûÎïÌå±íÃæ·´Éä¶øÀ´µÄ¹â£©£¬Ä¬ÈÏÖµÊÇ1£¬ÒâË¼¾ÍÊÇËµÒ»ÕµRealtimeµÆ¹âÄ¬ÈÏÊÇÊ¹ÓÃÔ¤¼ÆËãGIµÄ£¬ËùÒÔ¿´ÆðÀ´ÄãºÃÏñÖ»Ê¹ÓÃÁËRealtimeµÄµÆ¹â£¬µ«ÊÇÕæÕýÔËÐÐµÄÊ±ºòÈ´ÆäÊµÊÇÔÚÊ¹ÓÃÈ«¾Ö¹âÕÕÏµÍ³£¡£¨¼ä½Ó¹âÕÕÍ¼£©
+1.Ô¤¼ÆËãÈ«¾Ö¹âÕÕ:Precomputed Realtime GI£¨Ô¤¼ÆËãÊµÊ±È«¾Ö¹âÕÕÃ÷£©£¬¼ò³Æ£ºÊµÊ±GI.Ò²ÐèÒªÔ¤ÏÈµÄBake¹ý³Ì,µ«²»Ô¤¼ÆËã³¡¾°ÖÐ¹âÏßµÄ·´ÉäÐÅÏ¢£¬¶øÊÇÔ¤¼ÆËã³¡¾°ÖÐ¾²Ì¬ÎïÌå±íÃæËùÓÐ¿ÉÄÜµÄ·´Éä¹âÂ·£¬È»ºóÔÚÓÎÏ·ÔËÐÐÊ±½áºÏµÆ¹âµÄÎ»ÖÃ¡¢·½ÏòµÈÐÅÏ¢ÊµÊ±¼ÆËã³öÈ«¾Ö¹âÕÕµÄ½á¹û¡£ 
+Ô¤¼ÆËãGIÐèÒªµÆ¹âÀàÐÍÊÇRealtime£¬Bounce IntensityÊÇÖ¸È«¾Ö¹âÕÕÖÐµÄ¼ä½Ó¹âÇ¿¶È£¬Ä¬ÈÏÖµÊÇ1£¬ÒâË¼¾ÍÊÇËµÒ»ÕµRealtimeµÆ¹âÄ¬ÈÏÊÇÊ¹ÓÃÔ¤¼ÆËãGIµÄ£¬ËùÒÔ¿´ÆðÀ´ÄãºÃÏñÖ»Ê¹ÓÃÁËRealtimeµÄµÆ¹â£¬µ«ÊÇÕæÕýÔËÐÐµÄÊ±ºòÈ´ÆäÊµÊÇÔÚÊ¹ÓÃÈ«¾Ö¹âÕÕÏµÍ³£¡£¨¼ä½Ó¹âÕÕÍ¼£©
 2.ºæ±ºÈ«¾Ö¹âÕÕ:Bake GI,ligtmapºæ±º·½Ê½ £¨Static Lightmap£©¾²Ì¬¹âÕÕÌùÍ¼
+
+¹¹³É £º ¿ÉÊµÊ±¸üÐÂµÄlightmap + ¿ÉÊµÊ±¸üÐÂµÄ¹âÕÕÌ½Í·£¨light probe£©+ ¿ÉÊµÊ±¸üÐÂµÄcubemap£¨Reflection probe£©
+ÊµÊ±È«¾Ö¹âÖ»ÊµÊ±¼ÆËãÎïÌåÖ®¼äµÄbounce light£¨ÎïÌåÖ®¼äÀ´»Ø·´ÉäµÄ¹â£©
+ÊµÊ±È«¾Ö¹âµÄÊµÏÖ£º¾²Ì¬ÎïÌåÖ®¼äµÄbounce light¿ÉÒÔÔÚÔ¤ÏÈ¼ÆËã½×¶Î¸ã¶¨£¨light map£©
+                  ±»¾²Ì¬ÎïÌå(×Ô·¢¹âÔÚÈ«¾Ö¹â¼ÆËãÖÐ¿ÉÒÔµ±×ö¹âÔ´£¬×Ô·¢¹âµÄÎïÌå±ØÐëÊÇ¾²Ì¬µÄ,±»Ó°ÏìµÄÒ²±ØÐëÊÇ¾²Ì¬µÄ£¬ºæ±º²ÅÓÐÐ§¹û)ÕÕÉäµ½µÄ¶¯Ì¬ÎïÌå£¬Í¨¹ýÊµÊ±¸üÐÂµÄ¹âÕÕÌ½Í·¸ã¶¨
+                  ±»¶¯Ì¬ÎïÌåÕÕÉäµ½µÄÎïÌå£¬»¹²»Ö§³Ö
+
 
 *×Ü½á* Unity 5ÖÐµÆ¹âÓÐ¸öÐÂÊôÐÔBounce Intensity£¬Õâ¸öÖµÖ»Òª´óÓÚ0ÏµÍ³¾Í»áÈÏÎªÄãÐèÒªÊ¹ÓÃÔ¤¼ÆËãGI¼ÆËãÕâ¸öµÆ¹â£¬¶øÈç¹û´ËÊ±Precomputed Realtime GIÃ»ÓÐ±»¹´Ñ¡£¬¶øBake GI¹´Ñ¡ÁËÄÇÃ´Unity»á°ÑÕâ¸öµÆ¹âÒ²ºæ±ºµ½lightmapÖÐÈ¥¡£
 
+£¨È«¾Ö¹âÕÕÀí½âÎªÖ±½Ó¹âÕÕÓë¼ä½Ó¹âÕÕÁ½²¿·Ö¡£Ö±½Ó¹âÕÕÖ¸Ö±½Ó´Ó¹âÔ´Éäµ½ÎïÌåÉÏµÄ¹â£¬¶ø¼ä½Ó¹âÕÕÖ¸´ÓÆäËûÎïÌå±íÃæ·´Éä¶øÀ´µÄ¹â£©£¬
 UnityµÄµÆÔ´(Ö±½Ó¹âÔ´, Í¶ÉäµÆ, µã¹âÔ´)¶¼ÊÇÊµÊ±µÄ£¬ÊµÊ±ÕÕÃ÷ÀïµÄ¹âÏß²»»á·´Éä£¨Ã»¹âÏßµÄµØ·½È«ºÚ£©
 È«¾Ö¹âÕÕÎª¼ä½Ó¹âÔ´£¨ºæÅà»áÔÚ³¡¾°Í¬¼¶Ä¿Â¼´´½¨Í¬ÃûÎÄ¼þ¼Ð´æ·ÅºæÅàÊý¾Ý£©
 
@@ -19,6 +28,28 @@ UnityµÄµÆÔ´(Ö±½Ó¹âÔ´, Í¶ÉäµÆ, µã¹âÔ´)¶¼ÊÇÊµÊ±µÄ£¬ÊµÊ±ÕÕÃ÷ÀïµÄ¹âÏß²»»á·´Éä£¨Ã»¹âÏ
 
 Ö»ÓÐ¾²Ì¬¶ÔÏó(LightMap Static)»á±»ÄÉÈëGIÔ¤¼ÆËã£¬ÒªÈÃÔ¤¼ÆËãÆô¶¯Ê×ÏÈ±ØÐë×îÉÙÒªÓÐÒ»¸ö¾²Ì¬¶ÔÏó
 
-UnityÓÐÁ½ÖÖÒõÓ°ÊµÏÖ·½Ê½£ººæÅàÒõÓ°ÓëÊµÊ±ÒõÓ°
+UnityÓÐÁ½ÖÖÒõÓ°ÊµÏÖ·½Ê½£ººæÅàÒõÓ°ÓëÊµÊ±ÒõÓ°¡¢
 ºæÅàÒõÓ°£ºÕæÊµ¹ý¶É£¬ÊÇÒ»ÖÖÀëÏß¼ÆËã£¬Ëü²ÉÓÃ¹âÏß×·×ÙËã·¨À´Ä£ÄâÏÖÊµÊÀ½çÖÐ¹âµÄÎïÀíÌØÐÔ£¬Èç·´Éä£¬ÕÛÉä¼°Ë¥¼õ£¬¹âÎÞ·¨µ½´ïµÄµØ·½½ÔÎªÒõÓ°£»µ«ÓÉÓÚÆä¼ÆËãÁ¿¾Þ´ó£¬ËùÒÔºæ±ºÏµÍ³ËæÖ®µ®Éú£¬Éú³É¼ÇÂ¼¹âÕÕÐÅÏ¢µÄLightmap£¬äÖÈ¾¾²Ì¬ÎïÌå£¬Shadow MappingäÖÈ¾¶¯Ì¬ÎïÌå¡£
 ÊµÊ±ÒõÓ°ÊÇÒ»ÖÖ¸ü¼Ó¾«¼òµÄÄ£Äâ£¬ËüºöÂÔµôÁË¹âµÄÖÚ¶àÎïÀíÌØÐÔ£¬ÀûÓÃÊýÑ§·½·¨ÈËÎªµØÈ¥ÖÆÔìÒõÓ°
+
+light type
+1.Area Light:Ãæ»ý¹âµÄ¹âÔ´ÓÐÐÎ×´£¬ÊÇÒ»¸ö¾ØÐÎÇøÓò£¬ÓÐÎ»ÖÃ£¬ÓÐ·½Ïò£¬·½ÏòÊÇ³¬¾ØÐÎµÄÒ»Ãæ£¬¾ØÐÎµÄ±³ÃæÃ»ÓÐ¹â£¬²¢ÇÒËæ¾àÀëË¥¼õÖ±µ½Ã»ÓÐ¡£
+ËüÓÃÓÚÄ£Äâ´óÁ¿µÄ¹âÔ´ºÍÔÚÒ»ÆðµÄÐ§¹û£¬Èç½ÖµÀ£¬µ«ÊÇÒòÎª¼ÆËã¸´ÔÓ£¬ËùÒÔÖ»ÓÃÓÚºæ±º
+
+1.Realtime¡± Õâ´ú±íÕâÐ©µÆ¹âÈÔÈ»»áÕÕÁÁÄãµÄ³¡¾°£¬UnityµÄÔ¤¼ÆËãGIÏµÍ³»á´¦Àí¼ä½Ó¹â¡£
+2.Baked¡± ÄÇÃ´ÕâÐ©µÆ¹â½«»áÍ¸¹ýUnityµÄºæ±ºGIÏµÍ³´¦ÀíÖ±½Ó¹âÔ´ºÍ¼ä½Ó¹âÔ´£¬²úÉú³öÀ´µÄ¹âÕÕÌùÍ¼Ò»µ©Ìùµ½³¡¾°ÉÏÔÚÖ´ÐÐÆÚ¼äÊÇ²»ÄÜ¸Ä±äµÄ¡£Èç¹ûÐèÒªÊµÏÖ¹âÕÕÌùÍ¼µÄÐ§¹û¾ÍÑ¡Ôñ´ËÄ£Ê½¡£
+3.Mixed¡± ³¡¾°ÄÚµÄ¾²Ì¬¶ÔÏó»á±»ºæ±ºGIÄÃÈ¥×ö¼ÆËã£¬È»¶ø£¬²»Ïñ¡±Baked¡±Ä£Ê½£¬»ìºÏÄ£Ê½µÄµÆ¹âÈÔ»á¼ÌÐøÔËËã¼´Ê±¹âÔ´µ½·Ç¾²Ì¬¶ÔÏóÉÏ£¬Õâ¶ÔÓÚÄãÏë°Ñ¾²Ì¬»·¾³ºæ³É¹âÕÕÌùÍ¼£¬µ«Í¬Ê±ÓÖÏ£ÍûÍ¬ÑùÒ»ÕµµÆÄÜÎª»á¶¯µÄ½ÇÉ«¼ÆËãÒõÓ°ºÜÓÐ°ïÖú¡£
+
+¾ßÌå²Ù×÷£¨Unity5 ÐÂ¹¦ÄÜ½âÎö--GI(È«¾Ö¹â)£©
+1ÀëÏßºæ±º: ½«lightµÄBakingÉèÎªBaked£¬±ê¼ÇÄÇÐ©staticµÄÎïÌå£¬ÔÚLighting windowÖÐµÄBaked GI¶ÔÓ¦µÄ¾ÍÊÇºæ±ºµÄÊµÊ±¹â£¬ËùÒÔÕâÊÇÒª°ÑPrecomputed Reatime GI¹Ø±Õ
+2ÊµÊ±
+   ½«lightµÄbakingÉèÎªrealtime£¬±ê¼ÇÄÇÐ©staticµÄÎïÌå£¬ÔÚlighting windowÖÐ½«Baked GI¹Ø±Õ£¬½«Precomputed Realtime GI¿ªÆô£¬
+   ×¢ÒâÄ¬ÈÏPrecomputed Realtime GIµÄresolution²¢²»¸ß£¬Èç¹ûÏëµÃµ½±È½Ï²»´íµÄÐ§¹û£¬¿ÉÒÔ½«Ëüµ÷¸ß¡£ÔÚÔËÐÐÊ±¾Í¿ÉÒÔ¿´µ½ÊµÊ±µÄGIÐ§¹û
+3 ºæ±ºGI¼ÓÊµÊ±µÄ¾Ö²¿¹âÕÕ: Õâ¿ÉÄÜÊÇ¸ü¼ÓÖ÷ÒªµÄ×ö·¨£¬¼´staticµÄÎï¼þ²ÉÓÃÀëÏßµÄºæ±ºGI£¬¶ø·ÇstaticµÄÎï¼þÊ¹ÓÃÊµÊ±µÄ¾Ö²¿¹âÕÕ£¬
+                          ÕâÐèÒª½«lightµ÷Îªmixed£¬È»ºó½«lightmapÀïÃæ¿ªÆôbaked gi£¬¶ø½«realtime gi ¹Ø±Õ¡£
+4 ºæ±ºµÄGIµþ¼ÓÊµÊ±µÄGI£¬ÕâÖÖ×ö·¨»ù±¾Ã»Ê²Ã´ºÃ´¦£¬¶øÇÒÐ§ÂÊÒ²ºÜµÍ£¬ÕâÖÖ×éºÏÊÇ½«lightÉèÎªmixed£¬È»ºó½«light settingÀïÃæµÄbaked giºÍ relatime giÈ«¿ªÆô
+
+
+light µÄ RenderMode£º
+1.important¶ÔÓ¦µÄ¾ÍÊÇÏñËØ¹â£¬·Çimportant¾ÍÊÇ¶¥µã¹â£¬¶øauto¾Í°´ÕÕgraphic qualityÀïÃæµÄÉèÖÃ
+2.

@@ -177,3 +177,25 @@ SurfaceOutput sÕâ¸ö¾ÍÊÇ¾­¹ı±íÃæ¼ÆËãº¯Êısurf´¦ÀíºóµÄÊä³ö£¬ÎÒÃÇ½²¶ÔÆäÉÏµÄµã¸ù¾İ¹âÏ
 
 float difLight = dot (s.Normal, lightDir);
 difLight = difLight * 0.5 + 0.5;  //Ô­À´¹âÇ¿0µÄµã£¬ÏÖÔÚ¶ÔÓ¦µÄÖµ±äÎªÁË0.5£¬¶øÔ­À´ÊÇ1µÄµØ·½ÏÖÔÚ½«±£³ÖÎª1£¬°µ²¿±»ÔöÇ¿±äÁÁÁË£¬¶øÁÁ²¿»ù±¾±£³ÖºÍÔ­À´Ò»Ñù£¬·ÀÖ¹¹ıÆØ
+
+
+ÊµÀı»¯shader:
+outlineShaderMaterial = new Material(outlineShader); //Ê¹ÓÃShaderÀ´Ö´ĞĞ¶Ô»­ÃæÍ¼ÏñµÄÏñËØ²Ù×÷£¬ËùÒÔÎÒÃÇĞèÒª´´½¨Ò»¸ö²ÄÖÊÀ´ÔËĞĞShader
+outlineShaderMaterial.hideFlags = HideFlags.HideAndDontSave;
+
+RenderTexture extraRenderTexture = new RenderTexture(sourceCamera.pixelWidth, sourceCamera.pixelHeight, 16, RenderTextureFormat.Default);
+
+void OnRenderImage(RenderTexture source, RenderTexture destination)
+{
+	Graphics.Blit(source, extraRenderTexture, outlineShaderMaterial, 0);
+	outlineShaderMaterial.SetTexture("_OutlineSource", extraRenderTexture);
+	Graphics.Blit(source, destination, outlineShaderMaterial, 1);
+}
+
+//º¯Êı¸ºÔğ´ÓUnityäÖÈ¾Æ÷ÖĞ×¥È¡µ±Ç°µÄrender texture£¬È»ºóÊ¹ÓÃGraphics.Blit()º¯ÊıÔÙ´«µİ¸øShader£¨Í¨¹ısource²ÎÊı£©£¬
+È»ºóÔÙ·µ»ØÒ»¸ö´¦ÀíºóµÄÍ¼ÏñÔÙ´Î´«µİ»Ø¸øUnityäÖÈ¾Æ÷£¨Í¨¹ıdestination²ÎÊı£©¡£
+
+//Ò»¶¨Ïú»Ù
+extraRenderTexture.Release();
+DestroyImmediate(outlineShaderMaterial);
+outlineShaderMaterial = null;

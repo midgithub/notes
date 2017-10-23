@@ -42,7 +42,17 @@ using System.Runtime.InteropServices;
    
 private static extern int addTest(int a,int b);
 
-3.jar()  //快捷：alt+enter 导入相关包
+3.调用iOS的*.a库
+在xcode 中生成*.a时同时生成该库的*.h文件,将*.a 和 *.h复制到iOS文件夹中
+ [DllImport("__Internal")]
+ private static extern void _startup ();//为*.a中的C方法
+
+4.调用安卓的*.so库
+ [DllImport ("game")]  //省略掉lib前缀和.so 后缀
+  private static extern int AddNum(int a,int b);
+
+
+5.jar()  //快捷：alt+enter 导入相关包
 a.new project Jar2Unity sen.com Empty Activity
 b.File -> New -> New Module -> 选择 Android Library(InterfaceUnity),
 把app 和InterfaceUnity src 下test 删除，app/src/main/res/ layout下的activity_main.xml删掉，目前不需要这个布局文件 

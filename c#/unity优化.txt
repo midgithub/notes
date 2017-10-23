@@ -23,6 +23,7 @@ UI一般影响GPU的因素包括：
 多张UI图片可以打包在一起(将同一图集的所有图片的packing tag设置成一个名子可减少batches）
 保存在和Assets文件夹同级的目录，Libary/AtlasCache里面。注意你的图片不能放在Resources文件夹下面，Resources文件夹下的资源将不会被打入图集)
 
+PNG相比于JPEG的有损压缩，它的压缩是无损的；它虽然对于Alpha透明的处理不像TGA那么出色，但是它既压缩文件同时又能保证足够好的Alpha映射
 
 尽量少的使用反光阴影啦之类的，因为那会使物体多次渲染。
 
