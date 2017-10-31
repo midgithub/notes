@@ -3,6 +3,12 @@ void Tick()
 Çå³ýLuaµÄÎ´ÊÖ¶¯ÊÍ·ÅµÄLuaBase£¨±ÈÈç£¬LuaTable£¬ LuaFunction£©£¬ÒÔ¼°ÆäËüÒ»Ð©ÊÂÇé¡£
 ÔÚUpdateÖÐÐèÒª¶¨ÆÚµ÷ÓÃ£¨1s£©¡£
 
+LuaCallCSharp£ºluaµ÷ÓÃc#£¬Éú³ÉÊÊÅä´úÂë
+²»ÒªÔÚÀà´òÒ»¸öLuaCallCSharp±êÇ©£¬¸Ã·½Ê½·½±ã£¬µ«ÔÚil2cppÏÂ»áÔö¼Ó²»ÉÙµÄ´úÂëÁ¿£¬²»½¨ÒéÊ¹ÓÃ¡££¨Ê¹ÓÃ¾²Ì¬ÁÐ±í£©
+
+xLua¸´ÔÓÖµÀàÐÍ£¨struct£©µÄÄ¬ÈÏ´«µÝ·½Ê½ÊÇÒýÓÃ´«µÝ£¬ÕâÖÖ·½Ê½ÒªÇóÏÈ¶ÔÖµÀàÐÍboxing£¬´«µÝ¸ølua£¬luaÊ¹ÓÃºóÊÍ·Å¸ÃÒýÓÃ¡£
+ÓÉÓÚÖµÀàÐÍÃ¿´Îboxing½«²úÉúÒ»¸öÐÂ¶ÔÏó£¬µ±lua²àÊ¹ÓÃÍê±ÏÊÍ·Å¸Ã¶ÔÏóµÄÒýÓÃÊ±£¬Ôò²úÉúÒ»´Îgc£¨¿´gcÓÅ»¯Ö¸ÄÏ£©
+
 DoString("require 'byfile'") //DoString("xxx"),Ä¬ÈÏ¼ÓÔØµÄ·ÅÔÚ Global »·¾³ÏÂ£¬ºó¼ÓÔØµÄ»áÌæ»»Ö®Ç°µÄ
 requireÊµ¼ÊÉÏÊÇµ÷Ò»¸ö¸öµÄloaderÈ¥¼ÓÔØ£¬ÓÐÒ»¸ö³É¹¦¾Í²»ÔÙÍùÏÂ³¢ÊÔ£¬È«Ê§°ÜÔò±¨ÎÄ¼þÕÒ²»µ½
 ·ÅResourcesÏÂµÄluaÎÄ¼þµÃ¼ÓÉÏtxtºó×º
@@ -51,7 +57,7 @@ Action luaAwake = scriptEnv.Get<Action>("awake"); //¿ÉÒÔÖ¸¶¨·µ»ØÀàÐÍ
 scriptEnv.Get("start", out luaStart);   //»ñÈ¡ lua º¯Êý£¨local ÀàÐÍµÄ²»ÄÜ»ñÈ¡µ½£© ÔÚ¸Ã½Å±¾Àïµ÷ÓÃ
 
 
-C#·ÃÎÊLua£º
+C#·ÃÎÊLua£ºÍ¨¹ýLuaTable set/get lua½Å±¾±äÁ¿»òº¯Êý
 Ò»¡¢»ñÈ¡Ò»¸öÈ«¾Ö»ù±¾Êý¾ÝÀàÐÍ
 luaenv.Global.Get<int>("a")
 
@@ -76,7 +82,7 @@ luaµÄ¶à·µ»ØÖµÓ³Éä£º´Ó×óÍùÓÒÓ³Éäµ½c#µÄÊä³ö²ÎÊý£¬Êä³ö²ÎÊý°üÀ¨·µ»ØÖµ£¬out²ÎÊý£¬ref²
 LuaFunctionÉÏÓÐ¸ö±ä²ÎµÄCallº¯Êý£¬¿ÉÒÔ´«ÈÎÒâÀàÐÍÈÎÒâ¸öÊýµÄ²ÎÊý£¬·µ»ØÖµÊÇobjectµÄÊý×é£¬¶ÔÓ¦ÓÚluaµÄ¶à·µ»ØÖµ
 
 
-Luaµ÷ÓÃC# ¾²Ì¬·½·¨ÓÃ. Àà³ÉÔ±·½·¨ÓÃ£º
+Luaµ÷ÓÃC# ¾²Ì¬·½·¨ÓÃ. Àà³ÉÔ±·½·¨ÓÃ£º£¨LuaCallCSharp Éú³Éc#ÊÊÅä´úÂë£¬·ÅÔÚCS¿Õ¼ä£©
 local newGameObj = CS.UnityEngine.GameObject()
 CS.UnityEngine.Time.timeScale = 0.5
 local GameObject = CS.UnityEngine.GameObject
@@ -121,9 +127,13 @@ coroutine.resume(co)
 
 
 hotfix:
+1.²»Ö§³Ö¾²Ì¬¹¹Ôìº¯Êý¡£
+2.²»Ö§³ÖÔÚ×ÓÀàoverrideº¯ÊýÍ¨¹ýbaseµ÷ÓÃ¸¸ÀàÊµÏÖ¡£
+3.Ä¿Ç°Ö»Ö§³ÖAssetsÏÂ´úÂëµÄÈÈ²¹¶¡£¬²»Ö§³ÖÒýÇæ£¬c#ÏµÍ³¿âµÄÈÈ²¹¶¡
+
 public int tick = 0; //Èç¹ûÊÇprivateµÄ£¬ÔÚluaÉèÖÃxlua.private_accessible(CS.HotfixTest)ºó¼´¿É·ÃÎÊ
 
-HotfixFlag.Stateless(Ä¬ÈÏ,¿ÉÒÔÔËÐÐµÄÈÎÒâÊ±¿ÌÖ´ÐÐº¯ÊýÌæ»»)
+HotfixFlag.Stateless(Ä¬ÈÏ,¿ÉÒÔÔËÐÐµÄÈÎÒâÊ±¿ÌÖ´ÐÐº¯ÊýÌæ»»,ÊÊºÏÎÞ×´Ì¬µÄÀà£¬ÓÐ×´Ì¬µÄ»°£¬ÄãµÃÍ¨¹ý·´ÉäÈ¥²Ù×÷Ë½ÓÐ³ÉÔ±£¬Ò²Ã»·¨ÐÂÔö×´Ì¬£¨field£©)
 xlua.hotfix(CS.HotfixCalc, 'Add', function(self, a, b)
    return a + b
 end)
