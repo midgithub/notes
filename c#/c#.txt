@@ -43,6 +43,12 @@ Hashtable 和 Dictionary <K, V> 类型
 
 HashTable的优点就在于其索引的方式，速度非常快。如果以任意类型键值访问其中元素会快于其他集合，特别是当数据量特别大的时候，应用场合有：做对象缓存，树递归算法的替代，和各种需提升效率的场合。
 
+HashSet<T> 和 List<T>  空间复杂度：内存块数量
+List<T>里面是线序集，空间复杂度O(1)，contains查找时间还是O(n)（重头查到尾）
+HashSet<T>里面是散列表，无序不重，空间复杂度O(n)，contains查找时间还是O(1)（查找根据对象的Hash值直接定位）
+
+ArrayList不是类型安全的,插入值类型时会发生装箱操作,造成性能问题
+
 try
 {
    int result = 10/ 0; // 引起异常的语句
@@ -74,13 +80,13 @@ Func<函数参数类型, 函数返回类型> getType = (x) =>
 public 类名(double l, double w) : base(l, w)
 { }
 与父类同名函数可以
-public void Display()
+public void Display()  //重写父类方法
 {
    base.Display();
    //anyting
 }
 
-1.静态多态性 函数名相同 参数不同
+1.静态多态性 函数名相同 参数不同  //重载方法
 void print(int i){}
 void print(double f){}
 

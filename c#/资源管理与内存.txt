@@ -31,6 +31,8 @@ Resources.UnloadUnusedAssets() 没被引用的Assets都会被释放
 
 在new WWW(url)的时候，会开辟一块内存存储解压后的Bundle，而在资源被Load出来之后，又会开辟一块内存来存储Asset资源，WWW.LoadFromCacheOrDownload(url)的功能和new WWW(url)一样，但LoadFromCacheOrDownload是将Bundle解压到磁盘空间而不是内存中，所以LoadFromCacheOrDownload返回的WWW对象，本身并不会占用过多的内存（只是一些索引信息，每个资源对应的磁盘路径，在Load时从磁盘取出），针对手机上内存较小的情况，使用WWW.LoadFromCacheOrDownload代替new WWW可以有效地节省内存
 
+assetBundle.Load如果多次加载相同的资源，除第一次，其它都会返回第一次的对象。Resources.load也一样
+
 打包策略：（手动加载包也需手动卸载保证各资源包引用计数正确）
 1.场景也会依赖包，退出时也要删除，所以一个场景要一个包，切换场景要异步加载场景，
   可以考虑用固定loading场景来做场景切换，但是还会有卡顿是因为进场景加载完资源后显卡要准备绘制工作，这是无法更改的，优化有物体先隐藏后显示等策略
@@ -43,7 +45,7 @@ Resources.UnloadUnusedAssets() 没被引用的Assets都会被释放
 注意点：
 0.其它预设里最好不要有模型，可以代码加载模型预设，如果一定要，导入的模型也要单独打个包，避免造成内存两份
 1.加载资源时要确保所依赖的资源所在的bd已经被加载，这时所依赖资源会自动从包里加载出来引用
-2.AssetBundle.Unload(true)不单会释放文件内存镜像，还会释放AssetBundle.Load创建的Assets，场景切换不会自动释放内存镜像和load出来的对象（指针不为空,Texture2D/Texture对象 先要用Resources.UnloadAsset(texture)释放，再Resources.Load的对象指针置为空LoadObjs[i] = null）,只会释放Instantiate对象（指针为空）
+2.AssetBundle.Unload(true)不单会释放文件内存镜像，还会释放AssetBundle.Load创建的Assets，场景切换不会自动释放内存镜像和load出来的对象（指针不为空,Texture2D/Texture对象 先要用Resources.UnloadAsset(texture)释放，再将Resources.Load的对象和ab加载出来的prefab指针置为空：LoadObjs[i] = null）,只会释放Instantiate对象（指针为空）
 3.压缩后打出来的包大小跟包里的资源有关
 4.无被引用的资源不在特殊文件夹下 build时不会被加载
 5.场景里不要有Ui,如果一定要有，该UI不要拉预设打包（这时应该不会再手动pushlayer）
