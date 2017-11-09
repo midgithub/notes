@@ -13,8 +13,9 @@ UnityÔÚÃ¿Ö¡×öµÄ¹¤×÷¾ÍÊÇ£ºµ÷ÓÃ Ğ­³Ì£¨µü´úÆ÷£©MoveNext() ·½·¨£¬ÒÆµ½¼¯ºÏµÄÏÂÒ»¸öÔªË
 Ğ­³ÌµÄÔËĞĞÈ·ÊµÊÇÔÚLateUpdateÖ®ºó
 MonoBehaviour.enabled = false Ğ­³Ì»áÕÕ³£ÔËĞĞ£¬µ« gameObject.SetActive(false) ºóĞ­³ÌÈ´È«²¿Í£Ö¹£¬¼´Ê¹ÔÚInspector°Ñ  gameObject ¼¤»î»¹ÊÇÃ»ÓĞ¼ÌĞø
 Ğ­³Ìº¯ÊıµÄµØÎ»ÍêÈ«ÊÇ¸úMonoBehaviourÊÇÒ»¸ö²ã´ÎµÄ£¬²»ÊÜMonoBehaviourµÄ×´Ì¬Ó°Ïì£¬µ«¸úMonoBehaviour½Å±¾Ò»ÑùÊÜgameObject ¿ØÖÆÖ´ĞĞ£º
-Èç¹ûÊÇInvoke £¬ÄÇÃ´gameObject.SetActive(false) ºóÒ²»á¼ÌĞøÖ´ĞĞ
+Èç¹ûÊÇInvoke £¬ÄÇÃ´gameObject.SetActive(false) ºóÒ²»á¼ÌĞøÖ´ĞĞ,
 Invoke ÊÜTime.timeScaleÓ°Ïì
+×îºÃ²»ÒªÊ¹ÓÃ¡°Invoke¡±ºÍ¡°SendMessage¡±£¬ĞÔÄÜÎÊÌâ
 
 yield ºóÃæ¿ÉÒÔÓĞµÄ±í´ïÊ½£º
 a) null  the coroutine executes the next time that it is eligible

@@ -3,6 +3,10 @@ unity 渲染顺序:
 2.Canvas 以Camera模式:不同Camera的Depth(大的渲染最上面,一样大的先加载先渲染),同Camera的soringLayer(大的渲染最上面),同sortingLayer下面的 order in layer(大的渲染最上面)
 3.Camera如果使用target texture，那拍到的就不会显示在ui上而是把拍到的赋给texture，而这个texture可以赋给rawImage组件显示在ui上
 (depth only下:只按该相机depth先后绘制，不管远近。dont clear下:不管相机depth,同种相机下,按到所属相机远近先后绘制。不同相机下先绘制正交相机再绘制透视相机。skybox和solid color同depth only只是背景不一样)
+4.World Space 这个就是完全3D的UI
+
+适配方案如下：1. Canvas 选择 Screen Space-Camera 模式；2. Camera 设置成正交模式；3. Canvas Scaler 选择 Scale With Screen Size, 
+Screen Match Mode 选择 Match Width Or Height，比例设为1，即只和高度进行适配；4. Camera 的 Clear Flags 选择 Depth Only。
 
 Unity预编译：
 1.在Standard Assets, Pro Standard Assets, Plugins中的脚本被首先编译
