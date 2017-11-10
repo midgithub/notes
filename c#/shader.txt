@@ -12,6 +12,11 @@ Shader: 是一段规定好输入（颜色，贴图等）和输出（渲染器能够读懂的点和颜色的对应关
 
 Shader就是材质模版。 Material就是一个材质实例。 每一个Material你可以认为是一个材质实例的序列化存储
 
+<Renderer>().material 和 <Renderer>().sharedMaterial（不推荐使用sharedMaterial，建议使用material。）
+1.对于material，每一次引用就会生成一个新的material到内存中。多个物体的相同材质间不会影响，但是会内存泄漏，可以通过Resources.UnloadUnusedAssets释放。但是在引用后并不会改变我们项目工程中材质球的原始属性设置。 
+2.而对于sharedMaterial，所有使用这个材质球物体都会被改变，并且改变后的设置将会改变我们项目工程中材质球的原始属性设置
+3.如果我们先改变了material，表示生成了一个新的material在内存中，此时再使用sharedMaterial对新的material并不起作用。
+
 内置着色器:
                                                         Bumped凸起的        Parallax Bumped视差凸起 
       (VertexLit顶点光亮  diffuse漫反射  glossy光滑) (diffuse  specular镜面) (diffuse specular)

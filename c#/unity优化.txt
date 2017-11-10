@@ -1,13 +1,15 @@
 包括 CPU,GPU,内外存
-GPU消耗是性能优化的重中之重。
+
+CPU中的计算主要是在蒙皮骨骼计算，布料模拟，顶点动画，粒子模拟等
+GPU则在各种顶点变换、光照、贴图混合等
 
 UI一般影响CPU的因素包括：
   界面结构复杂度
   界面结构变化频率
   动画复杂度
 
-UI一般影响GPU的因素包括：
-  绘制次数（batches(即drawcall)不要超过300，面数控制在10w,使用同一材质球 saced by batching 会加1，表示
+UI一般影响GPU的因素包括：(同屏30w，dc150,2000手机60帧无压力)
+  绘制次数（batches(即drawcall)不要超过300，同屏面数控制在30w,使用同一材质球 saced by batching 会加1，表示
   图片最终在屏幕所展现的面积
   图片是否透明
   shader的复杂度
@@ -17,8 +19,11 @@ UI一般影响GPU的因素包括：
   图片数目
   图片的分辨率大小
   图片是否压缩
-另外，优化了外存，内存往往也会从中受益
-。
+
+1.武器面数 武器模型控制在150个三角面，187个顶点以内。贴图控制在1张，最大256*256，最好128*128。
+2.场景面数场景（地形、建筑、其他装饰物）面数控制在10000面左右，贴图控制在最多2张512*512。
+3.主角面数 主角模型控制在900-1300个三角面。贴图控制在1张，最好256×256，最多512×512。
+4.小怪面数 小怪模型控制在600-900个三角面（以最终导入unity3d中的三角面数量为准）。贴图控制在1张，最大256×256。
 
 多张UI图片可以打包在一起(将同一图集的所有图片的packing tag设置成一个名子可减少batches）
 保存在和Assets文件夹同级的目录，Libary/AtlasCache里面。注意你的图片不能放在Resources文件夹下面，Resources文件夹下的资源将不会被打入图集)
@@ -43,6 +48,8 @@ TexturePacker预先生成好正方形的IOS PVRTC4图集和非正方形的Android ETC1图集
 有些GUP不支持NPOT，遇到NPOT会有一个转换POT的过程，浪费性能
 
 在项目中，尽可能是使用ETC1和PVRTV4等GPU直接支持的图片格式，不仅内存占用低、性能也更好
+1. 更新不透明贴图的压缩格式为ETC 4bit，因为android市场的手机中的GPU有多种，每家的GPU支持不同的压缩格式，但他们都兼容ETC格式，
+2. 对于透明贴图，我们只能选择RGBA 16bit 或者RGBA 32bit。
 
 尽量少的使用反光阴影啦之类的，因为那会使物体多次渲染。
 
@@ -55,10 +62,11 @@ TexturePacker预先生成好正方形的IOS PVRTC4图集和非正方形的Android ETC1图集
 6.图片设置面板 Generate Mip Maps 不要打勾。其会为同一张纹理创建出很多不同大小的小纹理，构成一个纹理金字塔。而在游戏中可以根据距离物体的远近，来动态选择使用哪一个纹理
 7.如地板 物体设为static
 8.update里面避免GameObject.FindWithTag("")、GetComponent这样的调用，可以预先存起来
-9.背景音乐：取消Preload Audio Data（预加载音频数据）选项。然后把Override for Android选项勾上，并且设置Load Type为Streaming（音频剪辑将放入缓存区中，并且从缓存区中播放，一旦播放完载掉）。使用.ogg或.mp3的压缩格式
-音效：Load Type设置为Decompress on Load加载的时候进行解压缩，使用.wav和.aif的未压缩音频格式。
 
-10. 减少FPS，在ProjectSetting-> Quality中的
+9.背景音乐(使用.ogg或.mp3的压缩格式)：取消Preload Audio Data（预加载音频数据）选项。然后把Override for Android选项勾上，并且设置Load Type为Streaming（音频剪辑将放入缓存区中，并且从缓存区中播放，一旦播放完载掉）。使用.ogg或.mp3的压缩格式
+音效(使用.wav和.aif的未压缩音频格式)：Load Type设置为Decompress on Load加载的时候进行解压缩，使用.wav和.aif的未压缩音频格式。
+
+10. 减少FPS，在ProjectSetting-> Quality中的  省电，减少手机发热的情况；
 VSync Count 参数会影响你的FPS，EveryVBlank相当于FPS=60，EverySecondVBlank = 30；
 这两种情况都不符合游戏的FPS的话，我们需要手动调整FPS，首先关闭垂直同步这个功能，然后在代码的Awake方法里手动设置FPS（Application.targetFrameRate = 45;）
 
@@ -76,7 +84,7 @@ Static Batching:
 unity尽可能多的网格结合到一个静态网格中，将其作为一个drawcall 提交，所以可能会 增加内存
 
 Dynamic Batching
-条件：1.网格少于900个顶点
+条件：1.网格少于900个顶点于（于mesh粒子来说是300个限制）
       2.不能镜像了（-1,1,1）
       3.同一材质，完全光照贴图的位置
       4.不使用Multi-pass着色器的情况（）	
@@ -84,3 +92,8 @@ Dynamic Batching
 GPU Instancing
  条件：1.相同网格,允许每个实例拥有各自的数据集，包括位置，旋转和颜色。
        2.勾选材质设置上的“Enable Instancing”复选框
+
+13.代码优化
+1.GetComponent<>(); 使用范型，不在update或循环中一直调用
+2.不用gameObject.transform的形式访问组件，可以缓存gameObject上transform组件的引用再用
+3.不要直接用类似gameObject.rigidbody，Rigidbody组件不存在时开销很大，用GetComponent做rigidbody缓存
