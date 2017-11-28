@@ -74,3 +74,16 @@ Carve模式的一些总结：
 2.代码逻辑判断，当对象到达目标位置时 就先设置NavMeshAgent不启用，NavMeshObstacle为启用，
 这样后面跟上来的 怪或兵就会自动判断到前面有阻挡物 自动避让 重新寻找新的位置
 3.当 重新选择目标时，逻辑代码编写NavMeshObstacle先不启用，然后设置NavMeshAgent启用，设置新的目的地就可以了
+
+5.6新导航
+1.NavMeshSurface：烘焙世界中哪部分应该被bake成NavMesh，agent可以走的区域，不同类型的agent分别烘焙
+（该组件可以不需要设置物体Navigition static的静态属性）
+Default Area: 默认生成区域类型Walkable. not walkable时如果agent在该区域，导航报错没有可走的navmesh
+Override Tile Size:在障碍物多的时候，可以将块减小以提升运行效率。或者打算实时bake的时候，可以用更小的Tile Size来降低内存消耗 
+2.NavMesh Modifier：对一些要用来被NavMeshSurface组件bake的物体进行微调（如小区域设置为不可走），作用效果包括其下的所有子物体
+3.NavMesh Modifier Volume：与NavMesh Modifier差不多，作用于对体积盒包围的所有物体（或物体的部分）
+4.nav mesh link:连接两个不相连的同类型的navmesh，agent可以通过该桥梁两端进入对方
+Bidirectional：勾上时线的方向为双向，没勾时只能start-to-end单向
+
+a.LocalNavMeshBuilder:动态生成更新在其立方盒里标记为NavMeshSourceTag组件的物体组合的navmesh（AI.NavMeshBuilder，AI.NavMeshBuildSource）
+b.NavMeshSourceTag:新物体要动态产生navmesh需挂载该脚本

@@ -8,6 +8,25 @@ unity 渲染顺序:
 适配方案如下：1. Canvas 选择 Screen Space-Camera 模式；2. Camera 设置成正交模式；3. Canvas Scaler 选择 Scale With Screen Size, 
 Screen Match Mode 选择 Match Width Or Height，比例设为1，即只和高度进行适配；4. Camera 的 Clear Flags 选择 Depth Only。
 
+CommandBuffer:给一个摄像机添加命令（相机的兼职工作），可以完成需要N个摄像机才能做到的工作。
+
+Render Path: 渲染路径,主要影响灯光和阴影
+1.Forward:正向渲染,所有对象每材质渲染只渲染一次,支持逐像素计算光照（包括法线贴图和灯光Cookies）和来自一个平行光的实时阴影
+（默认设置中，少数最亮的灯光在逐像素计算光照模式下渲染。其余的灯光计算对象顶点的光照。）
+2.Deferred ：延迟照明:所有物体将在无光照的环境渲染一次，然后在渲染队列尾部将物体的光照一起渲染出来。
+（延时光照是有着最高保真度的光照和阴影的渲染路径。如果很多实时灯光，最好是使用延时光照。它仅在 Unity Pro可用，移动设备上不支持。）
+3.Vertex Lit 顶点光照：最低保真度的光照、不支持实时阴影的渲染路径。最好是用于旧机器或受限制的移动平台上。
+
+light Render Mode:
+1.Auto 自动：为桌面构建目标渲染的方法是根据附近的灯光的亮度和当前的质量设置（ Quality Settings）在运行时确定。
+2.Important 重要：灯光是逐个像素渲染。只用在一些非常重要的效果(比如玩家的车的车头灯)。
+3.Not Important 不重要：灯光总是以最快的速度渲染。顶点/对象光模式
+
+light 灯光有两种渲染方式:
+1.顶点（vertex ）光照:只计算游戏模型的顶点照明和通过插值计算得出模型表面所有光线
+2.像素（pixel ）光照:实现一些顶点光照不能实现的效果。正规映射（Normal-mapping），灯光cookies（light cookies） 和实时阴影（realtime shadows）只能由像素光照渲染。
+                    性能开销大，Unity将只在少数最亮的光逐个像素渲染
+
 Unity预编译：
 1.在Standard Assets, Pro Standard Assets, Plugins中的脚本被首先编译
 2.上面文件夹/Editor脚本被编译

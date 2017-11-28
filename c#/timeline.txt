@@ -1,0 +1,46 @@
+timeline由Playable Director组件驱动
+PlayableAsset：即Timeline资源
+PlayableGraph：混合和修改多个数据源，合成为单一输出后播放 。playableGraph是TimeLine运行时才会创建生存，否则为空
+Playable：
+
+Playable仅作为容器，而PlayableBehaviour则是节点的内容
+track上的clip需继承于PlayableAsset
+
+Playable Director：
+1.playable:即创建好的Timeline资源
+2.Initial Time: 从Timeline哪一时间开始播放，单位秒
+3.Wrap mode: 
+a. none:播放完停在Initial Time那一帧 
+b. hole:播放完停在最后一帧
+c. loop:播放完重第一帧重新播放，而不是在Initial Time那一帧
+4.Bindings:对应的Timeline里用到的gameobject
+
+Timeline： 
+
+1.Activation Track: 用于控制gameobject显示隐藏，Activation clip 时显示，可调整clip起止时间，post_playback state:Wrap mode为none时播完的状态
+2.Animation Track:带有Animator组件的物体,Controller可为空，因为不需要动画控制器中的动画状态，而用现在编辑的
+*可调整Animation clip起止时间和速度，超出Animation长度的将停留在该Animation最后一帧，也可只播其中部分(不一定从Animation第一帧播放)
+*add override Track:覆盖轨道,作用是在这个时间段内优先播放该轨道的动作
+*支持关键帧动画的编辑并导出到Animation Clip
+
+3.Audio Track: 带有Audio Source组件的物体,clip同上
+4.Control Track: 用于控制粒子，或者另一个Timeline对象的播放，clip可为PlayableAsset脚本类型
+5.Playable：用于自定义的播放行为
+
+6.Cinemachine：跟踪功能，自由视角，轨道相机等
+Body:1.Tracked Dolly使用路径 2.Transposer:Follow不为空时,跟随
+
+CinemachineCollider：分析目标障碍、最优目标距离和其他项目的场景，并将他们的拍摄质量评估报告给被清除的父母（看CinemachineClearShot脚本介绍）
+Priority:大的优先使用
+
+a.Cinemachine Brain:虚拟相机大脑，创建VC的时候自动挂载主相机，可自定义切换不同VC是的混合效果
+b.Cinemachine VC：虚拟相机，Cinemachine轨道可混合两个VC，控制不同时间不同的视角，Follow指定目标，即使没用到该VC，也会跟随目标
+c.Cinemachine Path:路径，VC可指定Body(Tracked Dolly模式)的path,通过Animation Track可编辑VC按该路径行走（path positon），或VC Follow CinemachineDollyCart目标，就可按path行走
+d.CM ClearShot：需要CinemachineCollider，指定一组VC或Free look，如果子相机有CinemachineCollider，会自动报告拍摄质量评估给CinemachineClearShot。
+ 所以可以选择最佳VC达到最佳镜头效果,质量评估一样的按照指定优先级。 可设置或自己创建指定不同镜头切换时的混合效果
+e.CM StateDrivenCamera1:需要CinemachineCollider，指定一组VC或Free look,需先指定Animator对象，后可根据状态机状态使用不同相机
+**（当Priority一样时可代码切换使用CM ClearShot或CM StateDrivenCamera1（都继承于CinemachineVirtualCameraBase），baseCam.MoveToTopOfPrioritySubqueue()）;
+f.CM BlendListCamera1:作为CM ClearShot相机组一员，切换到该镜头时自动播放按顺序混合其相机组的过程动作到最后一个VC的镜头。
+g.CinemachineDollyCart: 根据路径Cinemachine Path按指定速度行走
+h.CinemachineTargetGroup: VC look at 的目标组，根据成员的权重和半径计算目标点
+i.CM MixingCamera: 调整每个其组VC的权重调整镜头效果

@@ -38,6 +38,11 @@ Has Exit Time ¾ÍÊÇ±ØÐë¹ý¶ÈµÄÊ±¼ä£¬´¦ÓÚÕâ¸öÊ±¼äÊ±£¬ÊÇ²»ÔÊÐíÈÎºÎ¶Ô¶¯»­µÄ²Ù×÷µÄ,ÔÚ¶
 µ±ÎÒµ±Ç°µÄ¶¯»­²¥·ÅÍê±Ïºó¾Í×Ô¶¯×ª»»µ½¼ýÍ·ËùÖ¸µÄÏÂÒ»¸ö×´Ì¬£¨Ã»ÓÐÆäËûÌø×ªÌõ¼þ£©£¬´ËÊ±±ØÐë¹´Ñ¡¸ÃÑ¡Ïî£¬
 ·ñÔò¶¯»­²¥·ÅÍê±Ïºó¾Í»á¿¨ÔÚ×îºóÒ»Ö¡£¬Èç¹ûÊÇÑ­»·¶¯»­¾Í»áÒ»Ö±Ñ­»·²¥·Å¡£
 
+Has Exit Time´ò¹³Ê±ÒÔÏÂ²ÎÊýÓÐÒâÒå
+Exit Time:¿ªÊ¼¶¯»­»ìºÏ¹ý¶ÈÔÚµ±Ç°¶¯»­µÄ°Ù·Ö±È
+fixed duration£¨»ìºÏ¹ý¶É³¤¶È£©£ºÎ´Ñ¡ÖÐ:Transition Duration°´°Ù·Ö±È Ñ¡ÖÐ£ºTransition Duration°´Ê±¼ä
+Transition Offset:ÏÂÒ»¸ö¶¯»­°Ù·Ö±ÈÎ»ÖÃ¿ªÊ¼»ìºÏ£¨´óÓÚ0£©
+
 Write Defaults£º¶¯»­²¥·ÅÍê±ÏºóÊÇ·ñ½«×´Ì¬ÖØÖÃÎªÄ¬ÈÏ×´Ì¬
 
 Solo£º¹´Ñ¡±íÊ¾µ±Ç°¹ý¶ÉÎªÎ¨Ò»¹ý¶É£¬¼´µ±Ç°×´Ì¬Ö»ÄÜ¹ý¶Éµ½Õâ¸öÏîÄ¿Ö¸ÏòµÄ×´Ì¬£»

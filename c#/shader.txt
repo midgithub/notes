@@ -27,14 +27,14 @@ Self-Illuminated×ÔÉí·¢¹â£¨Ò»¸ö²ÄÖÊÎÆÀí£¬Ã»ÓÐalphaÍ¨µÀ£¬Ò»¸ö×Ô·¢¹âÎÆÀí£¬´øÓÃÓÚ×Ô·
 reflective ·´Éä£¨Ò»¸ö»ù±¾ÎÆÀí£¬´øÓÃÓÚ¶¨Òå·´ÉäÇøÓòµÄalphaÍ¨µÀ£¬Ò»¸öÓÃÓÚ·´ÉäÌùÍ¼µÄ·´ÉäCubemap£©
 
 °´ÕÕäÖÈ¾¹ÜÏßµÄ·ÖÀà£¬¿ÉÒÔ°ÑSharder·Ö³É3¸öÀà±ð£º
-1.surface shaders, ±íÃæ×ÅÉ«Æ÷
-2.vertex and fragment shaders and ¶¥µãºÍÆ¬¶Î×ÅÉ«Æ÷
+1.surface shaders:±íÃæ×ÅÉ«Æ÷,Ö÷Òª´¦Àí¹âÕÕºÍÒõÓ°£¬ÀûÓÃÁËUnityµÄ¹âÕÕÁ÷Ë®Ïß£¬ÊÇÒ»ÖÖ½Ï¸ß²ã´ÎµÄ³éÏó¡£Èç¹û²»Ê¹ÓÃ¹âÕÕÔò²»ÒªÊ¹ÓÃÕâÖÖshader£¬ÒòÎª»áÓÐ²»±ØÒªµÄÐÔÄÜÏûºÄ¡£
+Ê¹ÓÃCg/HLSL±àÐ´shader´úÂë£¬µ«×îÖÕµÄshaderÊÇÐèÒª±àÒëÉú³ÉµÄ¡£
+2.vertex and fragment shaders and ¶¥µãºÍÆ¬¶Î×ÅÉ«Æ÷:¿ÉÒÔÊµÏÖÈÎÒâÐ§¹û,²»ÄÜÀûÓÃUnityµÄ¹âÕÕÏµÍ³
 ¶¥µã×ÅÉ«Æ÷
 ¶¥µã×ÅÉ«³ÌÐò´ÓGPUÇ°¶Ë£¨¼Ä´æÆ÷£©ÖÐÌáÈ¡Í¼ÔªÐÅÏ¢(¶¥µãÎ»ÖÃ¡¢·¨ÏòÁ¿¡¢ÎÆÀí×ø±ê)£¬²¢Íê³É¶¥µã×ø±ê¿Õ¼ä±ä»»¡¢·¨ÏòÁ¿¿Õ¼ä×ª»»¡¢¹âÕÕ¼ÆËãµÈ²Ù×÷£¬×îºó½«¼ÆËãÊý¾Ý´«ËÍµ½Ö¸¶¨¼Ä´æÆ÷ÖÐ¡£
-
 Æ¬¶Î×ÅÉ«Æ÷
 Æ¬¶Î³ÌÐò´ÓÉÏÊö¼Ä´æÆ÷ÖÐ»ñÈ¡ÐèÒªµÄÊý¾Ý£ºÎÆÀí×ø±êÓë¹âÕÕÐÅÏ¢µÈ£¬²¢¸ù¾ÝÕâÐ©ÐÅÏ¢ÒÔ¼°´ÓÓ¦ÓÃ³ÌÐò´«µÝµÄÎÆÀíÐÅÏ¢½øÐÐÃ¿¸öÆ¬¶ÎµÄÑÕÉ«¼ÆËã£¨ÎÆÀí²éÑ¯£©£¬×îºó½«´¦ÀíºóµÄÊý¾Ý´«ËÍ¿é¡£
-3.fixed function shaders. ¹Ì¶¨¹¦ÄÜ×ÅÉ«Æ÷
+3.fixed function shaders. ¹Ì¶¨¹¦ÄÜ×ÅÉ«Æ÷,Ö»ÄÜÊµÏÖ¼òµ¥Ð§¹û£¬ÇÒÄ³Ð©Æ½Ì¨Ö§³Ö²»ºÃ£¬Òò´ËÒÑ¾­²»ÍÆ¼öÊ¹ÓÃÁË£¬ÍêÈ«Ê¹ÓÃShaderLab±àÐ´¡£
 
 
 Rendering Mode: (²ÄÖÊÒªÓÐ¶ÔÓ¦µÄ×ÊÔ´ÎÄ¼þ£¬À­Í¼Æ¬ÎÄ¼þµ½ÎïÌåinspector´°¿Ú£¬»á×Ô¶¯ÔÚËùÔÚÎÄ¼þ¼ÐÍ¬¼¶Ä¿Â¼ÏÂÉú³ÉMaterialsÎÄ¼þ¼ÐÀï´´½¨Í¬Ãû²ÄÖÊÇò£¬²¢Ìæ»»Ô­ÎïÌå²ÄÖÊÇò)
@@ -116,7 +116,7 @@ ZWrite Off
   4.¡±IgnoreProjector¡±£¬ÖµÎª¡±true¡±Ê±£¬±íÊ¾²»½ÓÊÜProjector×é¼þµÄÍ¶Ó°¡£ 
 
 
-LOD£ºLevel of DetailµÄËõÐ´,Õâ¸öÊýÖµ¾ö¶¨ÁËÎÒÃÇÄÜÓÃÊ²Ã´ÑùµÄShade,ÔÚUnityµÄQuality SettingsÖÐÎÒÃÇ¿ÉÒÔÉè¶¨ÔÊÐíµÄ×î´óLOD£¬µ±     Éè¶¨µÄLODÐ¡ÓÚSubShaderËùÖ¸¶¨µÄLODÊ±£¬Õâ¸öSubShader½«²»¿ÉÓÃ¡£
+LOD£ºLevel of DetailµÄËõÐ´,Õâ¸öÊýÖµ¾ö¶¨ÁËÎÒÃÇÄÜÓÃÊ²Ã´ÑùµÄShade,ÔÚUnityµÄQuality SettingsÖÐÎÒÃÇ¿ÉÒÔÉè¶¨ÔÊÐíµÄ×î´óLOD£¬µ±Éè¶¨µÄLODÐ¡ÓÚSubShaderËùÖ¸¶¨µÄLODÊ±£¬Õâ¸öSubShader½«²»¿ÉÓÃ¡£
   VertexLit¼°ÆäÏµÁÐ = 100
   Decal, Reflective VertexLit = 150
   Diffuse = 200
