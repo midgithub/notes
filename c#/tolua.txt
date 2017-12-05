@@ -1,0 +1,109 @@
+toLua相较于原本的uLua，实际上就是对交互接口LuaScriptMgr.cs进行了功能拆分，
+变成了成 ToLua.cs 和 LuaState.cs , 一个为lua 回调C#服务，一个为C#调用lua 服务
+
+(导出目录 ToLua\Source\Generate)
+Gen Lua Wrap Files：生成 CustomSettings里customTypeList类接口到lua的wrap
+Gen Lua Delegates：生成 CustomSettings里customDelegateList 导出委托类型, 生成DelegateFactory.cs
+Gen LuaBinder File：生成 LuaBinder.cs，用于注册LuaState给上面生成的 xxxWrap.Register(L)接口
+Copy Lua  files to Resources：复制 LuaFramework/Lua和/LuaFramework/ToLua/Lua文件夹到  Application.dataPath + "/Resources" + "/Lua";
+
+.lua模块
+1.LuaFileUtils：通过.lua文件路径和AssetBundle文件路径这两种方式来找.lua文件，并读取返回byte[]
+2.LuaLoader：继承LuaFileUtils，添加打入Lua代码的AssetBundle
+3.LuaEvent：在c#中注册lua的event和回调
+4.LuaLooper：继承MonoBehaviour，在Update / LateUpdate / FixedUpdate中执行对应的LuaEvent
+5.LuaBinder：如果执行的.lua文件需要用到unity中的类型，则需要用这个类给LuaState进行绑定
+6.LuaManager：继承Manager，入口类，初始化Lua代码加载路径和AB，引用一个LuaState并封装其功能(读取lua文件、调用方法等)
+7.LuaBehaviour：继承View，在Awake / Start中调用lua中对应的方法；并提供点击事件的相关处理
+
+LuaState lua = new LuaState();
+ // 创建C#调用lua 操作接口     
+lua.Start();  //启动lua虚拟机
+lua.DoString(str);
+  //将str代码块放到lua global表下，local变量无法访问 
+//lua.DoFile("xx.lua") 调用 LuaFileUtils的ReadFile 同上都是得到文件byte[],区分直接读取lua文件和从AB里读取（AssetBundle.LoadFromFile(url)同步加载）
+ 
+TextAsset luaFile 
+lua.DoString(luaFile.text, "TestCoroutine.cs");
+
+//lua变量赋值
+lua["Objs2Spawn"] = 5;
+
+//lua函数调用
+LuaFunction func = lua["TestFunc"] as LuaFunction; //lua.GetFunction("TestFunc") （传入 module.func）
+object[] r = func.Call(可传参数);
+      //有gc alloc
+func.Dispose();  //记得dispose
+
+int[] array = { 1, 2, 3, 4, 5};        
+       
+func = lua.GetFunction("TestArray");
+
+func.BeginPCall();
+        
+func.Push(array);
+  //arr传给TestArray第一个参数，可以在push一个给第二个参数  
+func.PCall();
+double arg1 = func.CheckNumber();
+   //TestArray返回值1     
+string arg2 = func.CheckString();
+   //TestArray返回值2      
+bool arg3 = func.CheckBoolean();   //TestArray返回值3 
+
+func.EndPCall();
+
+//转换一下类型，避免可变参数拆成多个参数传递
+object[] objs = func.Call((object)array); //引用传递到lua,.通过(点号)来使用非静态的变量以及静态的变量与方法,(冒号)来使用非静态的方法
+
+//lua 表
+LuaTable table = lua.GetTable("varTable");
+table["key"] = 1;
+
+table.AddTable("newmap");  //添加lua表
+LuaTable table1 = (LuaTable)table["newmap"];
+        
+table1["name"] = "table1";
+table1.Dispose();
+
+table1 = table.GetMetaTable(); //获取元表
+
+string fullPath = Application.dataPath + "\\LuaFramework/ToLua/Examples/02_ScriptsFromFile";
+  
+lua.AddSearchPath(fullPath);  //添加搜索路径 最终是通过LuaFileUtils   
+
+lua.DoFile("ScriptsFromFile.lua"); 
+lua.Require("ScriptsFromFile");
+
+lua.CheckTop();
+        
+lua.Dispose();
+        
+lua = null;
+
+//lua 协程 该方式为推荐方案，还有一种类unity原生大量使用效率低  
+//先注册looper跑协程  coroutine.step() 下一帧
+LuaBinder.Bind(lua);                
+        
+LuaLooper looper = gameObject.AddComponent<LuaLooper>();
+ //looper 记得dispose    
+looper.luaState = lua;
+
+local coDelay = nil
+
+function Delay()
+	local c = 1
+
+	while true do
+		coroutine.wait(1) 
+		print("Count: "..c)
+		c = c + 1
+	end
+end
+
+function StartDelay()
+	coDelay = coroutine.start(Delay)
+end
+
+function StopDelay()
+	coroutine.stop(coDelay)
+end

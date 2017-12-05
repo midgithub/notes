@@ -74,7 +74,7 @@ print("msg:" .. msg); --msg:yield param
 --如果协同程序正确执行，错误信息这个返回值msg自然就是nil了。
 --yield函数的参数可以传递到resume的第二个返回值里,前提是，resume函数的第一个返回值是true。
 
---在启动coroutine的时候，resume的参数是传给主程序的；在唤醒yield的时候，参数是传递给yield的
+--在启动coroutine的时候，resume的参数是传给主程序的；在唤醒yield的时候，参数是传递给yield的,由yield()函数返回：yield()参数为空时直接返回传入参数，参数为函数时返回函数返回值
 co = coroutine.create(function (a, b) print("co", a, b, coroutine.yield()) end)
 coroutine.resume(co, 1, 2)        --没输出结果，注意两个数字参数是传递给函数的
 coroutine.resume(co, 3, 4, 5)        --co 1 2 3 4 5，这里的两个数字参数由resume传递给yield　

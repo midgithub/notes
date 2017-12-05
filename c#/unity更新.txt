@@ -26,7 +26,7 @@ GetAllDependencies() 传入一个assetbundle的名字来获取其依赖的assetbundle
 GetAssetBundleHash（）
 
 类 AssetBundle ：
-LoadFromFile(string path, uint crc = 0)：会在幕后先将bundle文件解压后再加载
+LoadFromFile(string path, uint crc = 0)：分同步和异步方式，同LoadFromCacheOrDownload解压到外部硬盘
 LoadFromMemory(byte[] binary, uint crc = 0)：一般用在经过加密的数据上，经过加密的流数据经过解密之后我们可以调用该方法动态的创建AssetBundle对象
 
 
