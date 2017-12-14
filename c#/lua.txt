@@ -1,7 +1,10 @@
 package.loaded["src/Event"] = nil  
 require('UITable')  --require:多次调用返回同一个指针  package: 返回不同指针
-加载机制:
+1.loadfile——只编译，不运行
+2.dofile——执行里面的代码
+3.require——只执行一次里面的代码,然后保存已经加载过的文件，不会重复加载。
 
+加载机制:
 
 元表与元方法:
 Lua在创建一个新的table时 不会创建元表。

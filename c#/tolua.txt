@@ -21,7 +21,7 @@ LuaState lua = new LuaState();
 lua.Start();  //启动lua虚拟机
 lua.DoString(str);
   //将str代码块放到lua global表下，local变量无法访问 
-//lua.DoFile("xx.lua") 调用 LuaFileUtils的ReadFile 同上都是得到文件byte[],区分直接读取lua文件和从AB里读取（AssetBundle.LoadFromFile(url)同步加载）
+//lua.DoFile("xx.lua") 调用 LuaFileUtils的ReadFile 同上都是得到文件byte[],区分直接读取lua文件(从searchPaths里找文件)和从AB里读取（AssetBundle.LoadFromFile(url)同步加载）
  
 TextAsset luaFile 
 lua.DoString(luaFile.text, "TestCoroutine.cs");

@@ -1,0 +1,10 @@
+2017.12.6:
+LuaJIT分为JIT模式和Interpreter模式
+1.LuaJIT分为JIT模式和Interpreter模式,在iOS下是无法开启
+2.Interpreter模式：编译成中间态的字节码（bytecode），然后每执行下一条字节码指令
+
+2017.12.12
+Application.streamingAssetsPath 只能用来AssetBundle.LoadFromFile 。如果想用File类操作。 比如File.ReadAllText  或者 File.Exists  Directory.Exists 这样都是不行的。
+
+2017.12.14
+AssetBundle.CreateFromFile不能加载压缩过的AssetBundle
