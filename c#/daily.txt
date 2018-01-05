@@ -16,10 +16,18 @@ Lua编译器,把用Lua语言编写的程序翻译为二进制文件
 预编译单元（chunk）的主要优势在于:加载更快,预编译并非意味着执行更快速，因为Lua中的单元总会在执行前被编译为字节码
 
 2017.12.12
-Application.streamingAssetsPath 只能用来AssetBundle.LoadFromFile 。如果想用File类操作。 比如File.ReadAllText  或者 File.Exists  Directory.Exists 这样都是不行的。
+Application.streamingAssetsPath 只能用AssetBundle.LoadFromFile 。如果想用File类操作。 比如File.ReadAllText  或者 File.Exists  Directory.Exists 这样都是不行的。
 
-2017.12.14
-AssetBundle.CreateFromFile不能加载压缩过的AssetBundle
+2017.12.14  LZMA，LZ4和不压缩(三种资源包的压缩方式)
+AssetBundle.LoadFromFile不能加载压缩过的AssetBundle(不压缩、LZ4),同步创建AssetBundle对象，这是最快的创建方式。创建完成后只会在内存中创建较小的SerializedFile，而后续的AssetBundle.Load需要通过IO从磁盘中获取(同LoadFromCacheOrDownload解压到外部硬盘)
+
+当使用LZMA压缩时，为什么加载后还要进行LZ4 compression？其实AssetBundle的原则是这样的：
+如果可以直接读取包中的资源(不压缩、LZ4)：
+如果包在磁盘中，不用把包读取到unity内存，只读取资源信息索引就行了。
+如果包在网络或mono内存中，那就把包读取到unity内存中。
+如果不可以直接读取包中的资源(LZMA)：就要先解压，然后压缩成LZ4保存在内存中，供以后取用。
+
+结论：打包使用DeterministicAssetBundle+UncompressedAssetBundle,对bundle进一步压缩http://blog.csdn.net/y1196645376/article/details/52492294），再使用AssetBundle.LoadFromFile加载bundle（推荐方式），如果用www加载要注意不要缓存www,要释放www,只保留assetbundle
 
 2017.12.15
 python 使用git命令必需配置 git 环境
@@ -51,6 +59,7 @@ StringBuilder 类Capacity属性的默认值为16，当StringBuilder 对象的Length属性值超过
 *重新扩充构造内部的字符数组，影响性能，所以在构造StringBuilder对象时，最好先预估下追加字符串的总长度，根据这个总长度，在StringBuilder构造函数中设置一下Capacity参数
 
 2018.1.3
+Canvas group 场景界面过渡效果
 ScriptableObject:自定义资源（.asset）配置数据
 
 #if UNITY_EDITOR
@@ -72,3 +81,8 @@ AssetDatabase.Refresh();
 #endif
 
 unity-spine 骨胳动画
+
+2018.1.5
+1.加载AssetBundle，先试着检查是否有缓存引用加1，这样就避免可能因为这时候有依赖身份但加载过程中因为没引用而被卸载掉
+2.加载bundle，如果有依赖的先加载依赖，如果事异步的则先放进加载队列（但是还是有可能该bundle先于依赖加载完就有问题了？方案:记录所有依赖，开始加载前判断是否所有的依赖加载完）
+3.依赖加载方式跟改bundle加载方式一样
