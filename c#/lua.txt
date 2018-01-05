@@ -80,4 +80,12 @@ print("msg:" .. msg); --msg:yield param
 --在启动coroutine的时候，resume的参数是传给主程序的；在唤醒yield的时候，参数是传递给yield的,由yield()函数返回：yield()参数为空时直接返回传入参数，参数为函数时返回函数返回值
 co = coroutine.create(function (a, b) print("co", a, b, coroutine.yield()) end)
 coroutine.resume(co, 1, 2)        --没输出结果，注意两个数字参数是传递给函数的
-coroutine.resume(co, 3, 4, 5)        --co 1 2 3 4 5，这里的两个数字参数由resume传递给yield　
+coroutine.resume(co, 3, 4, 5)        --co 1 2 3 4 5，这里的两个数字参数由resume传递给yield　.
+
+
+pcall (f, arg1, ···) 以一种"保护模式"来调用f函数，返回bolean(返回第一个值true表示无错误，后面值未f函数返回值) 返回时已经销毁了调用桟的部分内容
+xpcall (f, err) 同上返回bolean，err错误处理函数，当错误发生时，Lua会在调用桟展看（unwind）前调用错误处理函数，于是就可以在这个函数中使用debug库来获取关于错误的额外信息了。
+debug库提供了两个通用的错误处理函数:
+
+debug.debug()：提供一个Lua提示符，让用户来价差错误的原因
+debug.traceback()：根据调用桟来构建一个扩展的错误消息
