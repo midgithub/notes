@@ -12,13 +12,13 @@ ResourceManangerÏÈ¶ÁÈ¡resourcesinfo£¬ÖªµÀÁËÓÎÏ·ÖĞËùÓĞµÄBundleºÍÃ¿¸öBundle°üº¬µÄ×
 
 ¼ÓÔØAssetBundle£¬ÎÒÃÇÖ±½ÓÊ¹ÓÃWWWÀà¶ø²»ÓÃWWW.LoadFromCacheOrDownload, ÒòÎªÎÒÃÇµÄ×ÊÔ´ÔÚÓÎÏ·¿ªÊ¼µÄÊ±ºòÒÑ¾­ÏÂÔØµ½Íâ²¿´æ´¢ÁË£¬²»ÒªÔÙDownloadÒ²²»ÒªÔÙCache¡£×¢ÒâWWWÀà¼ÓÔØÊÇÒì²½µÄ£¬ÔÚÓÎÏ·ÖĞÎÒÃÇĞèÒªÍ¬²½¼ÓÔØ×ÊÔ´µÄµØ·½¾ÍÒª×¢Òâ°Ñ×ÊÔ´Ô¤¼ÓÔØºÃ´æÔÚResourceManagerÖĞ£¬²»È»µÈÓÃµÄÊ±ºò¼ÓÔØ¿Ï¶¨ÒªĞ´Òì²½´úÂëÁË¡£´ó²¿·ÖÊ±ºòÎÒÃÇÓ¦¸ÃÔÚÒ»¸ö³¡¾°³õÊ¼»¯Ê±¾ÍÔ¤¼ÓÔØºÃËùÓĞ×ÊÔ´£¬ÓÃµÄÊ±ºòÖ±½Ó´ÓResourceManagerµÄ»º´æÈ¡¾Í¿ÉÒÔÁË¡£
 
-1.WWW ºÍ AssetBundle.CreateFromFile´´½¨AssetBundleÆäÊµÊÇ´´½¨ÁËÒ»¸öÎÄ¼şÄÚ´æ¾µÏñ£¬ÕâÊ±ºòÊÇÃ»ÓĞAssetµÄ¡£
+1.WWW ºÍ AssetBundle.LoadFromFile´´½¨AssetBundleÆäÊµÊÇ´´½¨ÁËÒ»¸öÎÄ¼şÄÚ´æ¾µÏñ£¬ÕâÊ±ºòÊÇÃ»ÓĞAssetµÄ¡£
 ÎÄ¼şÄÚ´æ¾µÏñÊÇÍ¨¹ıAssetBundle.Unload(false)À´ÊÍ·ÅµÄ¡£
 2.AssetBundle.LoadAsset ºÍResource.Load²ÅÕæÕı´´½¨³öÁËAsset£¬Instaniate¸´ÖÆÁËÕâ¸öAsset
 AssetBundle.Unload(true)²»µ¥»áÊÍ·ÅÎÄ¼şÄÚ´æ¾µÏñ£¬»¹»áÊÍ·ÅAssetBundle.Load´´½¨µÄAssets£¬Õâ¸ö·½·¨ÊÇ²»°²È«µÄ£¬³ı·ÇÄãÄÜ±£Ö¤ÕâĞ©AssetsÃ»ÓĞObjectÔÚÒıÓÃ£¬·ñÔò¾Í³öÎÊÌâÁË¡£
 Resources.UnloadAsset(obj) ÊÍ·ÅÖ¸¶¨Assets
 Resources.UnloadUnusedAssets() Ã»±»ÒıÓÃµÄAssets¶¼»á±»ÊÍ·Å
-3.AssetBundle.CreateFromFile²»ÄÜ¼ÓÔØÑ¹Ëõ¹ıµÄAssetBundle£¬ËùÒÔÎÒÃÇÖ»ÄÜÓÃWWWÀ´Òì²½¼ÓÔØAssetBundle¡£
+3.AssetBundle.LoadFromFile²»ÄÜ¼ÓÔØÑ¹Ëõ¹ıµÄAssetBundle£¬ËùÒÔÎÒÃÇÖ»ÄÜÓÃWWWÀ´Òì²½¼ÓÔØAssetBundle¡£
 
 ¾ßÌåÄÚ´æ¹ÜÀí£º
 ÊÍ·ÅÊ±£ºÈç¹ûÓĞInstantiateµÄ¶ÔÏó£¬ÓÃDestroy½øĞĞÏú»Ù

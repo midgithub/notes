@@ -1,6 +1,6 @@
 包括 CPU,GPU,内外存
 
-CPU中的计算主要是在蒙皮骨骼计算，布料模拟，顶点动画，粒子模拟等
+CPU中的计算主要是在蒙皮骨骼计算，布料模拟，顶点动画，粒子模拟,物理等
 GPU则在各种顶点变换、光照、贴图混合等
 
 UI一般影响CPU的因素包括：
@@ -76,7 +76,7 @@ VSync Count 参数会影响你的FPS，EveryVBlank相当于FPS=60，EverySecondVBlank = 30；
 11. 当我们设置了FPS后，再调整下Fixed timestep这个参数，
 这个参数在ProjectSetting->Time中，目的是减少物理计算的次数，来提高游戏性能。
 
-12.粒子特效：粒子数，粒子大小，粒子纹理去掉alpha通道
+12.粒子特效：粒子数，粒子大小，粒子纹理去掉alpha通道(透明的粒子效果，会造成大量的overdraws)
 
 在屏幕外的物体，和active(false) 的物体unity不会去绘制(不会调drawcall)
 Static Batching:
@@ -97,3 +97,30 @@ GPU Instancing
 1.GetComponent<>(); 使用范型，不在update或循环中一直调用
 2.不用gameObject.transform的形式访问组件，可以缓存gameObject上transform组件的引用再用
 3.不要直接用类似gameObject.rigidbody，Rigidbody组件不存在时开销很大，用GetComponent做rigidbody缓存
+
+CPU限制它的主要是游戏中的Draw Calls（静态+使用相同材质），过多的Draw Calls，耗时，影响帧率，游戏性能就会下降
+CPU性能瓶颈还有物理、布料模拟、粒子模拟等，都是计算量很大的操作。
+
+GPU：处理CPU传递过来的模型数据，进行Vertex Shader、Fragment Shader等一系列工作，最后输出屏幕上的每个像素
+顶点和像素两方面的性能瓶颈（顶点数目的过多，像素绘制了多次）
+
+顶点优化:
+优化几何体(尽可能减少模型中三角形的数目,尽可能重用顶点)
+使用LOD（Level of detail）技术（优化游戏渲染效率的常用方法，缺点是占用大量内存，空间换时间）：LODGroup组件
+使用遮挡剔除（Occlusion culling）技术(用来消除躲在其他物件后面看不到的物件，Unity 将确定只把可以看见的物体送去渲染,这代表资源不会浪费在计算那些看不到的顶点上，进而提升性能)
+(unity裁剪包括，视锥裁剪()和遮挡裁剪)
+
+像素优化:
+控制绘制顺序
+警惕透明物体(透明的粒子效果，会造成大量的overdraws)
+减少实时光照
+
+CPU优化:
+减少Draw Calls
+
+带宽优化:
+减少纹理大小(特效纹理合并纹理到大图)
+利用缩放
+
+Animator组件在Enable时，需要重建内部数据，导致了异常的卡顿
+尽量避免使用SetActive，改成SetLayer+Behaviour.Enable=false的效率能好很多

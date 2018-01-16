@@ -1,0 +1,28 @@
+EventDispatcher -> GObject ->
+MovieClip（动画）: gif图片 或 序列帧创建
+Loader(装载器):动态载入图片和动画，主要用于动态图标
+Controller(控制器):包含多个页面，元件可以在不同的页面具有不同状态
+Relation(关联):定义元件之间的相对位置和大小关系
+Component:改变组件的宽高不会直接拉伸组件内的内容（可以使用关联）
+
+7.Popup：弹出和关闭Popup的API在GRoot中，可以指定是向上弹出或者向下弹出，用户点击空白地方就会自动关闭弹出的组件。也可以调用此HidePopup 手工关闭
+/弹出在当前鼠标位置
+GRoot.inst.ShowPopup(aComponent);
+//弹出在aButton的下方
+GRoot.inst.ShowPopup(aComponent, aButton);
+//弹出在自定义的位置
+GRoot.inst.ShowPopup(aComponent);
+aComponent.SetXY(100, 100);
+窗口也可以通过ShowPopup弹出，这样弹出的窗口也具有了点击空白关闭的特性
+GRoot.inst.ShowPopup(aWindow);
+
+**UIPanel只能自动载入放置在Resources目录或其子目录下的UI包，也只会载入自身所在的UI包，
+其他情况的UI包（例如引用到的UI包或打包到AssetBundle的UI包）不能自动载入,需要在UIPanel创建前使用UIPackage.AddPackage准备好依赖Pacakge
+**Stage Camera：第一次动态创建UI时新增默认的UI相机，Constant Size：true时，屏幕放大或缩小，粒子效果也会随着放大和缩小，这适用于手机游戏
+**UIContentScaler：用来设置适配的
+**UIConfig：设置一些全局的参数，比如字体什么的
+
+1.动态创建UI，要使用代码载入包：UIPackage.AddPacakge("路径/demo");
+2.发布后的文件打包为两个AssetBundle，即定义文件和资源各打包为一个bundle(desc_bundle+res_bundle):不需要让玩家更新通常体积比较大的res_bundle，节省流量
+UIPackage.AddPackage(desc_bundle, res_bundle);
+3.将发布后的文件打包为一个AssetBundle: UIPackage.AddPackage(bundle, false);//第二个参数为false，表示不需要让FairyGUI释放bundle。
