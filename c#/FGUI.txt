@@ -1,9 +1,12 @@
 EventDispatcher -> GObject ->
 MovieClip（动画）: gif图片 或 序列帧创建
-Loader(装载器):动态载入图片和动画，主要用于动态图标
+Loader(装载器):动态载入图片和动画（组件或其他类型的元件不行），主要用于动态图标
 Controller(控制器):包含多个页面，元件可以在不同的页面具有不同状态
 Relation(关联):定义元件之间的相对位置和大小关系
 Component:改变组件的宽高不会直接拉伸组件内的内容（可以使用关联）
+
+window:Hide 隐藏窗口。窗口并不会销毁，只是隐藏。
+modal 设置窗口是否模式窗口。模式窗口将阻止用户点击任何模式窗口后面的内容。
 
 7.Popup：弹出和关闭Popup的API在GRoot中，可以指定是向上弹出或者向下弹出，用户点击空白地方就会自动关闭弹出的组件。也可以调用此HidePopup 手工关闭
 /弹出在当前鼠标位置
@@ -26,3 +29,24 @@ GRoot.inst.ShowPopup(aWindow);
 2.发布后的文件打包为两个AssetBundle，即定义文件和资源各打包为一个bundle(desc_bundle+res_bundle):不需要让玩家更新通常体积比较大的res_bundle，节省流量
 UIPackage.AddPackage(desc_bundle, res_bundle);
 3.将发布后的文件打包为一个AssetBundle: UIPackage.AddPackage(bundle, false);//第二个参数为false，表示不需要让FairyGUI释放bundle。
+
+
+获得原生对象：GameObject go = aObject.displayObject.gameObject；
+
+aComponent.opaque = false;  //元件是可触摸的，则点击事件结束，不会继续向后传递。可手动true表示不可穿透，false表示可穿透。
+
+aObject.SetPivot(0.5f, 0.5f, true); //设置轴心，并同时作为锚点
+aImage.texture = new NTexture(your_Texture2D); //aLoader.url = “demo/aimage”; Resources目录
+
+SetChildIndex(元件,0) 或 GObject.sortingOrder(该方法不要用在列表)  //zorder
+Controller c1 = aComponent.GetController("c1");
+
+aObject.AddRelation(GRoot.inst, RelationType.Right_Right);
+//删除某个关联
+aObject.RemoveRelation(targetObject, RelationType.Size);
+//删除指向某个对象的所有关联
+aObject.relations.ClearFor(targetObject);
+
+模拟触发点击：
+button.FireClick(true); //模拟触发点击，只会有一个触发的表现，以及改变按钮状态，不会触发侦听按钮的点击事件。
+button.onClick.Call();  //如果同时要触发点击事件，需要额外调用：

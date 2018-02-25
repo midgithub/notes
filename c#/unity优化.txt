@@ -79,15 +79,21 @@ VSync Count 参数会影响你的FPS，EveryVBlank相当于FPS=60，EverySecondVBlank = 30；
 12.粒子特效：粒子数，粒子大小，粒子纹理去掉alpha通道(透明的粒子效果，会造成大量的overdraws)
 
 在屏幕外的物体，和active(false) 的物体unity不会去绘制(不会调drawcall)
+Unity不支持对SkinnedMeshRenderer进行批处理，也不支持对使用了阴影的MeshRenderer进行批处理
+
 Static Batching:
 条件：1.相同材质（网格可以不一样） 2.不能移动 
 unity尽可能多的网格结合到一个静态网格中，将其作为一个drawcall 提交，所以可能会 增加内存
 
-Dynamic Batching
+Dynamic Batching（系统自动，仅支持MeshRenderer，不支持SkinnedMeshRenderer）
 条件：1.网格少于900个顶点于（于mesh粒子来说是300个限制）
       2.不能镜像了（-1,1,1）
-      3.同一材质，完全光照贴图的位置
+      3.同一材质（材质实例同一个），完全光照贴图的位置
       4.不使用Multi-pass着色器的情况（）	
+
+**Renderer.material获取Material引用时，会把Render里Materials列表第一个预设的Material进行实例化，并将返回实例。
+这样，当我们对这个物体的Material进行修改时，只会修改实例，而不会修改到最原本的材质球
+Renderer.sharedMaterial接口，Unity则不会多此一举地帮我们做实例化，再返回实例了，直接就是返回最原本的材质球
 
 GPU Instancing
  条件：1.相同网格,允许每个实例拥有各自的数据集，包括位置，旋转和颜色。

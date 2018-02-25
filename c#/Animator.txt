@@ -21,6 +21,7 @@ applyRootMotion true:½ö½ö×÷ÓÃÓÚ GameObject ÔÚ X ºÍ Z ÖáÉÏµÄÎ»ÒÆ±ä»»£¨¶¯×÷Î»ÒÆ×÷Ó
                 False£¬Ö»ÄÜ¿´µ½¶¯»­ÔÚÔ­µØÆðÌøÈ»ºóÔÙÂäµØ£¬¶¯»­ÖÐÔ­±¾Ó¦ÓÐµÄÔÚË®Æ½·½ÏòµÄÎ»ÒÆ¾ÍÃ»ÓÐÁË£»
 **Apply Root MotionµÄÑ¡Ïî£¬¸ÃÑ¡ÏîÃ»ÓÐ¹´Ñ¡Ê±£¬ÎÒÃÇµÄ¶¯»­»á°´ÕÕÊÀ½ç×ø±êÀ´ÒÆ¶¯£¬¼´ÎÒÃÇµÄAnimationÉÏµÄÊýÖµ»áÖ±½ÓÉè¶¨µ½Ä¿±êµÄpositionÖ®ÉÏ£¬¶øÈç¹û¹´Ñ¡£¬ÔòÊÇÔÚÄ¿±êµÄpositionÖ®ÉÏÌí¼ÓÎÒÃÇµÄ¶¯»­Éè¶¨µÄÊýÖµ¡£
 **Bake Into Pose:²»¹´Ñ¡±íÊ¾¶¯»­²úÉúµÄÐý×ª»òÎ»ÒÆ£¨¾ßÌå¿´ÊÇÄÄ¸öÑ¡ÏîÏÂÃæ£©»áÓ¦ÓÃµ½²¥·Å¶¯»­µÄÖ÷Ìå¶ÔÏóÉÏ£¬¹´Ñ¡Ôò±íÊ¾²»»áÓ¦ÓÃµ½²¥·Å¶¯»­µÄÖ÷Ìå¶ÔÏóÉÏ(¹Ì¶¨transformÖµ,Ð§¹ûÓÃ¶¯×÷µÄ)¡£
+£¨generic ÔËÓÃ¶¯»­Î»ÒÆÐèÉèÖÃ Root Node ¹Ç÷ÀBip01£©
 
 Ã¿¸ö»ìºÏÊ÷µÄ¶¯»­ÓÐÒ»Ð©Òª×¢ÒâµÄµØ·½£º
 1.¶¯»­³¤¶ÈÐèÒªÒ»ÖÂ£»
