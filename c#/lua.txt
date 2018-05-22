@@ -62,7 +62,7 @@ end
 Coroutine
 Lua中的协程和多线程很相似，每一个协程有自己的堆栈，自己的局部变量，可以通过yield-resume实现在协程间的切换。
 不同之处是：Lua协程是非抢占式的多线程，必须手动在不同的协程间切换，且同一时刻只能有一个协程在运行。
-并且Lua中的协程无法在外部将其停止，而且有可能导致程序阻塞。
+并且Lua中的协程无法在外部将其停止，而且有可能导致程序阻塞。   
 
 local co = coroutine.create(function(name)
     print(name);
