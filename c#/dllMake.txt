@@ -52,6 +52,7 @@ private static extern int addTest(int a,int b);
   private static extern int AddNum(int a,int b);
 
 
+导出JAR包：首先模块项目只能是library，而不能是application。如果除了打包代码还有资源的话，需要打包成aar包
 5.jar()  //快捷：alt+enter 导入相关包
 a.new project Jar2Unity sen.com Empty Activity
 b.File -> New -> New Module -> 选择 Android Library(InterfaceUnity),

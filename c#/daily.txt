@@ -86,3 +86,11 @@ unity-spine 骨胳动画
 1.加载AssetBundle，先试着检查是否有缓存引用加1，这样就避免可能因为这时候有依赖身份但加载过程中因为没引用而被卸载掉
 2.加载bundle，如果有依赖的先加载依赖，如果事异步的则先放进加载队列（但是还是有可能该bundle先于依赖加载完就有问题了？方案:记录所有依赖，开始加载前判断是否所有的依赖加载完）
 3.依赖加载方式跟改bundle加载方式一样
+
+2018.5.28
+1.ConfigAsset asset = new ConfigAsset();  //继承ScriptableObject
+  AssetDatabase.CreateAsset(asset, "Assets/cofig.asset");  //UnityEditor创建资产
+  AssetDatabase.Refresh();
+2.闪电链：
+a.动态生成网格，new Mesh(),赋值顶点，uv，三角形，法线,材质球，每帧mat.SetTextureOffset("_MainTex", new Vector2(offset, 0)) uv流动
+b.使用LineRenderer，lineRenderer.SetVertexCount(lineLength)准备好绘制线的点，设置点 _lineRender.SetPosition(i, _linePosList[i]);

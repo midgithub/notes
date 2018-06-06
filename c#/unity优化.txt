@@ -112,7 +112,7 @@ GPU：处理CPU传递过来的模型数据，进行Vertex Shader、Fragment Shader等一系列工作，
 
 顶点优化:
 优化几何体(尽可能减少模型中三角形的数目,尽可能重用顶点)
-使用LOD（Level of detail）技术（优化游戏渲染效率的常用方法，缺点是占用大量内存，空间换时间）：LODGroup组件
+使用LOD（Level of detail）技术（优化游戏渲染效率的常用方法，缺点是占用大量内存，空间换时间）：LODGroup组件(T4M的LOD原理：检测物体到相机的距离决定使用哪个meshRenderer)
 使用遮挡剔除（Occlusion culling）技术(用来消除躲在其他物件后面看不到的物件，Unity 将确定只把可以看见的物体送去渲染,这代表资源不会浪费在计算那些看不到的顶点上，进而提升性能)
 (unity裁剪包括，视锥裁剪()和遮挡裁剪)
 

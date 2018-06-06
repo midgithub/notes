@@ -4,7 +4,9 @@ OnAwake -> OnStart -> OnUpdate -> OnEnd -> OnBehaviorComplete
 2.Decorators（装饰节点）
 3.Actions（行为节点）
 
-
+行为树切换：
+1.GetComponents<BehaviorTree>(); 用过 bt.Group 和 bt.name;
+2.BehaviorManager.instance.IsBehaviorEnabled(bt); bt.EnableBehavior();
 
 Behavior标签：
 ExternalBehavior：编辑好行为树后会导成asset文件，复用行为树
@@ -12,6 +14,13 @@ Restart When Complete，如果勾选了，则行为树遍历完后会再重新启动一次，不断循环
 
 Variables标签：
 可以给行为树添加变量，这些变量可以通过GetVariable跟SetVariableValue来读取和赋值，并可以在各种Task节点里进行传递和赋值
+
+导成二进制文件（一个xxxx.asset文件，它是作为ExternalBehaviorTree存储的）动态添加行为树：
+var bt = gameObject.AddComponent<BehaviorTree> ();  
+var extBt = Resources.Load<ExternalBehaviorTree> ("Behavior");  
+bt.StartWhenEnabled = false;  
+bt.ExternalBehavior = extBt;  
+bt.EnableBehavior ();  
 
 idle:停止 wait:等待多少秒
 sequece:子任务顺序执行从左到右 （and）

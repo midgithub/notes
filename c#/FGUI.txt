@@ -25,10 +25,10 @@ GRoot.inst.ShowPopup(aWindow);
 **UIContentScaler：用来设置适配的
 **UIConfig：设置一些全局的参数，比如字体什么的
 
-1.动态创建UI，要使用代码载入包：UIPackage.AddPacakge("路径/demo");
-2.发布后的文件打包为两个AssetBundle，即定义文件和资源各打包为一个bundle(desc_bundle+res_bundle):不需要让玩家更新通常体积比较大的res_bundle，节省流量
+1.动态创建UI，要使用代码载入包：UIPackage.AddPacakge("路径/demo"); //Resources目录下
+2.发布后的文件打包为两个AssetBundle，即定义文件(描述ui信息)和资源各打包为一个bundle(desc_bundle+res_bundle):不需要让玩家更新通常体积比较大的res_bundle，节省流量
 UIPackage.AddPackage(desc_bundle, res_bundle);
-3.将发布后的文件打包为一个AssetBundle: UIPackage.AddPackage(bundle, false);//第二个参数为false，表示不需要让FairyGUI释放bundle。
+3.将发布后的文件打包为一个AssetBundle: UIPackage.AddPackage(bundle, false);//第二个参数为false，表示不需要让FairyGUI释放bundle, 默认为true，即由FairyGUI接管bundle并负责bundle资源的释放
 
 
 获得原生对象：GameObject go = aObject.displayObject.gameObject；

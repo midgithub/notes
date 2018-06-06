@@ -33,8 +33,9 @@ Body:1.Tracked Dolly使用路径 2.Transposer:Follow不为空时,跟随
 CinemachineCollider：分析目标障碍、最优目标距离和其他项目的场景，并将他们的拍摄质量评估报告给被清除的父母（看CinemachineClearShot脚本介绍）
 Priority:大的优先使用
 
-a.Cinemachine Brain:虚拟相机大脑，创建VC的时候自动挂载主相机，可自定义切换不同VC是的混合效果
+a.Cinemachine Brain:虚拟相机大脑，创建VC的时候自动挂载主相机，可自定义切换不同VC是的混合效果，Live Camera（当前选择用哪个虚拟相机，根据vc设定的priority）
 b.Cinemachine VC：虚拟相机，Cinemachine轨道可混合两个VC，控制不同时间不同的视角，Follow指定目标，即使没用到该VC，也会跟随目标
+  Status : Live(正在使用)/Standby(准备使用)/Disable(不能用)
 c.Cinemachine Path:路径，VC可指定Body(Tracked Dolly模式)的path,通过Animation Track可编辑VC按该路径行走（path positon），或VC Follow CinemachineDollyCart目标，就可按path行走
 d.CM ClearShot：需要CinemachineCollider，指定一组VC或Free look，如果子相机有CinemachineCollider，会自动报告拍摄质量评估给CinemachineClearShot。
  所以可以选择最佳VC达到最佳镜头效果,质量评估一样的按照指定优先级。 可设置或自己创建指定不同镜头切换时的混合效果
@@ -42,5 +43,5 @@ e.CM StateDrivenCamera1:需要CinemachineCollider，指定一组VC或Free look,需先指定A
 **（当Priority一样时可代码切换使用CM ClearShot或CM StateDrivenCamera1（都继承于CinemachineVirtualCameraBase），baseCam.MoveToTopOfPrioritySubqueue()）;
 f.CM BlendListCamera1:作为CM ClearShot相机组一员，切换到该镜头时自动播放按顺序混合其相机组的过程动作到最后一个VC的镜头。
 g.CinemachineDollyCart: 根据路径Cinemachine Path按指定速度行走
-h.CinemachineTargetGroup: VC look at 的目标组，根据成员的权重和半径计算目标点
+h.CinemachineTargetGroup: Group Target Camera多目标相机 look at 的目标组，根据成员的权重和半径计算目标点
 i.CM MixingCamera: 调整每个其组VC的权重调整镜头效果
