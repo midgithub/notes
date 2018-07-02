@@ -1,0 +1,15 @@
+插件：
+1.Fabric 收集app崩溃信息的平台
+工作原理 ：throw exceptoon –> CrashlyticsUncaughtExceptionHandler –> DefaultUncaughtExceptionHandler -> print log & exit
+Java异常处理流程可以简单总结成如下两种情况： 
+(1) 未添加异常处理：throw exceptoon –> DefaultUncaughtExceptionHandler -> print log && exit program
+(2) 已添加异常处理：throw exceptoon –> execute catch block
+Fabric Crashlytics分类 
+(1)Fatal：致命异常，其实就是用户没有进行处理的异常，这个就是未捕获的crash了，程序会自己崩溃 
+(2)Non-Fatal：非致命异常，这个是用户主动调用Crashlytics.logException上报的异常，程序还能运行
+当程序发生异常时，因已经设置了CrashlyticsUncaughtExceptionHandler为默认异常处理，对用户没有处理的异常（即没加try catch的异常），
+都将由CrashlyticsUncaughtExceptionHandler来处理，此时这个uncaughtException方法就会被回调用，真正的异常处理逻辑就在这里。
+注意在这个方法中，有个finally代码块，它会调用系统提供默认的异常处理类，主要做了是打印log并且退出程序，假如不加这个逻辑，会使应用处以假死状态。
+（Crashlytics收集的log并不立马上报的，而是写入文件的）
+
+2.spine-unity

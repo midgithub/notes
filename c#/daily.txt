@@ -64,7 +64,7 @@ ScriptableObject:自定义资源（.asset）配置数据
 
 #if UNITY_EDITOR
 // 加载资源
-Texture2D image = AssetDatabase.LoadAssetAtPath("Assets/Images/1.jpg", typeof(Texture2D)) as Texture2D; //不使用ab模式使用该方法加载资源
+Texture2D image = AssetDatabase.LoadAssetAtPath("Assets/Images/1.jpg", typeof(Texture2D)) as Texture2D; //不使用ab模式使用该方法加载资源,只能在editor模式下
 Resources.UnloadAsset(image);  //只是标记该资源需要被GC回收，但不是立刻就被回收的
 
 // 通知编辑器有资源被修改了
