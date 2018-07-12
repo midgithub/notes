@@ -94,3 +94,9 @@ unity-spine 骨胳动画
 2.闪电链：
 a.动态生成网格，new Mesh(),赋值顶点，uv，三角形，法线,材质球，每帧mat.SetTextureOffset("_MainTex", new Vector2(offset, 0)) uv流动
 b.使用LineRenderer，lineRenderer.SetVertexCount(lineLength)准备好绘制线的点，设置点 _lineRender.SetPosition(i, _linePosList[i]);
+
+2018.7.12
+Renderer  material与sharedMaterial
+1.从效率上来说最好用sharedMaterial，它是共享材质，操作材质的属性（如更换颜色或者更换shader），内存中只会占用一份
+2.要是用material的话，每次更换属性的时候Unity就会自动new一份新的material作用于它。
+直到Application.LoadLevel() 或者Resources.UnloadUnusedAssets();的时候才会施放内存。所以material就有可能会造成内存泄漏。
