@@ -1,3 +1,7 @@
+Recorder:(录制)（支持ui和音效）
+1.Recording in Game Mode ：打开tools/recorder/video 设置好参数，点击 Start Recording 会自动运行游戏录制，录制完自动关闭游戏（条件：场景里timeline不能有Recorder Track，造成同时分别录制会报错）
+2.Recording from a Timeline ：Timeline上加Recorder Track，手动运行游戏，RecorderClip跟随Timeline播放录制
+
 timeline由Playable Director组件驱动
 PlayableAsset：即Timeline资源
 PlayableGraph：混合和修改多个数据源，合成为单一输出后播放 。playableGraph是TimeLine运行时才会创建生存，否则为空
@@ -17,7 +21,13 @@ c. loop:播放完重第一帧重新播放，而不是在Initial Time那一帧
 
 Timeline： 
 
-1.Activation Track: 用于控制gameobject显示隐藏，Activation clip 时显示，可调整clip起止时间，post_playback state:Wrap mode为none时播完的状态
+1.Activation Track: 用于控制gameobject显示隐藏，Activation clip 时显示，可调整clip起止时间：Start: s:开始时间，f:开始时对应的帧
+post_playback state:
+Active(当Timeline播放结束时，将该物体激活，设置为显示状态)
+Inactive(当Timeline播放结束时，该物体取消激活，设置为隐藏状态)
+Revert(当Timeline播放结束时，该物体还原Timeline在第1帧时的激活状态)
+Leave As Is(当Timeline播放结束时，该物体保持在Timeline最后一帧的激活状态)
+
 2.Animation Track:带有Animator组件的物体,Controller可为空，因为不需要动画控制器中的动画状态，而用现在编辑的
 *可调整Animation clip起止时间和速度，超出Animation长度的将停留在该Animation最后一帧，也可只播其中部分(不一定从Animation第一帧播放)
 *add override Track:覆盖轨道,作用是在这个时间段内优先播放该轨道的动作
@@ -33,7 +43,7 @@ Body:1.Tracked Dolly使用路径 2.Transposer:Follow不为空时,跟随
 CinemachineCollider：分析目标障碍、最优目标距离和其他项目的场景，并将他们的拍摄质量评估报告给被清除的父母（看CinemachineClearShot脚本介绍）
 Priority:大的优先使用
 
-a.Cinemachine Brain:虚拟相机大脑，创建VC的时候自动挂载主相机，可自定义切换不同VC是的混合效果，Live Camera（当前选择用哪个虚拟相机，根据vc设定的priority）
+a.Cinemachine Brain:虚拟相机大脑，创建VC的时候自动挂载主相机，可自定义切换不同VC是的混合效果，Live Camera（当前选择用哪个虚拟相机，根据vc设定的priority，实际使用哪个相机可通过timeline控制）
 b.Cinemachine VC：虚拟相机，Cinemachine轨道可混合两个VC，控制不同时间不同的视角，Follow指定目标，即使没用到该VC，也会跟随目标
   Status : Live(正在使用)/Standby(准备使用)/Disable(不能用)
 c.Cinemachine Path:路径，VC可指定Body(Tracked Dolly模式)的path,通过Animation Track可编辑VC按该路径行走（path positon），或VC Follow CinemachineDollyCart目标，就可按path行走
