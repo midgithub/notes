@@ -22,7 +22,7 @@ c. loop:播放完重第一帧重新播放，而不是在Initial Time那一帧
 Timeline： 
 
 1.Activation Track: 用于控制gameobject显示隐藏，Activation clip 时显示，可调整clip起止时间：Start: s:开始时间，f:开始时对应的帧
-post_playback state:
+轨道 post_playback state:
 Active(当Timeline播放结束时，将该物体激活，设置为显示状态)
 Inactive(当Timeline播放结束时，该物体取消激活，设置为隐藏状态)
 Revert(当Timeline播放结束时，该物体还原Timeline在第1帧时的激活状态)

@@ -11,3 +11,6 @@ CheckXXX(返回bool) -> OverlapXXX(返回Collider[]) -> XXXCast(out RaycastHit,返回b
 
 Linecast(Vector3 start, Vector3 end);
 IgnoreCollision(Collider collider1, Collider collider2, [DefaultValue("true")] bool ignore);
+
+Cast:遇到第一个就返回  CastAll:返回范围内所有的
+Physics.SphereCast不能检测到起点半径之内的物体，检测半径内的使用Physics.OverlapSphere来进行检测

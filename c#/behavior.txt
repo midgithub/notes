@@ -1,16 +1,24 @@
-OnAwake -> OnStart -> OnUpdate -> OnEnd -> OnBehaviorComplete
+游戏中的AI角色，可以认为它们一直处于感知（SENSE）->思考（think）->行动（Act）的循环中
+
+OnAwake -> OnStart -> OnUpdate -> OnEnd -> OnBehaviorComplete（Task脚本）
 一个 task 就是一个行为，状态：running(子任务执行中).success(所有子任务执行完并成功).fail(子任务或自身失败，后面任务不执行)
 1.Composities（复合节点）
 2.Decorators（装饰节点）
 3.Actions（行为节点）
 
+task是基于行为树，树的每个节点就是个task
+gameobject可同时绑定多个行为树
 行为树切换：
-1.GetComponents<BehaviorTree>(); 用过 bt.Group 和 bt.name;
+1.GetComponents<BehaviorTree>();  通过 bt.Group 和 bt.name来区分不同行为树
 2.BehaviorManager.instance.IsBehaviorEnabled(bt); bt.EnableBehavior();
 
 Behavior标签：
-ExternalBehavior：编辑好行为树后会导成asset文件，复用行为树
+设置行为树基本信息
+ExternalBehavior：编辑好行为树后可以导成asset文件（使用二进制，在preferences设置），可以指定用其他编辑好的行为数，设为none则使用本身编辑中的
 Restart When Complete，如果勾选了，则行为树遍历完后会再重新启动一次，不断循环
+
+Inspector标签：
+每个task信息
 
 Variables标签：
 可以给行为树添加变量，这些变量可以通过GetVariable跟SetVariableValue来读取和赋值，并可以在各种Task节点里进行传递和赋值

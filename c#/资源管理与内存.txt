@@ -50,5 +50,5 @@ assetBundle.Load如果多次加载相同的资源，除第一次，其它都会返回第一次的对象。Reso
 4.无被引用的资源不在特殊文件夹下 build时不会被加载
 5.场景里不要有Ui,如果一定要有，该UI不要拉预设打包（这时应该不会再手动pushlayer）
 6.公用资源不在一个独立的公用包中，那Unity会把这个公用的资源重复打到多个用到的包中,所以要独立一个包
-7.游戏切换到后台一段时候切回，出现shader或者Texture丢失: 如果shader或者Texture是从AssetBundle中加载出来，而此AssetBundle已经被卸载的话，Unity无法在程序恢复时从内存中加载这些资源
+7.（Shader和Texture的AssetBundle在场景切换前都不要卸载掉）游戏切换到后台一段时候切回，出现shader或者Texture丢失: 如果shader或者Texture是从AssetBundle中加载出来，而此AssetBundle已经被卸载的话，Unity无法在程序恢复时从内存中加载这些资源
 从而造成丢失。这些资源不是已经加载到内存中了么？他们在被加载到GPU之后会被从内存中清除。因此在场景切换前，不要卸载掉其所属的AssetBundle。
