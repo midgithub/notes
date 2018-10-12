@@ -156,3 +156,27 @@ d.导入生成的jar到unity（去掉jar包里的BuildConfig）, android-support-v4.jar
         </provider>
     </application>
 </manifest>
+
+2018.10.12
+implicit ：声明隐式的用户定义类型转换运算符。它可以实现2个不同类的隐式转换 ，提高代码的可读性
+ public class Payment
+{
+     public decimal Amount { get; set; }
+}
+public class PaymentDTO
+{
+    public string AmountString { get; set; }
+
+    public static implicit operator PaymentDTO(Payment payment)   //explicit 
+    {
+        return new PaymentDTO
+        {
+            AmountString = payment.Amount.ToString("C2")
+        };
+    }
+}
+
+使用：PaymentDTO dto = new Payment { Amount = 1 };   //隐式转换不报错
+
+explicit 
+使用：PaymentDTO dto = (PaymentDTO)new Payment { Amount = 1 };  //需显示转换
