@@ -19,6 +19,8 @@ Lua编译器,把用Lua语言编写的程序翻译为二进制文件
 Application.streamingAssetsPath 只能用AssetBundle.LoadFromFile 。如果想用File类操作。 比如File.ReadAllText  或者 File.Exists  Directory.Exists 这样都是不行的。
 
 2017.12.14  LZMA，LZ4和不压缩(三种资源包的压缩方式)
+LZMA：压缩方式优点是包体可以足够的小，缺点是在加载AB包的时候存在一个解压的操作
+LZ4：包体会大一些（四分一），由于LZ4是按照块来读取的，不存在解压的操作，所以会更快点 （使用该方式打包：ChunkBasedCompression）
 AssetBundle.LoadFromFile不能加载压缩过的AssetBundle(不压缩、LZ4),同步创建AssetBundle对象，这是最快的创建方式。创建完成后只会在内存中创建较小的SerializedFile，而后续的AssetBundle.Load需要通过IO从磁盘中获取(同LoadFromCacheOrDownload解压到外部硬盘)
 
 当使用LZMA压缩时，为什么加载后还要进行LZ4 compression？其实AssetBundle的原则是这样的：
@@ -28,6 +30,7 @@ AssetBundle.LoadFromFile不能加载压缩过的AssetBundle(不压缩、LZ4),同步创建AssetBu
 如果不可以直接读取包中的资源(LZMA)：就要先解压，然后压缩成LZ4保存在内存中，供以后取用。
 
 结论：打包使用DeterministicAssetBundle+UncompressedAssetBundle,对bundle进一步压缩http://blog.csdn.net/y1196645376/article/details/52492294），再使用AssetBundle.LoadFromFile加载bundle（推荐方式），如果用www加载要注意不要缓存www,要释放www,只保留assetbundle
+或 使用ChunkBasedCompression 压缩选项（即使用LZ4，速度快，按照Chunk来读取，不想LZMA有那么多变数，唯一的缺点就是包体会大四分之一左右，亦可对bundle进一步压缩）
 
 2017.12.15
 python 使用git命令必需配置 git 环境
@@ -95,9 +98,29 @@ unity-spine 骨胳动画
 a.动态生成网格，new Mesh(),赋值顶点，uv，三角形，法线,材质球，每帧mat.SetTextureOffset("_MainTex", new Vector2(offset, 0)) uv流动
 b.使用LineRenderer，lineRenderer.SetVertexCount(lineLength)准备好绘制线的点，设置点 _lineRender.SetPosition(i, _linePosList[i]);
 
+2018.9.20
+各种内存物件的卸载方式：
+场景物件（GameObject）：这类物件可通过Destroy函数进行卸载；
+资源（包括Prefab）：除了Prefab以外，资源文件可以通过三种方式来卸载：
+1) 通过Resources.UnloadAsset卸载指定的资源，CPU开销小；
+2)通过Resources.UnloadUnusedAssets一次性卸载所有未被引用的资源，CPU开销大；
+3)通过AssetBundle.Unload(true)在卸载AssetBundle对象时，将加载出来的资源一起卸载。
+而对于Prefab，目前仅能通过DestroyImmediate来卸载，且卸载后，必须重新加载AssetBundle才能重新加载该Prefab。由于内存开销较小，通常不建议进行针对性地卸载。
+AssetBundle对象：AssetBundle.Unload(xxx)
+
 2018.9.27
 Physics.SphereCast 球形射线不能检测到起点半径之内的物体
 RayCast  射线从Collider内部发出，那么这个Coiilder会被Ignore掉
+
+2018.9.30
+动画文件优化：只裁剪动画文件的压缩精度，没有引起Curve减少。BlobSize是不会有任何变化的，因为每个浮点数固定占32bit，而文件大小、AB大小、Editor下的内存都会变小；
+裁剪动画文件的精度：裁剪精度所以动画的点更稀疏了，而连续相同的点更多，所以Dense Curve是减少了，Constant Curve是增多了，总的内存是减小了
+
+2018.9.31
+Shader.Find是只能查找到直接被build进APP的Shader有效，也就是放在Resource目录下的和Always Inlude里面包含的
+Shader.parse: 主要是在加载shader (耗时可以使用always include或者使用AB包并常驻内存不去卸载来解决,游戏初始化的时候加载)
+Shader.CreateGpuProgram: 去通知Gpu有新的Shader加载进来,需要GPU对这个Shader针对目标平台进行编译,不然GPU也不知道要如何渲染目标物体
+（所有的Shader都加载出来，然后做一次Shader.Find的操作，Shader.Find就相当于通知GLProgram链接Shader的一个过程）
 
 2018.10.9（apk更新）
 persistentDataPath目录下版本.txt 文件用WWW不能加载(Connection refused),用File读取
@@ -180,3 +203,11 @@ public class PaymentDTO
 
 explicit 
 使用：PaymentDTO dto = (PaymentDTO)new Payment { Amount = 1 };  //需显示转换
+
+2018.10.16
+streamingAssets这个目录(只读的)在打包成APK的时候是不存在的，里面的文件会放在assets的目录下
+RuntimePlatform.Android："jar:file://" + Application.dataPath + "!/assets/" = Application.streamingAssetsPath = ＝ jar:file:///data/app/com.xxx.xxx-1.apk!/assets (只能用www加载)
+**Application.dataPath+”!assets” 比上面少了一个   jar:file:// ，所以用这个时可以用AssetBundle.LoadFromFile加载资源
+RuntimePlatform.IPhonePlayer: Application.dataPath + "/Raw/";
+**APK是一个安卓的压缩包，用WWW来读取的时候文件的地址必须是file://的形式，因为WWW进行的是远程读取，类似网页
+persitent路径无论在什么平台下都是本地路径，所以可以直接通过Directory或者File等文件操作的类来进行文件的读取
