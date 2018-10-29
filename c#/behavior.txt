@@ -1,20 +1,46 @@
-OnAwake -> OnStart -> OnUpdate -> OnEnd -> OnBehaviorComplete
+游戏中的AI角色，可以认为它们一直处于感知（SENSE）->思考（think）->行动（Act）的循环中
+
+行为树是从上到下从左到右执行的
+
+OnAwake -> OnStart -> OnUpdate -> OnEnd -> OnBehaviorComplete（Task脚本）
 一个 task 就是一个行为，状态：running(子任务执行中).success(所有子任务执行完并成功).fail(子任务或自身失败，后面任务不执行)
 1.Composities（复合节点）
-2.Decorators（装饰节点）
+2.Conditions (条件节点，循环判断只返回success或fail，不返回running状态)
 3.Actions（行为节点）
+2.Decorators（装饰节点，只能有一个子节点）
 
+task是基于行为树，树的每个节点就是个task
+gameobject可同时绑定多个行为树
 行为树切换：
-1.GetComponents<BehaviorTree>(); 用过 bt.Group 和 bt.name;
-2.BehaviorManager.instance.IsBehaviorEnabled(bt); bt.EnableBehavior();
+1.GetComponents<BehaviorTree>();  通过 bt.Group 和 bt.name来区分不同行为树
+2.BehaviorManager.instance.IsBehaviorEnabled(bt); //是否已启动
+bt.EnableBehavior(); //手动启动行为树
 
 Behavior标签：
-ExternalBehavior：编辑好行为树后会导成asset文件，复用行为树
+设置行为树基本信息
+ExternalBehavior：编辑好行为树后可以导成asset文件（使用二进制，在preferences设置），可以指定用其他编辑好的行为数，设为none则使用本身编辑中的
+Start When Enable  建议不要选上，否则你很难控制并保证前期初始化工作，会在AI启动之前完成。
+Paused When Disable 如果不选上，当你Disable掉GameObject的时候，行为树是被停止，而不是暂停。选上他，当你再次激活GameObject的时候，行为树会被自动启动。
 Restart When Complete，如果勾选了，则行为树遍历完后会再重新启动一次，不断循环
 
-Variables标签：
-可以给行为树添加变量，这些变量可以通过GetVariable跟SetVariableValue来读取和赋值，并可以在各种Task节点里进行传递和赋值
 
+Variables标签：
+创建自定义变量：SharedXXX : SharedVariable<XXX>  
+可以给行为树添加变量，这些变量可以通过GetVariable跟SetVariableValue来读取和赋值，并可以在各种Task节点里进行传递和赋值
+global variables:变量范围是所有的行为树，所有行为树都可访问，
+GlobalVariables.Instance.SetVariableValue("gInt", 37);
+(int)GlobalVariables.Instance.GetVariable("gInt").GetValue();
+
+Inspector标签：
+每个task信息
+Instant选项: 当一个 task 任务返回成功或者失败后，行为树会在同一帧中立刻移动到下一个 task 任务。没有选择 instant 选项，那么在当前 task 任务执行完毕后，都会停留在当前节点中，
+直到收到了下一个 tick，才会移动到下一个 task 任务.如果有Task是延迟事件，也就是需要运行一段时间的事件，那么他要被标记为非Instant，并且他的上层父节点，也要被标记为非Instant，
+否则他会在执行之后，立刻向上层报告，导致整个行为树重新计算
+
+非Shared变量，该变量只能在该task使用，外部task访问不到，所以无法通过外部修改该变量值
+SharedXX变量：可以选择要不要绑定所属行为树里同类型的变量,绑定后变量可以与外部互通，通过 .Value 赋值取值
+
+使用：
 导成二进制文件（一个xxxx.asset文件，它是作为ExternalBehaviorTree存储的）动态添加行为树：
 var bt = gameObject.AddComponent<BehaviorTree> ();  
 var extBt = Resources.Load<ExternalBehaviorTree> ("Behavior");  
@@ -22,16 +48,26 @@ bt.StartWhenEnabled = false;
 bt.ExternalBehavior = extBt;  
 bt.EnableBehavior ();  
 
-idle:停止 wait:等待多少秒
-sequece:子任务顺序执行从左到右 （and）
-selector:子任务顺序执行从左到右,遇到有一个子任务成功就自身成功，后面子任务不执行了（or）
+bt.GetOwnerName();   //transform name
+bt.FindTask<Eat>();  //FindTaskWithName
 
-AbortType:
+bt.SetVariableValue("sleepTime", 20);
+(int)bt.GetVariable("eatTime").GetValue()
+
+taks里获取数的变量：(int)Owner.GetVariable("eatTime").GetValue()
+
+idle:停止，一直返回running   wait:等待多少秒
+Parallel：并行运行子任务，结果取与（有个子任务失败就返回失败，否则有running就返回running）
+sequece:子任务顺序执行从左到右 （and），有一个失败就返回fail，后面task不执行
+selector:子任务顺序执行从左到右,遇到有一个子任务成功就自身成功，后面子任务不执行了（or）
+Parallel Selector Node:有一个子节点返回True，那么它自己则将会返回True，并结束其它所有的子节点
+
+Composities的AbortType:
 0.none 执行一次
-1.lower priority 可以打断低优先级的同级任务当自身true（循环判断）
-2.self 可以打断自身当自身fail（循环判断直到自身fail）
+1.lower priority 可以打断低优先级的同级任务当自身true（循环子任务中判断返回true）(在行为树中，右边的节点比左边的节点权限低)
+2.self 可以打断自身（循环子任务中判断返回fail时中断自己）
 3.both 上面两个结合
 
-Shared类型:该行为数的全局变量，不同task可以共享变量
-
-patrol：巡逻，按指定路线点先找到最近的点为第一目标点，然后顺序循环下面的路线点，没导航路线了顺序下去
+patrol：巡逻，按指定路线点先找到最近的点为第一目标点，然后顺序循环下面的路线点，没导航路线了顺序下去,保持running
+seek: 向指定的目标物或目标点所在位置移动
+can see object: 目标transform是否在视野扇形范围内
