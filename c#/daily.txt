@@ -211,3 +211,15 @@ RuntimePlatform.Android："jar:file://" + Application.dataPath + "!/assets/" = Ap
 RuntimePlatform.IPhonePlayer: Application.dataPath + "/Raw/";
 **APK是一个安卓的压缩包，用WWW来读取的时候文件的地址必须是file://的形式，因为WWW进行的是远程读取，类似网页
 persitent路径无论在什么平台下都是本地路径，所以可以直接通过Directory或者File等文件操作的类来进行文件的读取
+
+2018.10.18
+1.FBX上的Read/Write Enabled关闭后，内存中便不再保存其Mesh的副本（只存在显存中），供粒子系统使用的Mesh是需要开启Read/Write Enabled的
+2.资源冗余得越多，切换场景时，UnloadUnusedAssets的开销越大，进而增加了场景的切换时间
+
+2018.11.1
+1.StreamingAssets里不能有中文资源
+2.更新下载 bundl名称不能有空格
+3.GetDependencies() 获取依赖可能返回自己，就像材质球文件获取依赖只返回自己而得不到shader依赖文件，但是如果预设依赖于该材质球，该预设会获取到材质球和shader文件依赖
+4.shader 有可能依赖默认图片
+5.文件是双后缀的Bundle.LoadAsset会失败(如.lua.txt)
+
