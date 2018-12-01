@@ -28,31 +28,32 @@ public class Packager
     static List<string> bundleFiles = new List<string>();
     static List<string> searched = new List<string>();
 
-    static bool keepManifet = true;
+    static bool keepManifest = false;
+    static bool writeRefFile = false;
     static bool justSetNames = false;  //查看依赖使用
     static List<string> folderBundles = new List<string>();
     static MType curBundleType = MType.Lua;
 
-    [MenuItem("SenTools/Set Bundle Name/UI", false, 101)]
-    static void SetUIBundleNames()
+    [MenuItem("BuildAppEditeTools/Set Bundle Name/UI", false, 701)]
+    static public void SetUIBundleNames()
     {
         SetBundleNames(MType.UI);
     }
 
-    [MenuItem("SenTools/Set Bundle Name/Lua", false, 102)]
-    static void SetLuaBundleNames()
+    [MenuItem("BuildAppEditeTools/Set Bundle Name/Lua", false, 702)]
+    static public void SetLuaBundleNames()
     {
         SetBundleNames(MType.Lua);
     }
 
-    [MenuItem("SenTools/Set Bundle Name/World", false, 103)]
-    static void SetWorldBundleNames()
+    [MenuItem("BuildAppEditeTools/Set Bundle Name/World", false, 703)]
+    static public void SetWorldBundleNames()
     {
         SetBundleNames(MType.World);
     }
 
-    [MenuItem("SenTools/Set Bundle Name/All", false, 104)]
-    static void SetAllBundleNames()
+    [MenuItem("BuildAppEditeTools/Set Bundle Name/All", false, 704)]
+    static public void SetAllBundleNames()
     {
         SetBundleNames(MType.All);
     }
@@ -90,24 +91,24 @@ public class Packager
         Debug.Log("Set Assets Bundle Name Over----");
     }
 
-    [MenuItem("SenTools/Clear Assets Bundle Name", false, 104)]
-    static void ClearBundleNames()
+    [MenuItem("BuildAppEditeTools/Clear Assets Bundle Name", false, 704)]
+    static public void ClearBundleNames()
     {
         ClearBundleName();
         AssetDatabase.Refresh();
         Debug.Log("Clear Asset Bundle Name Over----");
     }
 
-    [MenuItem("SenTools/Publish/Export All Assets", false, 100)]
-    static void HandleAllBundle()
+    [MenuItem("BuildAppEditeTools/Publish/Export All Assets", false, 15)]
+    static public void HandleAllBundle()
     {
         HandleUIBundle();
         HandleLuaBundle();
         HandleWorldBundle();
     }
 
-    [MenuItem("SenTools/Publish/Export UI Assets", false, 101)]
-    static void HandleUIBundle()
+    [MenuItem("BuildAppEditeTools/Publish/Export UI Assets", false, 16)]
+    static public void HandleUIBundle()
     {
         curBundleType = MType.UI;
         // 清空文件夹
@@ -156,8 +157,8 @@ public class Packager
         BuildEnd(strDirPath);
     }
 
-    [MenuItem("SenTools/Publish/Export Lua Assets", false, 102)]
-    static void HandleLuaBundle()
+    [MenuItem("BuildAppEditeTools/Publish/Export Lua Assets", false, 17)]
+    static public void HandleLuaBundle()
     {
         curBundleType = MType.Lua;
         // 清空文件夹
@@ -204,8 +205,8 @@ public class Packager
         BuildEnd(strDirPath);
     }
 
-    [MenuItem("SenTools/Publish/Export World Assets", false, 103)]
-    static void HandleWorldBundle()
+    [MenuItem("BuildAppEditeTools/Publish/Export World Assets", false, 18)]
+    static public void HandleWorldBundle()
     {
         curBundleType = MType.World;
         // 清空文件夹
@@ -239,11 +240,6 @@ public class Packager
             ext = Path.GetExtension(f);
             bundleFile = "Assets/" + f.Replace(dataPath, "");
             bundleName = (f.Replace(dataPath, "").Replace(searchDir, "").Replace(ext, "") + AppConst.ExtName).ToLower();
-            //var items = bundleName.Split('.');
-            //if (items.Length > 2)
-            //{
-            //    bundleName = items[0] + "." + items[items.Length - 1];
-            //}
 
             //过滤 lua 和 UI Data
             string head = bundleName.Split('/')[0];
@@ -339,11 +335,11 @@ public class Packager
 
         if (buildType == BuildType.AssetBundleBuild)
         {
-            BuildPipeline.BuildAssetBundles(outputPath, maps.ToArray(), BuildAssetBundleOptions.ChunkBasedCompression, EditorUserBuildSettings.activeBuildTarget);
+            BuildPipeline.BuildAssetBundles(outputPath, maps.ToArray(), BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
         }
         else
         {
-            BuildPipeline.BuildAssetBundles(outputPath, BuildAssetBundleOptions.ChunkBasedCompression, EditorUserBuildSettings.activeBuildTarget);
+            BuildPipeline.BuildAssetBundles(outputPath, BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
         }
     }
 
@@ -399,6 +395,7 @@ public class Packager
         }
 
         string bundleFile = string.Empty;
+        string fileName = string.Empty;
         string bundleName = string.Empty;
         string ext = string.Empty;
 
@@ -410,30 +407,75 @@ public class Packager
             {
                 bundleFile = item.Key;
 
-                ext = bundleFile.Substring(bundleFile.LastIndexOf("."));
-                bundleName = baseFolder + "depends/" + (bundleFile.Replace("Assets/","").Replace(ext, "") + AppConst.ExtName).ToLower(); //单独打包
-
-                bool checkFolderBendle = true;
+                ext = bundleFile.Substring(bundleFile.LastIndexOf(".")+1);
+                fileName = bundleFile.Substring(bundleFile.LastIndexOf("/")+1);
                 if (ext.IsTexture())
                 {
-                    checkFolderBendle = false;
+                    bundleName = baseFolder + "depends/" + (bundleFile.Replace("Assets/", "").Replace(fileName, "") + "textures" + AppConst.ExtName).ToLower();
+                }
+                else
+                {
+                    bundleName = baseFolder + "depends/" + (bundleFile.Replace("Assets/", "").Replace(fileName, "") + ext.ToLower() + "s" + AppConst.ExtName).ToLower();
+                }
+                
+                bool checkFolderBundle = true;
+                if (ext.IsTexture())
+                {
+                    //if (bundleFile.StartsWith("Assets/Atlas"))
+                    {
+                        bundleName = baseFolder + "depends/" + (bundleFile.Replace("Assets/", "").Replace(bundleFile.Substring(bundleFile.LastIndexOf(".")), "") + AppConst.ExtName).ToLower(); //单独打包
+                    }
 
                     string shader = "Assets/" + AppConst.ResDataDir + "Shaders";
+                    string file = string.Empty;
+                    bool refOut = false;
                     for (int i = 0; i < item.Value.Count; i++)
                     {
-                        if (item.Value[i].StartsWith(shader) && item.Value[i].EndsWith(".shader"))
+                        file = item.Value[i];
+
+                        if (file.StartsWith(shader) && file.EndsWith(".shader"))
                         {
+                            refOut = true;
                             bundleName = baseFolder + "shaders" + AppConst.ExtName;
                             break;
                         }
+
+                        if (!IsOtherMatRef(bundleFile, file))
+                        {
+                            refOut = true;
+                        }
+                    }
+
+                    if (refOut)
+                    {
+                        checkFolderBundle = false;
+                    }else
+                    {
+                        checkFolderBundle = true;
                     }
                 }
 
-                SetFileBundleName(bundleFile, bundleName, checkFolderBendle);
+                SetFileBundleName(bundleFile, bundleName, checkFolderBundle);
             }
         }
 
         UpdateProgress(depends.Count, depends.Count, "depend assets build over");
+    }
+
+    static bool IsOtherMatRef(string str1, string str2)
+    {
+        if (str2.EndsWith(".mat"))
+        {
+            string path1 = str1.Substring(0, str1.LastIndexOf('/'));
+            string path2 = str2.Substring(0, str2.LastIndexOf('/'));
+            path2 = path2.Replace("/Materials", "");
+            if (!path1.Equals(path2))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     static void ClearManifestFile(string path)
@@ -447,7 +489,7 @@ public class Packager
         for (int i = 0; i < files.Count; i++)
         {
             string file = files[i];
-            if (!keepManifet && file.EndsWith(".manifest"))
+            if (!keepManifest && file.EndsWith(".manifest"))
             {
                 File.Delete(file);
                 continue;
@@ -480,7 +522,7 @@ public class Packager
         foreach (string dir in dirs)
         {
             string bundleName = dir.Replace('\\', '/').Replace(dataPath, "").Replace("ResData/", "");
-            if(!bundleName.Equals("UI/Atlas") && !bundleName.Equals("UI/Prefabs") && !bundleName.Equals("UI/depends"))
+            if(!bundleName.Equals("UI/Atlas") && !bundleName.Equals("UI/Prefabs"))
             {
                 folderBundles.Add(bundleName.ToLower());
             }
@@ -518,6 +560,7 @@ public class Packager
 
     static bool AddFolderBundles(string path)
     {
+        path = path.Replace('\\', '/');
         bool addChild = false;
         string dataPath = Application.dataPath + "/";
         string[] dirs = Directory.GetDirectories(path);
@@ -554,38 +597,11 @@ public class Packager
         if (bundleFiles.Contains(file)) return;
         bundleFiles.Add(file);
 
-        //临时特殊处理下
-        //if (file.StartsWith("Assets/AssetsRaw/Effect/Textures"))
-        //{
-        //    string baseFolder = "";
-        //    if (curBundleType == MType.UI)
-        //    {
-        //        baseFolder = "ui/";
-        //    }
-
-        //    var fileName = Path.GetFileName(file);
-        //    if (fileName.EndsWith(".mat"))
-        //    {
-        //        if(file.Replace(fileName, "").EndsWith("Material/"))
-        //        {
-        //            abName = baseFolder + "depends/" + file.Replace("Assets/", "").Replace(".mat","").ToLower() + AppConst.ExtName;
-        //        }
-        //        else
-        //        {
-        //            abName = baseFolder + "depends/" + file.Replace("Assets/", "").Replace(fileName, "").Replace("Materials/", "").ToLower() + "mats" + AppConst.ExtName;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        abName = baseFolder + "depends/" + file.Replace("Assets/", "").Replace("/" + fileName, "").ToLower() + AppConst.ExtName;
-        //    }
-        //}
-
         if(checkFolderBundle)
         {
             for (int i = 0; i < folderBundles.Count; i++)
             {
-                if (abName.StartsWith(folderBundles[i]))
+                if (abName.StartsWith(folderBundles[i]) && abName.Replace(folderBundles[i],"").StartsWith("/"))
                 {
                     abName = folderBundles[i] + AppConst.ExtName;
                     break;
@@ -637,6 +653,8 @@ public class Packager
     //写引用文件
     static void WriteRefInfoFile(string folder)
     {
+        if (!writeRefFile) return;
+
         ///----------------------创建文件列表-----------------------
         string newFilePath = folder + "/refInfo.txt";
         if (File.Exists(newFilePath)) File.Delete(newFilePath);
@@ -661,6 +679,14 @@ public class Packager
 
         sw.Close();
         fs.Close();
+    }
+
+    [MenuItem("BuildAppEditeTools/Test/Write Files", false,905)]
+    public static void WriteFiles()
+    {
+        BuildFileIndex();  //写files文件
+        AssetDatabase.Refresh();
+        Debug.Log("Write Files Over----");
     }
 
     static void BuildFileIndex()
@@ -690,7 +716,7 @@ public class Packager
         fs.Close();
     }
 
-    [MenuItem("SenTools/Apk Build", false, 106)]
+    [MenuItem("BuildAppEditeTools/Test/Apk Build", false, 906)]
     static void PublishAndroidAPK()
     {
         BuildFileIndex();

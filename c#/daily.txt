@@ -221,5 +221,7 @@ persitent路径无论在什么平台下都是本地路径，所以可以直接通过Directory或者File等文
 2.更新下载 bundl名称不能有空格
 3.GetDependencies() 获取依赖可能返回自己，就像材质球文件获取依赖只返回自己而得不到shader依赖文件，但是如果预设依赖于该材质球，该预设会获取到材质球和shader文件依赖
 4.shader 有可能依赖默认图片
-5.文件是双后缀的Bundle.LoadAsset会失败(如.lua.txt)
+5.引擎不识别lua和bin文件，所以打bundle要加.txt后缀，LoadAsset时也要加后缀
+6.BuildAssetBundleOptions.None 是使用LZMA压缩比比较高，内存：LZ4压缩的包的大小。性能：从磁盘读取+ LZMA压缩+ LZ4压缩。
+BuildAssetBundleOptions.ChunkBasedCompression 是使用LZ4压缩比比较低，内存：没有额外的开销。性能：从磁盘读取
 
