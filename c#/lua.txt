@@ -30,6 +30,17 @@ mt.__index = function(mytable, key)
 local t1 = {};
 setmetatable(t1, mt);
 
+__newindex：当给你的表中不存在的值进行赋值时，lua解释器则会寻找__newindex元方法，注意要使用rawset来进行赋值
+mt.__newindex = function (table ,key ,value)
+      if key == "wangbin" then
+          rawset(table ,"wangbin" ,"yes,i am")
+      end
+      --table.key = "yes,i am" --不用rawset程序会陷入了死循环
+end
+
+rawget: 对table进行了一次“原始的（raw）”访问,绕过__index方法（访问表中的元素不存在时会触发__index元方法）
+
+
 Lua查找一个表元素时的规则，其实就是如下3个步骤:
 1.在表中查找，如果找到，返回该元素，找不到则继续
 2.判断该表是否有元表，如果没有元表，返回nil，有元表则继续。

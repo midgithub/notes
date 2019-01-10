@@ -28,7 +28,7 @@ public class Packager
     static List<string> bundleFiles = new List<string>();
     static List<string> searched = new List<string>();
 
-    static bool keepManifest = false;
+    static bool keepManifest = true;
     static bool writeRefFile = false;
     static bool justSetNames = false;  //查看依赖使用
     static List<string> folderBundles = new List<string>();
@@ -133,17 +133,30 @@ public class Packager
         string ext = string.Empty;
         string bundleName = string.Empty;
         string bundleFile = string.Empty;
+        string dir = string.Empty;
 
         int n = 0;
         foreach (string f in files)
         {
             ext = Path.GetExtension(f);
+            dir = Path.GetDirectoryName(f);
+
             bundleFile = "Assets/" + f.Replace(dataPath, "");
-            bundleName = "ui/" + (f.Replace(dataPath, "").Replace(searchDir, "").Replace(ext, "") + AppConst.ExtName).ToLower();
+            bool check = false;
+            if (bundleFile.Contains("UI/Prefabs/"))
+            {
+                bundleName = (dir.Replace(dataPath, "").Replace(AppConst.ResDataDir, "") + AppConst.ExtName).ToLower();
+            }
+            else
+            {
+                check = true;
+                bundleName = "ui/" + (f.Replace(dataPath, "").Replace(searchDir, "").Replace(ext, "") + AppConst.ExtName).ToLower();
+            }
+           
 
             AddDepends(bundleFile);
 
-            SetFileBundleName(bundleFile, bundleName);
+            SetFileBundleName(bundleFile, bundleName, check);
             UpdateProgress(n++, files.Count, bundleFile);
         }
 
@@ -239,7 +252,7 @@ public class Packager
 
             ext = Path.GetExtension(f);
             bundleFile = "Assets/" + f.Replace(dataPath, "");
-            bundleName = (f.Replace(dataPath, "").Replace(searchDir, "").Replace(ext, "") + AppConst.ExtName).ToLower();
+            bundleName = (f.Replace(dataPath, "").Replace(searchDir, ""). Replace(ext, "") + AppConst.ExtName).ToLower();
 
             //过滤 lua 和 UI Data
             string head = bundleName.Split('/')[0];
@@ -309,11 +322,11 @@ public class Packager
         {
             Directory.CreateDirectory(dir);
         }
-        else
-        {
-            Directory.Delete(dir, true);
-            Directory.CreateDirectory(dir);
-        }
+        //else
+        //{
+        //    Directory.Delete(dir, true);
+        //    Directory.CreateDirectory(dir);
+        //}
     }
 
     static void BuildInit()
@@ -333,13 +346,19 @@ public class Packager
     {
         if (justSetNames) return;
 
+        BuildAssetBundleOptions opt = BuildAssetBundleOptions.ChunkBasedCompression;
+        //if(EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS)
+        //{
+        //    opt = BuildAssetBundleOptions.None;
+        //}
+
         if (buildType == BuildType.AssetBundleBuild)
         {
-            BuildPipeline.BuildAssetBundles(outputPath, maps.ToArray(), BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
+            BuildPipeline.BuildAssetBundles(outputPath, maps.ToArray(), opt, EditorUserBuildSettings.activeBuildTarget);
         }
         else
         {
-            BuildPipeline.BuildAssetBundles(outputPath, BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
+            BuildPipeline.BuildAssetBundles(outputPath, opt, EditorUserBuildSettings.activeBuildTarget);
         }
     }
 
@@ -421,7 +440,7 @@ public class Packager
                 bool checkFolderBundle = true;
                 if (ext.IsTexture())
                 {
-                    //if (bundleFile.StartsWith("Assets/Atlas"))
+                    if (bundleFile.StartsWith("Assets/Atlas"))
                     {
                         bundleName = baseFolder + "depends/" + (bundleFile.Replace("Assets/", "").Replace(bundleFile.Substring(bundleFile.LastIndexOf(".")), "") + AppConst.ExtName).ToLower(); //单独打包
                     }
@@ -526,15 +545,15 @@ public class Packager
             {
                 folderBundles.Add(bundleName.ToLower());
             }
-            else if (bundleName.Equals("UI/Prefabs"))
-            {
-                string[] dirs1 = Directory.GetDirectories(dataPath + "ResData/UI/Prefabs");
-                foreach (string dir1 in dirs1)
-                {
-                    string bundleName1 = dir1.Replace('\\', '/').Replace(dataPath, "").Replace("ResData/", "");
-                    folderBundles.Add(bundleName1.ToLower());
-                }
-            }
+            //else if (bundleName.Equals("UI/Prefabs"))
+            //{
+            //    string[] dirs1 = Directory.GetDirectories(dataPath + "ResData/UI/Prefabs", "*", SearchOption.AllDirectories);
+            //    foreach (string dir1 in dirs1)
+            //    {
+            //        string bundleName1 = dir1.Replace('\\', '/').Replace(dataPath, "").Replace("ResData/", "");
+            //        folderBundles.Add(bundleName1.ToLower());
+            //    }
+            //}
         }
 
         folderBundles.Add("ui/depends/igsoft_resources");
@@ -554,6 +573,16 @@ public class Packager
         AddFolderBundles(dataPath + "AssetsRaw/Animation");
         AddFolderBundles(dataPath + "AssetsRaw/Effect");
         AddFolderBundles(dataPath + "AssetsRaw/Scene");
+
+        string[] dirs = Directory.GetDirectories(dataPath + "ResData/Sound");
+        foreach (string dir in dirs)
+        {
+            string bundleName = dir.Replace('\\', '/').Replace(dataPath, "").Replace("ResData/", "");
+            if (!bundleName.Equals("Sound/scene"))
+            {
+                folderBundles.Add(bundleName.ToLower());
+            }
+        }
 
         Debug.Log("SetWorldfolderBundles ---");
     }
@@ -753,7 +782,7 @@ public class Packager
         foreach (EditorBuildSettingsScene e in EditorBuildSettings.scenes)
         {
             if (e == null) continue;
-            if (e.enabled && (e.path.Contains("ThirdPartyUI")))
+            if (e.enabled && (e.path.Contains("ThirdPartyUI") || e.path.Contains("Init") || e.path.Contains("LoginOut")))
             {
                 names.Add(e.path);
             } 

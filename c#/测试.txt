@@ -1,0 +1,8 @@
+wetest:
+免root测试：
+1.官网客户端性能测试 下载wetest助手安装到手机
+2.下载免root工具 cube-pc-64bit 到pc ，运行
+3.启动wetest助手选择对应的服务和对应的app
+
+uwa 下载uwa 插件，导入工程Android.unitypackage包，拉入预设到第一个场景
+编译的包类型必须是develop，手机安装UWATool_Android.apk

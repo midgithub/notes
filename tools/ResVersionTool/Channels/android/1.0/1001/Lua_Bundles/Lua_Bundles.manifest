@@ -1,0 +1,304 @@
+ManifestFileVersion: 0
+CRC: 651857115
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: lua.unity3d
+      Dependencies: {}
+    Info_1:
+      Name: lua/config.unity3d
+      Dependencies: {}
+    Info_2:
+      Name: lua/data.unity3d
+      Dependencies: {}
+    Info_3:
+      Name: lua/model.unity3d
+      Dependencies: {}
+    Info_4:
+      Name: lua/net.unity3d
+      Dependencies: {}
+    Info_5:
+      Name: lua/ui/activity.unity3d
+      Dependencies: {}
+    Info_6:
+      Name: lua/ui/activity/boss.unity3d
+      Dependencies: {}
+    Info_7:
+      Name: lua/ui/appendequip.unity3d
+      Dependencies: {}
+    Info_8:
+      Name: lua/ui/arena.unity3d
+      Dependencies: {}
+    Info_9:
+      Name: lua/ui/auction.unity3d
+      Dependencies: {}
+    Info_10:
+      Name: lua/ui/bag.unity3d
+      Dependencies: {}
+    Info_11:
+      Name: lua/ui/beautywoman.unity3d
+      Dependencies: {}
+    Info_12:
+      Name: lua/ui/bossfuben.unity3d
+      Dependencies: {}
+    Info_13:
+      Name: lua/ui/buffrecord.unity3d
+      Dependencies: {}
+    Info_14:
+      Name: lua/ui/business.unity3d
+      Dependencies: {}
+    Info_15:
+      Name: lua/ui/cailiaofb.unity3d
+      Dependencies: {}
+    Info_16:
+      Name: lua/ui/chat.unity3d
+      Dependencies: {}
+    Info_17:
+      Name: lua/ui/common.unity3d
+      Dependencies: {}
+    Info_18:
+      Name: lua/ui/compose.unity3d
+      Dependencies: {}
+    Info_19:
+      Name: lua/ui/coupon.unity3d
+      Dependencies: {}
+    Info_20:
+      Name: lua/ui/cross.unity3d
+      Dependencies: {}
+    Info_21:
+      Name: lua/ui/crown.unity3d
+      Dependencies: {}
+    Info_22:
+      Name: lua/ui/daily.unity3d
+      Dependencies: {}
+    Info_23:
+      Name: lua/ui/dungeon.unity3d
+      Dependencies: {}
+    Info_24:
+      Name: lua/ui/equip.unity3d
+      Dependencies: {}
+    Info_25:
+      Name: lua/ui/equip/equipcollect.unity3d
+      Dependencies: {}
+    Info_26:
+      Name: lua/ui/equip/equipgroup.unity3d
+      Dependencies: {}
+    Info_27:
+      Name: lua/ui/equip/equipshenyou.unity3d
+      Dependencies: {}
+    Info_28:
+      Name: lua/ui/equip/equipsmriti.unity3d
+      Dependencies: {}
+    Info_29:
+      Name: lua/ui/equip/equiptrain.unity3d
+      Dependencies: {}
+    Info_30:
+      Name: lua/ui/everydayexam.unity3d
+      Dependencies: {}
+    Info_31:
+      Name: lua/ui/expfuben.unity3d
+      Dependencies: {}
+    Info_32:
+      Name: lua/ui/expoffline.unity3d
+      Dependencies: {}
+    Info_33:
+      Name: lua/ui/familiar.unity3d
+      Dependencies: {}
+    Info_34:
+      Name: lua/ui/fetter.unity3d
+      Dependencies: {}
+    Info_35:
+      Name: lua/ui/guardwar.unity3d
+      Dependencies: {}
+    Info_36:
+      Name: lua/ui/guild.unity3d
+      Dependencies: {}
+    Info_37:
+      Name: lua/ui/guild/union.unity3d
+      Dependencies: {}
+    Info_38:
+      Name: lua/ui/hero.unity3d
+      Dependencies: {}
+    Info_39:
+      Name: lua/ui/herofuben.unity3d
+      Dependencies: {}
+    Info_40:
+      Name: lua/ui/herotitle.unity3d
+      Dependencies: {}
+    Info_41:
+      Name: lua/ui/honorequip.unity3d
+      Dependencies: {}
+    Info_42:
+      Name: lua/ui/hunqi.unity3d
+      Dependencies: {}
+    Info_43:
+      Name: lua/ui/jingjie.unity3d
+      Dependencies: {}
+    Info_44:
+      Name: lua/ui/levelfuben.unity3d
+      Dependencies: {}
+    Info_45:
+      Name: lua/ui/licai.unity3d
+      Dependencies: {}
+    Info_46:
+      Name: lua/ui/login.unity3d
+      Dependencies: {}
+    Info_47:
+      Name: lua/ui/lottery.unity3d
+      Dependencies: {}
+    Info_48:
+      Name: lua/ui/luckturn.unity3d
+      Dependencies: {}
+    Info_49:
+      Name: lua/ui/magickey.unity3d
+      Dependencies: {}
+    Info_50:
+      Name: lua/ui/main.unity3d
+      Dependencies: {}
+    Info_51:
+      Name: lua/ui/map.unity3d
+      Dependencies: {}
+    Info_52:
+      Name: lua/ui/newwing.unity3d
+      Dependencies: {}
+    Info_53:
+      Name: lua/ui/npc.unity3d
+      Dependencies: {}
+    Info_54:
+      Name: lua/ui/onlinereward.unity3d
+      Dependencies: {}
+    Info_55:
+      Name: lua/ui/otherplayerinfo.unity3d
+      Dependencies: {}
+    Info_56:
+      Name: lua/ui/perfusion.unity3d
+      Dependencies: {}
+    Info_57:
+      Name: lua/ui/rank.unity3d
+      Dependencies: {}
+    Info_58:
+      Name: lua/ui/recharge.unity3d
+      Dependencies: {}
+    Info_59:
+      Name: lua/ui/reslevel.unity3d
+      Dependencies: {}
+    Info_60:
+      Name: lua/ui/resourcesrecovery.unity3d
+      Dependencies: {}
+    Info_61:
+      Name: lua/ui/revive.unity3d
+      Dependencies: {}
+    Info_62:
+      Name: lua/ui/ride.unity3d
+      Dependencies: {}
+    Info_63:
+      Name: lua/ui/roleinfo.unity3d
+      Dependencies: {}
+    Info_64:
+      Name: lua/ui/roleselect.unity3d
+      Dependencies: {}
+    Info_65:
+      Name: lua/ui/secrectdupl.unity3d
+      Dependencies: {}
+    Info_66:
+      Name: lua/ui/setting.unity3d
+      Dependencies: {}
+    Info_67:
+      Name: lua/ui/sevendaylogin.unity3d
+      Dependencies: {}
+    Info_68:
+      Name: lua/ui/shenbing.unity3d
+      Dependencies: {}
+    Info_69:
+      Name: lua/ui/shield.unity3d
+      Dependencies: {}
+    Info_70:
+      Name: lua/ui/skill.unity3d
+      Dependencies: {}
+    Info_71:
+      Name: lua/ui/social.unity3d
+      Dependencies: {}
+    Info_72:
+      Name: lua/ui/strong.unity3d
+      Dependencies: {}
+    Info_73:
+      Name: lua/ui/task.unity3d
+      Dependencies: {}
+    Info_74:
+      Name: lua/ui/team.unity3d
+      Dependencies: {}
+    Info_75:
+      Name: lua/ui/tipskill.unity3d
+      Dependencies: {}
+    Info_76:
+      Name: lua/ui/title.unity3d
+      Dependencies: {}
+    Info_77:
+      Name: lua/ui/tongji.unity3d
+      Dependencies: {}
+    Info_78:
+      Name: lua/ui/trade.unity3d
+      Dependencies: {}
+    Info_79:
+      Name: lua/ui/treasure.unity3d
+      Dependencies: {}
+    Info_80:
+      Name: lua/ui/treasurefuben.unity3d
+      Dependencies: {}
+    Info_81:
+      Name: lua/ui/uibulletin.unity3d
+      Dependencies: {}
+    Info_82:
+      Name: lua/ui/uifuli.unity3d
+      Dependencies: {}
+    Info_83:
+      Name: lua/ui/uimall.unity3d
+      Dependencies: {}
+    Info_84:
+      Name: lua/ui/uimall/discountmall.unity3d
+      Dependencies: {}
+    Info_85:
+      Name: lua/ui/uimall/mysterymall.unity3d
+      Dependencies: {}
+    Info_86:
+      Name: lua/ui/uiresdownload.unity3d
+      Dependencies: {}
+    Info_87:
+      Name: lua/ui/uisevendaygoal.unity3d
+      Dependencies: {}
+    Info_88:
+      Name: lua/ui/uiturntable.unity3d
+      Dependencies: {}
+    Info_89:
+      Name: lua/ui/uiviplua.unity3d
+      Dependencies: {}
+    Info_90:
+      Name: lua/ui/uizhannu.unity3d
+      Dependencies: {}
+    Info_91:
+      Name: lua/ui/wing.unity3d
+      Dependencies: {}
+    Info_92:
+      Name: lua/ui/ytjz.unity3d
+      Dependencies: {}
+    Info_93:
+      Name: lua/ui/yuanzheng.unity3d
+      Dependencies: {}
+    Info_94:
+      Name: lua/ui/zhenfa.unity3d
+      Dependencies: {}
+    Info_95:
+      Name: lua/ui/zhuangbeifb.unity3d
+      Dependencies: {}
+    Info_96:
+      Name: data.unity3d
+      Dependencies: {}
+    Info_97:
+      Name: data/behaviacdata/exported.unity3d
+      Dependencies: {}
+    Info_98:
+      Name: data/mapdata.unity3d
+      Dependencies: {}
+    Info_99:
+      Name: data/skill.unity3d
+      Dependencies: {}

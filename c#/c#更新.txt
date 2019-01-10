@@ -1,0 +1,24 @@
+应用程序域: 指的是一种边界，它标识了代码的运行范围，在其中产生的任何行为，包括异常都不会影响到其他应用程序域，起到安全隔离的效果
+一个进程可以包含多个应用程序域，各个域都是独立的沙盒，相互独立，每个程序域可包含多个dll程序集
+进程启动后会建立两个应用程序域，一个叫公共程序域（Domain-Neutral），其中加载的所有类型可以供其他所有应用程序域使用；另一个叫默认程序域，它加载了我们自己的应用程序，默认程序域中运行的代码可能导致整个进程崩溃。为了使进程能够稳定运行，可以新建一个应用程序域来加载一些我们认为可能会导致问题的程序集，而在新的应用程序域中运行的代码不会对默认程序域造成影响，保证了进程的稳定。
+//创建应用程序域
+public static AppDomain CreateDomain(string friendlyName);
+//卸载应用程序域
+public static void Unload(AppDomain domain); //载程序域后，该程序域加载的文件句柄dll也相应被释放，这时候才可以删除dll
+
+卸载应用程序域时，CLR将清理该应用程序域使用的所有资源，包括加载的程序集，未释放的非托管资源等。但公共程序域和默认程序域无法卸载。
+封装的功能都是以程序集的形式存在的，而程序集只有在应用程序域卸载以后才能释放。这就是为什么在程序运行的过程中无法直接进行修改程序文件的原因，程序运行后，相关的程序集文件被加载到了默认应用程序域中，而默认应用程序域又无法卸载，导致我们不得不关闭进程才能修改相应文件。
+可以在程序启动的时候，把这个程序集加载一个我们新建的应用程序域中，需要更新文件的时候只要卸载这个域，在不关闭进程的情况下，就可以对文件进行更新
+
+AppDomain ad_Calc = AppDomain.CreateDomain("domin #calc");
+ICalculater calc = (ICalculater)ad_Calc.CreateInstanceAndUnwrap("Module1", "Module1.Calculater");
+calc.Calc(a, b);
+调用方法CreateDomain创建新的应用程序域并给域命名为domain #calc后，调用CreateInstanceAndUnwrap，输入程序集名和要创建的实例类型名后，即可获得一个该类型的一个引用代理
+
+.NET中的反射，常用加载程序集的有三个方法
+1.Assembly.Load(byte[] rawAssembly)：可把dll做成budle，加载bundle的bytes来加载
+Assembly.LoadFrom(string assemblyFile)：只载入相应的dll文件，比如Assembly.LoadFile("abc.dll")，则载入abc.dll，假如abc.dll中引用def.dll，def.dll并不会被载入
+Assembly.LoadFile(string path)：会加载此程序集引用的其他程序集
+
+ Assembly aly = System.Reflection.Assembly.Load(((TextAsset)www.assetBundle.mainAsset).bytes);
+var types = aly.GetTypes(); //该程序集所有类

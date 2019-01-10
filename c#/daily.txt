@@ -224,4 +224,8 @@ persitent路径无论在什么平台下都是本地路径，所以可以直接通过Directory或者File等文
 5.引擎不识别lua和bin文件，所以打bundle要加.txt后缀，LoadAsset时也要加后缀
 6.BuildAssetBundleOptions.None 是使用LZMA压缩比比较高，内存：LZ4压缩的包的大小。性能：从磁盘读取+ LZMA压缩+ LZ4压缩。
 BuildAssetBundleOptions.ChunkBasedCompression 是使用LZ4压缩比比较低，内存：没有额外的开销。性能：从磁盘读取
+7.打完bundle后重启unity再打一次，会出现有些budle改变了（原资源未变）
+使用增量打包，保留上次打的bundle目录保留清单文件，manifest只在增量式打包时才用到
+（Unity5.X以后，BuildAssetBundleOptions.DeterministicAssetBundle是默认选项，不需要特意在去加，GraphicsSettings
+Shader stripping默认是自动的，改成使用manual）
 
