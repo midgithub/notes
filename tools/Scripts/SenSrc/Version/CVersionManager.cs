@@ -309,7 +309,6 @@ public class CVersionManager : MonoBehaviour
     // 获取程序版本
     public string GetAppVersionClient()
     {
-        Debug.Log("GetAppVersionClient: ");
 #if UNITY_EDITOR||UNITY_ANDROID
         Debug.Log("AppVersionClient: " + Application.version);
         return Application.version;
@@ -443,7 +442,7 @@ public class CVersionManager : MonoBehaviour
         return string.Format("?t={0}", Util.GetTimeStamp(DateTime.Now).ToString());
     }
 
-    // 资源版本号文件，走永久域名
+    // 资源版本号文件
     private string GetResMaxVersionURL()
     {
         string strPath = GetAppVerionURL() + STR_RES_MAX_RESVERSION_FILE;
@@ -497,14 +496,17 @@ public class CVersionManager : MonoBehaviour
         }
         www.Dispose();
 
-        //if (ClientSetting.Instance.GetBoolValue("IS_REVIEW"))
-        //{
-        //    IsAllSubPackageDownloaded = true;
-        //    OnResourceInited();
-        //    yield break;
-        //}
-
-        StartCoroutine(LoadResVersionFile());
+        //提审状态下的整包不更新
+        if (!ClientSetting.Instance.GetBoolValue("SubPackageType") && ClientSetting.Instance.GetBoolValue("IS_REVIEW"))
+        {
+            IsAllSubPackageDownloaded = true;
+            OnResourceInited();
+            yield break;
+        }
+        else
+        {
+            StartCoroutine(LoadResVersionFile());
+        }
     }
 
     //下载对应app版本当前资源版本信息
@@ -721,8 +723,8 @@ public class CVersionManager : MonoBehaviour
 
     private IEnumerator GetPublicIpAddress()
     {
-        string url = "http://2018.ip138.com/ic.asp";
-        Debug.Log("GetPublicIpAddress---------");
+        string url = ClientSetting.Instance.GetStringValue("CheckIpUrl");
+        Debug.Log("CheckIpUrl: " + url);
 
         WWW www = new WWW(url);
         yield return www;
@@ -922,7 +924,9 @@ public class CVersionManager : MonoBehaviour
 
         //打开上次下载的文件或新建文件 
         long lStartPos = 0;
+        yield return m_wait;
 
+        bool timeOut = false;
         try
         {
             request = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(strURL);
@@ -960,7 +964,24 @@ public class CVersionManager : MonoBehaviour
             }
 
             Util.LogError(ex.Message);
-            ResFPointDownFail(bTryPermanentHost);
+            timeOut = true;
+
+            //ResFPointDownFail(bTryPermanentHost);
+            //yield break;
+        }
+
+        if (timeOut)
+        {
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                m_eventVersion.state = EVersionState.NoInternet;
+                TriggerVersionProgressEvent();
+            }
+            else
+            {
+                StartCoroutine(ResFPointDown(strURL, strSaveFile, bTryPermanentHost));
+            }
+
             yield break;
         }
 
@@ -993,13 +1014,6 @@ public class CVersionManager : MonoBehaviour
             yield break;
         }
 
-        if (ns == null)
-        {
-            Util.LogError("FPointDown ns null error");
-            ResFPointDownFail(bTryPermanentHost);
-            yield break;
-        }
-
         int len = 128 * 1024;  // 128KB Buff
 
         byte[] nbytes = new byte[len];
@@ -1019,6 +1033,11 @@ public class CVersionManager : MonoBehaviour
                 File.Delete(strSaveFile);
                 ns.Close();
                 fs.Close();
+                if (request != null)
+                {
+                    request.Abort();
+                }
+
                 ResFPointDownFail(bTryPermanentHost);
                 yield break;
             }
@@ -1032,6 +1051,12 @@ public class CVersionManager : MonoBehaviour
                 Util.LogError(ex.Message);
                 ns.Close();
                 fs.Close();
+                if (request != null)
+                {
+                    request.Abort();
+                }
+
+                StartCoroutine(ResFPointDown(strURL, strSaveFile, bTryPermanentHost));
                 yield break;
             }
 
@@ -1043,11 +1068,18 @@ public class CVersionManager : MonoBehaviour
             yield return m_wait;
         }
 
-        if (fs.Length < countLength)
+        if (fs.Length < countLength)   //网络断开，数据读取
         {
-            ResFPointDownFail(bTryPermanentHost);
+            Util.LogError("资源更新读取流数据出错-----");
             ns.Close();
             fs.Close();
+            if (request != null)
+            {
+                request.Abort();
+            }
+
+            //ResFPointDownFail(bTryPermanentHost);
+            StartCoroutine(ResFPointDown(strURL, strSaveFile, bTryPermanentHost));
             yield break;
         }
 
@@ -1273,11 +1305,12 @@ public class CVersionManager : MonoBehaviour
     {
         m_packageCfgs.Clear();
 
-        //if(true)     //整包跳过分包下载
-        //{
-        //    LoadPackageCfgSuccess();
-        //    yield break;
-        //}
+        //整包跳过分包下载
+        if (!ClientSetting.Instance.GetBoolValue("SubPackageType"))
+        {
+            LoadPackageCfgSuccess();
+            yield break;
+        }
 
         string strPath = GetSubPackageDownloadXmlURL();
         Util.Log("TSS version download URL: >>>>>>>>>>> " + strPath);
@@ -1448,7 +1481,6 @@ public class CVersionManager : MonoBehaviour
         AddDowning(action.m_nID);
 
         System.Net.HttpWebRequest request = null;
-        System.IO.Stream ns = null;
         System.IO.FileStream fs = null;
         long countLength = 0;
 
@@ -1487,15 +1519,6 @@ public class CVersionManager : MonoBehaviour
             {
                 request.AddRange((int)lStartPos);  //设置Range值
             }
-
-            if (null == request || null == fs)
-            {
-                Util.LogError("FPointDown null error");
-                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
-                return;
-            }
-
-            ns = request.GetResponse().GetResponseStream();
         }
         catch (System.Exception ex)
         {
@@ -1509,12 +1532,33 @@ public class CVersionManager : MonoBehaviour
             return;
         }
 
-        if (ns == null)
+        if (null == request || null == fs)
         {
-            Util.LogError("FPointDown ns null error");
+            Util.LogError("FPointDown null error");
             DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
             return;
-        } 
+        }
+
+        System.IO.Stream ns = null;
+        try
+        {
+            ns = request.GetResponse().GetResponseStream();
+
+            if (ns == null)
+            {
+                Util.LogError("ResFPointDown Error By ns is null");
+                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
+                return;
+            }
+
+            ns.ReadTimeout = 10000;
+        }
+        catch (System.Exception ex)
+        {
+            Util.LogError(ex.Message);
+            DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
+            return;
+        }
 
         int len = 128 * 1024;  // 128KB Buff
 
@@ -1534,6 +1578,11 @@ public class CVersionManager : MonoBehaviour
                 Util.LogError(ex.Message);
                 ns.Close();
                 fs.Close();
+                if (request != null)
+                {
+                    request.Abort();
+                }
+
                 DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
                 return;
             }
@@ -1545,9 +1594,15 @@ public class CVersionManager : MonoBehaviour
             catch (System.Exception ex)
             {
                 Util.LogError(ex.Message);
-                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
+               
                 ns.Close();
                 fs.Close();
+                if (request != null)
+                {
+                    request.Abort();
+                }
+
+                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
                 return;
             }
 
@@ -1561,9 +1616,15 @@ public class CVersionManager : MonoBehaviour
 
         if (fs.Length < countLength)
         {
-            DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
+            Util.LogError("读取流数据出错-----");
             ns.Close();
             fs.Close();
+            if (request != null)
+            {
+                request.Abort();
+            }
+
+            DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
             return;
         }
 
