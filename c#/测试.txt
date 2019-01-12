@@ -5,4 +5,9 @@ wetest:
 3.启动wetest助手选择对应的服务和对应的app
 
 uwa 下载uwa 插件，导入工程Android.unitypackage包，拉入预设到第一个场景
-编译的包类型必须是develop，手机安装UWATool_Android.apk
+编译的包类型必须是develop，手机安装UWATool_Android.apk用于上传测试数据
+
+AndroidKiller
+1.打开apk文件自动反编译
+2.修改文件，关键文件apktool.yml, doNotCompress选项包括文件类型和文件路径
+3.修好后重新编译就行
