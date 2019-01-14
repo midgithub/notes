@@ -13,19 +13,6 @@ public class LoadModule : MonoBehaviour
         get;
     }
 
-    public enum AssetType
-    {
-        Asset = 0,
-        Csv = 1,
-        Txt = 2,
-        Mat = 3,
-        Xml = 4,
-        AudioMp3 = 5,
-        AudioWav = 6,
-        GameObject = 7,
-        Shader,
-    }
-
     private enum ManifestType
     {
         UI_Bundles,
@@ -290,7 +277,7 @@ public class LoadModule : MonoBehaviour
 		StartLoad (sLoader, async);
 	}
 
-    public TextAsset LoadTextAsset(string strPath, LoadModule.AssetType assetType)
+    public TextAsset LoadTextAsset(string strPath, AssetType assetType)
     {
         if (string.IsNullOrEmpty(strPath))
         {
@@ -322,7 +309,7 @@ public class LoadModule : MonoBehaviour
         Material mat = null;
         LoadAssetFromBundle(strPath, name, typeof(Material), delegate (object data) {
             mat = (data as Material);
-        }, false, LoadModule.AssetType.Mat);
+        }, false, AssetType.Mat);
 
         return mat;
     }
@@ -338,12 +325,12 @@ public class LoadModule : MonoBehaviour
         Shader shader = null;
         LoadAssetFromBundle("shaders", shaderName, typeof(Shader), delegate (object data) {
             shader = (data as Shader);
-        }, false, LoadModule.AssetType.Shader);
+        }, false, AssetType.Shader);
 
         return shader;
     }
 
-    public AudioClip LoadAudio(string strPath, LoadModule.AssetType assetType)
+    public AudioClip LoadAudio(string strPath, AssetType assetType)
     {
         if (string.IsNullOrEmpty(strPath))
         {
@@ -422,9 +409,9 @@ public class LoadModule : MonoBehaviour
 		}
 	}
 
-    public void LoadAsset(string path, LoadedCallback onLoaded, System.Type type = null, bool async = true, LoadModule.AssetType assetType = LoadModule.AssetType.GameObject)
+    public void LoadAsset(string path, LoadedCallback onLoaded, System.Type type = null, bool async = true, AssetType assetType = AssetType.GameObject)
 	{
-        string ext = GetExtOfAsset(assetType);
+        string ext = SenLib.Helper.GetExtOfAsset(assetType);
         string fullPath = string.Format("Assets/{0}{1}{2}", AppConst.ResDataDir, path, ext);
         if (!FileHelper.CheckFileExist(fullPath))
 		{
@@ -501,44 +488,6 @@ public class LoadModule : MonoBehaviour
         }
         Util.LogError("清单中无该bundle: " + name);
         return false;
-	}
-
-	private string GetExtOfAsset(LoadModule.AssetType assetType)
-    {
-        if (assetType == LoadModule.AssetType.Asset)
-        {
-            return ".asset";
-        }
-        else if (assetType == LoadModule.AssetType.Csv)
-        {
-            return ".csv";
-        }
-        else if (assetType == LoadModule.AssetType.Txt)
-        {
-            return ".txt";
-        }
-        else if (assetType == LoadModule.AssetType.Mat)
-        {
-            return ".mat";
-        }
-        else if (assetType == LoadModule.AssetType.Xml)
-        {
-            return ".xml";
-        }
-        else if (assetType == LoadModule.AssetType.AudioMp3)
-        {
-            return ".mp3";
-        }
-        else if (assetType == LoadModule.AssetType.AudioWav)
-        {
-            return ".wav";
-        }
-        else if (assetType == LoadModule.AssetType.GameObject)
-        {
-            return ".prefab";
-        }
-
-        return "";
 	}
 
     private ManifestType GetManifestType(string abName) 

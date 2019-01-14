@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 using System.Runtime.InteropServices;
-
+using SenLib;
 using XLua;
 
 [Hotfix]
@@ -18,4 +18,9 @@ public static class ZipHelper
     [DllImport("tqzip")]
     public static extern bool UnCompress(string strSrcFile, string strDestDire);
 #endif
+
+    public static bool UncompressZip(string strSrcFile, string strDestDire)
+    {
+        return Helper.UncompressZip(strSrcFile, strDestDire);
+    }
 }

@@ -53,7 +53,7 @@ namespace SG
             XmlDocument xmlDoc = new XmlDocument();
 
             //Object fileByte  = Resources.Load(filePath); 
-            TextAsset fileByte = CoreEntry.gResLoader.LoadTextAsset(filePath, LoadModule.AssetType.Xml); //(TextAsset)CoreEntry.gResLoader.Load(filePath, typeof(TextAsset), 11);
+            TextAsset fileByte = CoreEntry.gResLoader.LoadTextAsset(filePath, SenLib.AssetType.Xml); //(TextAsset)CoreEntry.gResLoader.Load(filePath, typeof(TextAsset), 11);
 
             if (fileByte == null)
             {

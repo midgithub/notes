@@ -1,16 +1,5 @@
 ﻿public static class CurrentBundleVersion
 {
-    /// <summary>
-    /// 外网测试资源cdn下载地址
-    /// </summary>
-    private static string ResUpdateTestCdnUrl
-    {
-        get
-        { 
-            return ClientSetting.Instance.GetStringValue("ResUpdateTestCdnUrl") + "normal_test/";
-        }
-    }
-
     public static string ChannelName
     {
         get

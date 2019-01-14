@@ -1,0 +1,596 @@
+Index: BackUpdate.cs
+===================================================================
+--- BackUpdate.cs	(revision 51098)
++++ BackUpdate.cs	(working copy)
+@@ -58,8 +58,11 @@
+ 
+         if (ShowBackUpdate)
+         {
+-            PlayerPrefs.SetInt("HightAccoutShowed", 1);
+-            PlayerPrefs.Save();
++            if (CVersionManager.Instance.IsAllSubPackageDownloaded)
++            {
++                PlayerPrefs.SetInt("HightAccoutShowed", 1);
++                PlayerPrefs.Save();
++            }
+ 
+             CVersionManager.Instance.OnVersionProgressEvent -= OnUpdateResEvent;
+         }
+Index: Version/CVersionManager.cs
+===================================================================
+--- Version/CVersionManager.cs	(revision 51098)
++++ Version/CVersionManager.cs	(working copy)
+@@ -11,6 +11,7 @@
+ using XLua;
+ using System.Threading;
+ using SG;
++using System.Text.RegularExpressions;
+ 
+ [Hotfix]
+ public enum EVersionState
+@@ -156,6 +157,9 @@
+     private string m_strResPackageName = string.Empty;    //1000_1003.LTZip
+     private string m_strLocalResPackageFullPath = string.Empty;   //本地路径下载存放 update/1000_1003.LTZip 
+ 
++    private string m_publicIp = string.Empty;
++    private const string STR_TEST_USER_FILE = "TestUser.xml";
++
+     private void Awake()
+     {
+         Instance = this;
+@@ -305,7 +309,6 @@
+     // 获取程序版本
+     public string GetAppVersionClient()
+     {
+-        Debug.Log("GetAppVersionClient: ");
+ #if UNITY_EDITOR||UNITY_ANDROID
+         Debug.Log("AppVersionClient: " + Application.version);
+         return Application.version;
+@@ -439,7 +442,7 @@
+         return string.Format("?t={0}", Util.GetTimeStamp(DateTime.Now).ToString());
+     }
+ 
+-    // 资源版本号文件，走永久域名
++    // 资源版本号文件
+     private string GetResMaxVersionURL()
+     {
+         string strPath = GetAppVerionURL() + STR_RES_MAX_RESVERSION_FILE;
+@@ -450,6 +453,17 @@
+         return strPath;
+     }
+ 
++    //
++    private string GetTestUserConfigURL()
++    {
++        string strPath = GetAppVerionURL() + STR_TEST_USER_FILE;
++        strPath += GetRandomParam();
++
++        Util.LogWarning("GetTestUserConfigURL " + strPath);
++
++        return strPath;
++    }
++
+     // 检测版本更新入口
+     private void CheckResVersion()
+     {
+@@ -509,9 +523,6 @@
+         WWW www = new WWW(strVersinURL);
+         yield return www;
+ 
+-        string urlAppVersion = "0.0";
+-        m_urlResVersion = 1000; // 最高版本
+-        
+         if (www.error != null)
+         {
+             Util.LogError("获取apk版本对应远程资源版本文件失败---------" + strVersinURL);
+@@ -521,41 +532,51 @@
+         else
+         {
+             string strResVersionServer = Encoding.UTF8.GetString(www.bytes);
++            StartCoroutine(CompareResVersion(strResVersionServer, true));
++        }
++        www.Dispose();
++    }
+ 
+-            strResVersionServer = strResVersionServer.TrimEnd();
+-            strResVersionServer = strResVersionServer.Replace("\r", "");
+-            strResVersionServer = strResVersionServer.Replace("\n", "");
++    private IEnumerator CompareResVersion(string urlVersion, bool checkTestUsers)
++    {
++        Debug.Log("比对远程资源版本：" + urlVersion);
++        string urlAppVersion = "1.0.0";
++        m_urlResVersion = 1000; // 最高版本
+ 
+-            string[] strLines = strResVersionServer.Split(',');
++        string strResVersionServer = urlVersion;
+ 
+-            if (strLines.Length < 2)
+-            {
+-                Util.LogError("LoadResNewVersion Error By Length " + strResVersionServer);
+-                CheckResVersionFail();
+-                yield break;
+-            }
++        strResVersionServer = strResVersionServer.TrimEnd();
++        strResVersionServer = strResVersionServer.Replace("\r", "");
++        strResVersionServer = strResVersionServer.Replace("\n", "");
+ 
+-            if (string.IsNullOrEmpty(strLines[1]))
+-            {
+-                Util.LogError("LoadResNewVersion Error By Empty " + strResVersionServer);
+-                CheckResVersionFail();
+-                yield break;
+-            }
++        string[] strLines = strResVersionServer.Split(',');
+ 
+-            try
+-            {
+-                urlAppVersion = strLines[0];
+-                m_urlResVersion = Convert.ToInt32(strLines[1]);
+-            }
+-            catch (System.Exception ex)
+-            {
+-                Util.LogError(ex.Message);
+-                CheckResVersionFail();
+-                yield break;
+-            }
++        if (strLines.Length < 2)
++        {
++            Util.LogError("LoadResNewVersion Error By Length " + strResVersionServer);
++            CheckResVersionFail();
++            yield break;
+         }
+-        www.Dispose();
+ 
++        if (string.IsNullOrEmpty(strLines[1]))
++        {
++            Util.LogError("LoadResNewVersion Error By Empty " + strResVersionServer);
++            CheckResVersionFail();
++            yield break;
++        }
++
++        try
++        {
++            urlAppVersion = strLines[0];
++            m_urlResVersion = Convert.ToInt32(strLines[1]);
++        }
++        catch (System.Exception ex)
++        {
++            Util.LogError(ex.Message);
++            CheckResVersionFail();
++            yield break;
++        }
++
+         string nCurAppVersion = GetAppVersion();     //检测apk大版本更新
+         {
+             string[] urlAppInfo = urlAppVersion.Split('.');
+@@ -606,7 +627,7 @@
+             m_urlResVersion = 1000;
+         }
+ 
+-        Util.LogWarning(string.Format("apk{0} 最新资源版本是: {1}",GetAppVersion(), m_urlResVersion));
++        Util.LogWarning(string.Format("apk{0} 最新资源版本是: {1}", GetAppVersion(), m_urlResVersion));
+ 
+         if (m_urlResVersion > m_localResVersion)
+         {
+@@ -616,10 +637,118 @@
+         else
+         {
+             Util.LogWarning(string.Format("apk{0} 已是最新资源版本: {1}", GetAppVersion(), m_localResVersion));
++            if (checkTestUsers)
++            {
++                StartCoroutine(DownloadTestUserConfig());
++            }
++            else
++            {
++                CheckResVersionNone();
++            }
++        }
++    }
++
++    private IEnumerator DownloadTestUserConfig()
++    {
++        string strTestUserURL = GetTestUserConfigURL();
++        Util.Log("下载文件： " + strTestUserURL);
++        WWW wwwTestUser = new WWW(strTestUserURL);  
++
++        yield return wwwTestUser;
++
++        if (wwwTestUser.error != null)
++        {
++            Util.LogError(wwwTestUser + "下载文件 失败---" + wwwTestUser.error);
+             CheckResVersionNone();
++            yield break;
+         }
++
++        byte[] bytes = wwwTestUser.bytes;
++
++        string strTestVersion = string.Empty;
++        List<string> testUsers = new List<string>();
++
++        try
++        {
++            XML root;
++            if (!bytes.TryParse(out root))
++            {
++                Util.LogError(strTestUserURL + "解析测试配置文件失败---");
++                CheckResVersionNone();
++                yield break;
++            }
++
++            XML testVerion = root.Element("TestVersion");
++            if (testVerion == null)
++            {
++                Util.LogError(strTestUserURL + "解析 TestVersion 失败---");
++                CheckResVersionNone();
++                yield break;
++            }
++
++            strTestVersion = testVerion.GetValue("version");
++
++            foreach (XML childElement in testVerion.Elements())
++            {
++                string ip = childElement.GetValue("ip");
++                if (!testUsers.Contains(ip))
++                {
++                    testUsers.Add(ip);
++                }
++            }
++        }
++        catch (System.Exception ex)
++        {
++            Util.LogError(ex.Message);
++            CheckResVersionNone();
++            yield break;
++        }
++
++        if (testUsers.Count > 0 && !string.IsNullOrEmpty(strTestVersion))
++        {
++            yield return StartCoroutine(GetPublicIpAddress());
++            if(!string.IsNullOrEmpty(m_publicIp) && testUsers.Contains(m_publicIp))
++            {
++                Debug.Log("user test start -----");
++                StartCoroutine(CompareResVersion(strTestVersion, false));
++                yield break;
++            }
++        }
++
++        CheckResVersionNone();
+     }
+ 
++    private IEnumerator GetPublicIpAddress()
++    {
++        string url = "http://2018.ip138.com/ic.asp";
++        Debug.Log("GetPublicIpAddress---------");
++
++        WWW www = new WWW(url);
++        yield return www;
++
++        if (www.error != null)
++        {
++            Util.LogError(string.Format("无法访问 {0}---------", url));
++        }
++        else
++        {
++            try
++            {
++                MatchCollection matches = Regex.Matches(www.text, @"((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))");
++                if(matches.Count > 0)
++                {
++                    m_publicIp = matches[0].Value;
++                }
++                Debug.Log("ip 地址：" + m_publicIp);
++            }
++            catch (System.Exception ex)
++            {
++                Util.LogError(ex.Message);
++            }
++        }
++        www.Dispose();
++    }
++
+     //下载具体要下载文件的配置文件
+     private IEnumerator LoadResDownInfoFile(int nCurResVersion, int nServerResVersion, bool bTryPermanentHost)
+     {
+@@ -725,9 +854,8 @@
+             if (node != null)
+             {
+                 bExist = true;
+-                m_strResPackageURL = node.GetValue("packet");  //完整路径 包的地址
+-                m_strResPackageName = node.GetValue("packetname");  
+-                int nPackageSize = node.GetInt("packetsize");
++                m_strResPackageName = node.GetValue("packetname");
++                m_strResPackageURL = strAppVerionURL + string.Format(STR_RES_DOWNINFO_FILE, nServerResVersion, m_strResPackageName); //node.GetValue("packet");  //完整路径 包的地址
+ 
+                 DownloadResNewVersionPackage();
+             }
+@@ -787,7 +915,6 @@
+     private IEnumerator ResFPointDown(string strURL, string strSaveFile, bool bTryPermanentHost)
+     {
+         System.Net.HttpWebRequest request = null;
+-        System.Net.HttpWebRequest requestGetCount = null;
+         System.IO.FileStream fs = null;
+         long countLength = 0;
+         Util.LogWarning("FPointDown url:" + strURL);
+@@ -794,29 +921,14 @@
+ 
+         //打开上次下载的文件或新建文件 
+         long lStartPos = 0;
++        yield return m_wait;
+ 
++        bool timeOut = false;
+         try
+         {
+-            requestGetCount = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(strURL);
+-            requestGetCount.Timeout = 5000;
+-            countLength = requestGetCount.GetResponse().ContentLength;
+-        }
+-        catch (System.Exception ex)
+-        {
+-            if (requestGetCount != null)
+-            {
+-                requestGetCount.Abort();
+-            }
+-
+-            Util.LogError(ex.Message);
+-            ResFPointDownFail(bTryPermanentHost);
+-            yield break;
+-        }
+-
+-        try
+-        {
+             request = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(strURL);
+             request.Timeout = 5000;
++            countLength = request.GetResponse().ContentLength;
+ 
+             if (System.IO.File.Exists(strSaveFile))
+             {
+@@ -849,7 +961,24 @@
+             }
+ 
+             Util.LogError(ex.Message);
+-            ResFPointDownFail(bTryPermanentHost);
++            timeOut = true;
++
++            //ResFPointDownFail(bTryPermanentHost);
++            //yield break;
++        }
++
++        if (timeOut)
++        {
++            if (Application.internetReachability == NetworkReachability.NotReachable)
++            {
++                m_eventVersion.state = EVersionState.NoInternet;
++                TriggerVersionProgressEvent();
++            }
++            else
++            {
++                StartCoroutine(ResFPointDown(strURL, strSaveFile, bTryPermanentHost));
++            }
++
+             yield break;
+         }
+ 
+@@ -882,13 +1011,6 @@
+             yield break;
+         }
+ 
+-        if (ns == null)
+-        {
+-            Util.LogError("FPointDown ns null error");
+-            ResFPointDownFail(bTryPermanentHost);
+-            yield break;
+-        }
+-
+         int len = 128 * 1024;  // 128KB Buff
+ 
+         byte[] nbytes = new byte[len];
+@@ -908,6 +1030,11 @@
+                 File.Delete(strSaveFile);
+                 ns.Close();
+                 fs.Close();
++                if (request != null)
++                {
++                    request.Abort();
++                }
++
+                 ResFPointDownFail(bTryPermanentHost);
+                 yield break;
+             }
+@@ -921,6 +1048,12 @@
+                 Util.LogError(ex.Message);
+                 ns.Close();
+                 fs.Close();
++                if (request != null)
++                {
++                    request.Abort();
++                }
++
++                StartCoroutine(ResFPointDown(strURL, strSaveFile, bTryPermanentHost));
+                 yield break;
+             }
+ 
+@@ -932,16 +1065,27 @@
+             yield return m_wait;
+         }
+ 
+-        if (fs.Length < countLength)
++        if (fs.Length < countLength)   //网络断开，数据读取
+         {
+-            ResFPointDownFail(bTryPermanentHost);
++            Util.LogError("资源更新读取流数据出错-----");
+             ns.Close();
+             fs.Close();
++            if (request != null)
++            {
++                request.Abort();
++            }
++
++            //ResFPointDownFail(bTryPermanentHost);
++            StartCoroutine(ResFPointDown(strURL, strSaveFile, bTryPermanentHost));
+             yield break;
+         }
+ 
+         ns.Close();
+         fs.Close();
++        if (request != null)
++        {
++            request.Abort();
++        }
+ 
+         ResFPointDownSuccess();
+     }
+@@ -1009,7 +1153,18 @@
+             m_localResVersion = m_urlResVersion;
+             UpdateLocalResVersionFile(m_localResVersion);
+ 
+-            UnCompressResSuccess();
++            string curAppVersion = GetAppVersion();
++            ClientSetting.Instance.ReLoadClientSettingData();
++
++            string newAppVersion = GetAppVersion();
++            if (!curAppVersion.Equals(newAppVersion))
++            {
++                CheckResVersion();
++            }
++            else
++            {
++                UnCompressResSuccess();
++            }
+         }
+     }
+ 
+@@ -1053,7 +1208,7 @@
+     }
+ #endregion
+ 
+-#region 分包下载
++    #region 分包下载
+     private enum PackageDownloadType
+     {
+         Login = 1,
+@@ -1316,7 +1471,6 @@
+         AddDowning(action.m_nID);
+ 
+         System.Net.HttpWebRequest request = null;
+-        System.IO.Stream ns = null;
+         System.IO.FileStream fs = null;
+         long countLength = 0;
+ 
+@@ -1355,15 +1509,6 @@
+             {
+                 request.AddRange((int)lStartPos);  //设置Range值
+             }
+-
+-            if (null == request || null == fs)
+-            {
+-                Util.LogError("FPointDown null error");
+-                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
+-                return;
+-            }
+-
+-            ns = request.GetResponse().GetResponseStream();
+         }
+         catch (System.Exception ex)
+         {
+@@ -1377,13 +1522,34 @@
+             return;
+         }
+ 
+-        if (ns == null)
++        if (null == request || null == fs)
+         {
+-            Util.LogError("FPointDown ns null error");
++            Util.LogError("FPointDown null error");
+             DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
+             return;
+-        } 
++        }
+ 
++        System.IO.Stream ns = null;
++        try
++        {
++            ns = request.GetResponse().GetResponseStream();
++
++            if (ns == null)
++            {
++                Util.LogError("ResFPointDown Error By ns is null");
++                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
++                return;
++            }
++
++            ns.ReadTimeout = 10000;
++        }
++        catch (System.Exception ex)
++        {
++            Util.LogError(ex.Message);
++            DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath);
++            return;
++        }
++
+         int len = 128 * 1024;  // 128KB Buff
+ 
+         byte[] nbytes = new byte[len];
+@@ -1402,6 +1568,11 @@
+                 Util.LogError(ex.Message);
+                 ns.Close();
+                 fs.Close();
++                if (request != null)
++                {
++                    request.Abort();
++                }
++
+                 DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
+                 return;
+             }
+@@ -1413,9 +1584,15 @@
+             catch (System.Exception ex)
+             {
+                 Util.LogError(ex.Message);
+-                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
++               
+                 ns.Close();
+                 fs.Close();
++                if (request != null)
++                {
++                    request.Abort();
++                }
++
++                DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
+                 return;
+             }
+ 
+@@ -1429,14 +1606,24 @@
+ 
+         if (fs.Length < countLength)
+         {
+-            DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
++            Util.LogError("读取流数据出错-----");
+             ns.Close();
+             fs.Close();
++            if (request != null)
++            {
++                request.Abort();
++            }
++
++            DoFPointDownFailWithSubPackage(action.m_nID, action.m_strSavePath, true);
+             return;
+         }
+ 
+         ns.Close();
+         fs.Close();
++        if (request != null)
++        {
++            request.Abort();
++        }
+ 
+         DoFPointDownSuccessWithSubPackage(action.m_nID, action.m_strSavePath, action.m_strSaveDir);
+     }
+@@ -1725,7 +1912,7 @@
+         }
+     }
+ 
+-#endregion
++    #endregion
+ 
+     /// <summary>
+     /// 资源初始化结束

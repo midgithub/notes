@@ -149,7 +149,7 @@ public static class Localization
 	static bool LoadDictionary (string value)
 	{
 		// Try to load the Localization CSV
-        TextAsset txt = localizationHasBeenSet ? null : CoreEntry.gResLoader.LoadTextAsset("Data/Localization", LoadModule.AssetType.Csv); //Bundle.AssetBundleLoadManager.Instance.Load("Data/Localization", typeof(TextAsset)) as TextAsset;
+        TextAsset txt = localizationHasBeenSet ? null : CoreEntry.gResLoader.LoadTextAsset("Data/Localization", SenLib.AssetType.Csv); //Bundle.AssetBundleLoadManager.Instance.Load("Data/Localization", typeof(TextAsset)) as TextAsset;
 		localizationHasBeenSet = true;
 
 		// Try to load the localization file
@@ -159,7 +159,7 @@ public static class Localization
 		if (string.IsNullOrEmpty(value)) return false;
 
 		// Not a referenced asset -- try to load it dynamically
-        txt = CoreEntry.gResLoader.LoadTextAsset(value, LoadModule.AssetType.Xml);  //Bundle.AssetBundleLoadManager.Instance.Load(value, typeof(TextAsset)) as TextAsset;
+        txt = CoreEntry.gResLoader.LoadTextAsset(value, SenLib.AssetType.Xml);  //Bundle.AssetBundleLoadManager.Instance.Load(value, typeof(TextAsset)) as TextAsset;
 
 		if (txt != null)
 		{

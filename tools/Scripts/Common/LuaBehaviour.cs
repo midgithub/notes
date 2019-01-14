@@ -71,7 +71,7 @@ public class LuaBehaviour : MonoBehaviour
         }
         m_Init = true;
         LuaPath.Replace("\\", "/");
-        TextAsset luaScript = CoreEntry.gResLoader.LoadTextAsset(LuaPath, LoadModule.AssetType.Txt);
+        TextAsset luaScript = CoreEntry.gResLoader.LoadTextAsset(LuaPath, SenLib.AssetType.Txt);
         if (luaScript == null)
         {
             LogMgr.LogWarning("luaScript is null. Path:" + LuaPath);

@@ -6,6 +6,7 @@ using System;
 using UnityEditor;
 #endif
 using XLua;
+using SenLib;
 
 [Hotfix]
 public class WinUpdate : MonoBehaviour

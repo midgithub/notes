@@ -68,7 +68,7 @@ namespace SG
             }
 
             string filePath = @"Data/MapData/" + mapCfg.Get<string>("path");
-            TextAsset fileAsset = CoreEntry.gResLoader.LoadTextAsset(filePath, LoadModule.AssetType.Txt);
+            TextAsset fileAsset = CoreEntry.gResLoader.LoadTextAsset(filePath, SenLib.AssetType.Txt);
 
             if (null == fileAsset)
             {

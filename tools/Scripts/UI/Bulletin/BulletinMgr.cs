@@ -10,7 +10,6 @@ using System.Collections;
 using System.IO;
 using XLua;
 using Bundle;
-
 namespace SG
 {
     [LuaCallCSharp]
@@ -83,7 +82,7 @@ namespace SG
 
         private void ReadLocal()
         {
-            TextAsset txt = CoreEntry.gResLoader.LoadTextAsset("Data/Bulletin", LoadModule.AssetType.Csv) ;
+            TextAsset txt = CoreEntry.gResLoader.LoadTextAsset("Data/Bulletin", SenLib.AssetType.Csv) ;
             if (null != txt)
             {
                 mData = txt.text;

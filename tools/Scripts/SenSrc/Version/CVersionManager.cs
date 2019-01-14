@@ -7,48 +7,10 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using ICSharpCode.SharpZipLib.Zip;
 using XLua;
 using System.Threading;
 using SG;
-using System.Text.RegularExpressions;
-
-[Hotfix]
-public enum EVersionState
-{
-    Extracting,         //解压同步
-    ExtracSuccess,      //解压成功
-
-    NoInternet,          //无网络信号
-
-    ApkUpdate,           //发现大版本
-
-    ResUpdating,           //资源更新中
-    ResUpdateSuccess,      //资源更新成功
-    ResUpdateFail,         //资源更新失败
-
-    ResExtractSuccess,    //资源解压成功
-    ResExtractFail,       //资源解压失败
-
-    PackageCfgFail,            //获取分包配置出错     
-    PackageUpdating,           //每个分包更新中
-    PackageUpdateSuccess,      //登入所有分包更新完
-    PackageUpdateFail,         //分包更新失败
-    AllPackageDownloaded,      //所有后台分包下载完成
-
-    PackageExtracting,         //分包解压同步
-    PackageExtractSuccess,    //分包解压成功
-    PackageExtractFail,       //分包解压失败
-}
-
-[Hotfix]
-public class VersionProgressEvent
-{
-    public EVersionState state;
-    public long curPro;         //当前进度值
-    public long dataLength;     //数据总量
-    public string info;
-}
+using SenLib;
 
 [Hotfix]
 public class CLoadedPackageInfo
@@ -476,6 +438,10 @@ public class CVersionManager : MonoBehaviour
             return;
         }
 
+        string content = ClientSetting.Instance.GetStringValue("PublicIp");
+        m_publicIp = SenLib.Helper.GetIp(content);
+        Debug.Log("ip 地址：" + m_publicIp);
+
         StartCoroutine(LoadBackStageFile());
     }
 
@@ -709,8 +675,8 @@ public class CVersionManager : MonoBehaviour
 
         if (testUsers.Count > 0 && !string.IsNullOrEmpty(strTestVersion))
         {
-            yield return StartCoroutine(GetPublicIpAddress());
-            if(!string.IsNullOrEmpty(m_publicIp) && testUsers.Contains(m_publicIp))
+            //yield return StartCoroutine(GetPublicIpAddress());
+            if (!string.IsNullOrEmpty(m_publicIp) && testUsers.Contains(m_publicIp))
             {
                 Debug.Log("user test start -----");
                 StartCoroutine(CompareResVersion(strTestVersion, false));
@@ -735,19 +701,9 @@ public class CVersionManager : MonoBehaviour
         }
         else
         {
-            try
-            {
-                MatchCollection matches = Regex.Matches(www.text, @"((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))");
-                if(matches.Count > 0)
-                {
-                    m_publicIp = matches[0].Value;
-                }
-                Debug.Log("ip 地址：" + m_publicIp);
-            }
-            catch (System.Exception ex)
-            {
-                Util.LogError(ex.Message);
-            }
+            string content = www.text;
+            m_publicIp = SenLib.Helper.GetIp(content);
+            Debug.Log("IP 地址：" + m_publicIp);
         }
         www.Dispose();
     }
@@ -1693,93 +1649,11 @@ public class CVersionManager : MonoBehaviour
 
         OnPackageExtractWithSubPackage(nID);
 
-        if (File.Exists(strSaveFile))
+        bool success = ZipHelper.UncompressZip(strSaveFile, strSaveDir);
+        if (!success)
         {
-            try
-            {
-                using (System.IO.FileStream ZipFile = System.IO.File.Open(strSaveFile, FileMode.Open))
-                {
-                    using (ZipInputStream s = new ZipInputStream(ZipFile))
-                    {
-                        ZipEntry theEntry;
-
-                        while ((theEntry = s.GetNextEntry()) != null)
-                        {
-                            string strZipName = theEntry.Name;
-                            strZipName = strZipName.Replace("\\", "/");
-
-                            string strZipPath = string.Empty;
-
-                            if (strZipName.StartsWith("/"))
-                            {
-                                strZipPath = strSaveDir + strZipName;
-                            }
-                            else
-                            {
-                                strZipPath = strSaveDir + "/" + strZipName;
-                            }
-
-                            if (theEntry.IsDirectory)
-                            {
-                                if (!Directory.Exists(strZipPath))
-                                {
-                                    Directory.CreateDirectory(strZipPath);
-                                }
-
-                                continue;
-                            }
-
-                            FileInfo fi = new FileInfo(strZipPath);
-
-                            var di = fi.Directory;
-
-                            if (di != null && !di.Exists)
-                            {
-                                di.Create();
-                            }
-
-                            File.Delete(strZipPath);
-
-                            System.IO.FileStream newFile = System.IO.File.Open(strZipPath, FileMode.OpenOrCreate);
-
-                            byte[] data = new byte[1024 * 4];
-                            int size = 0;
-
-                            while (true)
-                            {
-                                size = s.Read(data, 0, data.Length);
-
-                                if (size > 0)
-                                {
-                                    newFile.Write(data, 0, data.Length);
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-
-                            newFile.Close();
-                        }
-
-                        s.Close();
-                    }
-                }
-
-                if (File.Exists(strSaveFile))
-                {
-                    File.Delete(strSaveFile);
-                }
-            }
-            catch (System.Exception ex)
-            {
-                Util.LogError("分包解压失败--" + ex.Message);
-                //m_eventVersion.state = EVersionState.PackageExtractFail;
-                //TriggerVersionProgressEvent();
-
-                DoFPointDownFailWithSubPackage(nID, strSaveFile, true);
-                return;
-            }
+            DoFPointDownFailWithSubPackage(nID, strSaveFile, true);
+            return;
         }
 
         lock (m_asyncFPointSyncSuccess)

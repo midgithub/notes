@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using XLua;
 using SG;
+using SenLib;
 
 [Hotfix]
 public class BackUpdate : MonoBehaviour

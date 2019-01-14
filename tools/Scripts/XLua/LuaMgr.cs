@@ -84,7 +84,7 @@ public class LuaMgr : MonoBehaviour
         TextAsset luaCfg;
 		if (filename.Split('/')[0].Equals("Lua"))
 		{
-			luaCfg = CoreEntry.gResLoader.LoadTextAsset(filename + ".lua", LoadModule.AssetType.Txt);
+			luaCfg = CoreEntry.gResLoader.LoadTextAsset(filename + ".lua", SenLib.AssetType.Txt);
 		}
 		else
 		{

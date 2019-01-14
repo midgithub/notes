@@ -88,7 +88,7 @@ namespace SG
         }
 
         //加载 TextAsset
-        public TextAsset LoadTextAsset(string strPath, LoadModule.AssetType assetType)
+        public TextAsset LoadTextAsset(string strPath, SenLib.AssetType assetType)
         {
 #if UNITY_EDITOR
             ResourceRecorder.Instance.RecordResource(strPath, typeof(TextAsset));
@@ -141,7 +141,7 @@ namespace SG
                 return Resources.Load(strPath, typeof(AudioClip)) as AudioClip;
             }
 
-            return LoadModule.Instance.LoadAudio(strPath, LoadModule.AssetType.AudioWav);
+            return LoadModule.Instance.LoadAudio(strPath, SenLib.AssetType.AudioWav);
         }
 
         //
