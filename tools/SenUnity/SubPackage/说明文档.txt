@@ -1,0 +1,2 @@
+存放package\Android更新下载的压缩文件(package_{1:d}.pkg,),解压也是在该目录，.pkg文件解压成功后就销毁并且重新记录已经下载的文件LoadedPackages.ver
+该目录的资源优先级仅次于DirVersion，因为是在资源更新后下载的
