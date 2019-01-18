@@ -133,6 +133,9 @@ public class CVersionManager : MonoBehaviour
             string dataPath = Util.DataPath;
             if (SenLib.Helper.CheckSecondInstall(dataPath))
             {
+                PlayerPrefs.SetInt("HightAccoutShowed", 0);
+                PlayerPrefs.Save();
+
                 Debug.Log("覆盖安装重置成功------");
             }
         }
