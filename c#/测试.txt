@@ -11,3 +11,7 @@ AndroidKiller
 1.打开apk文件自动反编译
 2.修改文件，关键文件apktool.yml, doNotCompress选项包括文件类型和文件路径
 3.修好后重新编译就行
+
+夜神模拟器抓log的方法： 
+cmd窗口：adb connect 127.0.0.1:62001 和 adb shell logcat -v time>D:\1.log
+adb shell logcat -d  //日志输出到屏幕上, 并且不会阻塞

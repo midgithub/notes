@@ -124,7 +124,7 @@ Shader.CreateGpuProgram: 去通知Gpu有新的Shader加载进来,需要GPU对这个Shader针对目
 
 2018.10.9（apk更新）
 persistentDataPath目录下版本.txt 文件用WWW不能加载(Connection refused),用File读取
-1.前提：在Unity重新安装APK后，Application.persistentDataPath是共享的
+1.前提：在Unity重新安装APK后，Application.persistentDataPath是共享的（所以如果有大版本更新，要先清空该目录，要不该目录下的资源会因为更新优先级比较高导致重装后还会去读该目录下的资源而出错）
 并且这两地方只有安装完程序后才生成。所以我们可以放心覆盖原来的APK
 2.使用WWW 下载服务器上的apk包，用FileInfo写bytes到 新文件 (persistentDataPath+ apkName)
 3.制作jar安装apk

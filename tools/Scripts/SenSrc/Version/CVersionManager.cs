@@ -128,6 +128,15 @@ public class CVersionManager : MonoBehaviour
         transform.name = "CVersionManager";
         DontDestroyOnLoad(gameObject);
 
+        if (Application.isMobilePlatform)
+        {
+            string dataPath = Util.DataPath;
+            if (SenLib.Helper.CheckSecondInstall(dataPath))
+            {
+                Debug.Log("覆盖安装重置成功------");
+            }
+        }
+
         WinUpdate.OnSplashOver += CheckExtractResource;
         WinUpdate.ShowUI();
 
@@ -814,7 +823,7 @@ public class CVersionManager : MonoBehaviour
             {
                 bExist = true;
                 m_strResPackageName = node.GetValue("packetname");
-                m_strResPackageURL = strAppVerionURL + string.Format(STR_RES_DOWNINFO_FILE, nServerResVersion, m_strResPackageName); //node.GetValue("packet");  //完整路径 包的地址
+                m_strResPackageURL = node.GetValue("packet");  //完整路径 包的地址   strAppVerionURL + string.Format(STR_RES_DOWNINFO_FILE, nServerResVersion, m_strResPackageName);
 
                 DownloadResNewVersionPackage();
             }
