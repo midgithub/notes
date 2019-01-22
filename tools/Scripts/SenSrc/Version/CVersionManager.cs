@@ -121,6 +121,13 @@ public class CVersionManager : MonoBehaviour
 
     private string m_publicIp = string.Empty;
     private const string STR_TEST_USER_FILE = "TestUser.xml";
+    private bool m_checkTestUsers = false;
+
+    public bool ContinueUpdateRes
+    {
+        private set;
+        get;
+    }
 
     private void Awake()
     {
@@ -135,8 +142,6 @@ public class CVersionManager : MonoBehaviour
             {
                 PlayerPrefs.SetInt("HightAccoutShowed", 0);
                 PlayerPrefs.Save();
-
-                Debug.Log("覆盖安装重置成功------");
             }
         }
 
@@ -520,6 +525,8 @@ public class CVersionManager : MonoBehaviour
 
     private IEnumerator CompareResVersion(string urlVersion, bool checkTestUsers)
     {
+        m_checkTestUsers = checkTestUsers;
+
         Debug.Log("比对远程资源版本：" + urlVersion);
         string urlAppVersion = "1.0.0";
         m_urlResVersion = 1000; // 最高版本
@@ -550,6 +557,11 @@ public class CVersionManager : MonoBehaviour
         {
             urlAppVersion = strLines[0];
             m_urlResVersion = Convert.ToInt32(strLines[1]);
+
+            if(strLines.Length > 2)
+            {
+                ContinueUpdateRes = Convert.ToInt32(strLines[2]) > 0;
+            }
         }
         catch (System.Exception ex)
         {
@@ -603,6 +615,11 @@ public class CVersionManager : MonoBehaviour
             }
         }
 
+        ContinueCheckResUpdate();
+    }
+
+    public void ContinueCheckResUpdate()
+    {
         if (m_urlResVersion < 1000)
         {
             m_urlResVersion = 1000;
@@ -618,7 +635,7 @@ public class CVersionManager : MonoBehaviour
         else
         {
             Util.LogWarning(string.Format("apk{0} 已是最新资源版本: {1}", GetAppVersion(), m_localResVersion));
-            if (checkTestUsers)
+            if (m_checkTestUsers)
             {
                 StartCoroutine(DownloadTestUserConfig());
             }

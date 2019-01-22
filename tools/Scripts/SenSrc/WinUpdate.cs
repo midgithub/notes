@@ -217,6 +217,7 @@ public class WinUpdate : MonoBehaviour
                 _proBar.gameObject.SetActive(false);
                 _txtTip.text = string.Empty;
 
+                apkUrl = string.Empty;
                 ShowTipPanel("无可用网络信号,请检查网络!");
                 break;
             case EVersionState.ApkUpdate:   //发现大版本
@@ -295,13 +296,29 @@ public class WinUpdate : MonoBehaviour
         }
         else
         {
-            Util.LogWarning("apk更新地址： " + apkUrl);
+            Debug.Log("apk更新地址： " + apkUrl);
             Application.OpenURL(apkUrl);
         }  
     }
 
     private void OnCancleBtnClick()
     {
-        Application.Quit();
+        if (string.IsNullOrEmpty(apkUrl))
+        {
+            Application.Quit();
+        }
+        else
+        {
+            if (CVersionManager.Instance.ContinueUpdateRes)
+            {
+                Debug.Log("取消大版本更新继续资源更新---- ");
+                _tipPanle.SetActive(false);
+                CVersionManager.Instance.ContinueCheckResUpdate();
+            }
+            else
+            {
+                Application.Quit();
+            }
+        }
     }
 }
