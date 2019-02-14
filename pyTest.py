@@ -9,6 +9,9 @@ import functools
 import sys  # import sys as "别名"
 import os
 
+# 编译.py文件成二進制.pyo文件: python -O -m xxx.py
+# 执行也只能用该版本的python 来执行： python  xxx.pyo
+
 # sys.path.append("..") 添加要搜索的目录
 
 try:
