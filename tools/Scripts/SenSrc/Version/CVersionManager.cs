@@ -144,6 +144,11 @@ public class CVersionManager : MonoBehaviour
                 PlayerPrefs.Save();
             }
         }
+		
+		#if UNITY_IOS
+			AppConst.BundleFlag = ClientSetting.Instance.GetStringValue("BundleFlag");
+			ClientSetting.Instance.ReLoadClientSettingData();
+		#endif
 
         WinUpdate.OnSplashOver += CheckExtractResource;
         WinUpdate.ShowUI();

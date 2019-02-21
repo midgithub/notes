@@ -127,11 +127,51 @@ public static class FileHelper
 
     public static string GetAPKPath(string path)
     {
+#if UNITY_IOS
+        path = CheckMjPath(path);
+#endif
+
 #if UNITY_ANDROID && !UNITY_EDITOR
         path = path.Replace (Application.streamingAssetsPath, Application.dataPath + "!assets");
 #endif
         Util.Log("GetAPKPath: " + path);
         return path;
+    }
+
+    private static string CheckMjPath(string path)
+    {
+        string suffix = AppConst.BundleFlag;
+        if (string.IsNullOrEmpty(suffix) || path.Contains(Util.DataPath))
+        {
+            return path;
+        }
+        else
+        {
+            path = path.Replace(Util.AppContentPath(), "");
+
+            var dirs = path.Split('/');
+            string fileName = string.Empty;
+            for (int i = 0; i < dirs.Length; i++)
+            {
+                if (i != dirs.Length - 1)
+                {
+                    fileName = fileName + string.Format("{0}_{1}/", dirs[i], suffix);
+                }
+                else
+                {
+                    if (dirs[dirs.Length - 1].Contains("."))
+                    {
+                        var arr = dirs[dirs.Length - 1].Split('.');
+                        fileName = fileName + string.Format("{0}_{1}.{2}", arr[0], suffix, arr[1]);
+                    }
+                    else
+                    {
+                        fileName = fileName + dirs[dirs.Length - 1];
+                    }
+                }
+            }
+            return Util.AppContentPath() + fileName;
+        }
     }
 
 	public static bool CheckFileExist(string path, bool isFile = true)
