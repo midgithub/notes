@@ -14,11 +14,27 @@ curDir = ""
 configDir = ""
 firstDir = ""
 dicRes = {}
+configTable = {}
 minutes = []
 platforms = ["android"]
 curPlat = "android"
 copys = []
 
+def ReadConfig():
+    config = os.path.join(curDir,"Config/config.json")
+    if not os.path.exists(config):
+        print u"platforms.json 配置文件不存在"
+        return False
+    
+    print u"读取配置文件： " + config
+
+    global configTable
+    global platforms
+    with open(config, "r") as configFile:
+        configTable = json.load(configFile)
+        platforms = configTable["platforms"]
+
+        return True
 
 def ReadRecords():
     dicRes.clear()
@@ -45,19 +61,6 @@ def ReadRecords():
     if 0 == num:
         print u"首包资源记录文件不存在"
 
-def ReadConfig():
-    global minutes
-    minutes = []
-
-    config = configDir + curPlat + "/config.txt"
-    if not os.path.exists(config):
-        print u"config.txt 配置文件不存在"
-        return False
-    
-    print u"读取筛选时间配置文件：" + config
-    with codecs.open(config, "r", "utf-8-sig") as configFile:
-        timestr = configFile.read().strip() 
-        minutes = timestr.split(",")
 
 def CopyFirsRes():
     global copys
@@ -92,7 +95,7 @@ def CopyFile(res, start, end):
         if not os.path.exists(os.path.dirname(topath)):
             os.makedirs(os.path.dirname(topath))
 
-        print u"拷贝首包文件：" + res
+        print u"拷贝首包文件：" + destinyFile
         if not os.path.exists(topath):
             shutil.copyfile(destinyFile,topath)
 
@@ -112,12 +115,14 @@ if __name__ == '__main__':
     firstDir = curDir.replace("FirstResTool","") + "/FirstRes_"
     firstDir = firstDir.replace("\\","/")
 
-    ClearDir()
-    for plat in platforms: 
-        curPlat = plat
-        ReadRecords()
-        ReadConfig()
-        CopyFirsRes()
+    if ReadConfig():
+        ClearDir()
+        for plat in platforms: 
+            curPlat = plat
+            minutes = configTable[curPlat]
+            print minutes
+            ReadRecords()
+            CopyFirsRes()
 
     print u"首包资源处理完毕-----------"
 	

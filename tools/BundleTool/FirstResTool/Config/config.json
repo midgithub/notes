@@ -1,0 +1,6 @@
+{
+ "platforms": ["android","androidOne"],
+ "android": [5,7,11,20,27,46,56,66,76,86],
+ "androidOne": [5,7,11,20,27,46,56,66,76,86],
+ "ios": [13]
+}
