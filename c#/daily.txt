@@ -229,3 +229,65 @@ BuildAssetBundleOptions.ChunkBasedCompression ÊÇÊ¹ÓÃLZ4Ñ¹Ëõ±È±È½ÏµÍ£¬ÄÚ´æ£ºÃ»ÓĞ¶
 £¨Unity5.XÒÔºó£¬BuildAssetBundleOptions.DeterministicAssetBundleÊÇÄ¬ÈÏÑ¡Ïî£¬²»ĞèÒªÌØÒâÔÚÈ¥¼Ó£¬GraphicsSettings
 Shader strippingÄ¬ÈÏÊÇ×Ô¶¯µÄ£¬¸Ä³ÉÊ¹ÓÃmanual£©
 
+2019.2.25
+BuildSetting ÖĞ ¡°Optimize Mesh Data¡±£º
+¿ªÆôÑ¡Ïî£¬½«»áÔÚ Build AssetBundle ¹ı³ÌÖĞ¸ù¾İ³¡¾°ÖĞ Mesh ËùÊ¹ÓÃµÄ²ÄÖÊ£¨»òÕßËµ shader£©½øĞĞ¾²Ì¬·ÖÎö£¬À´È¥µô Mesh ÖĞ¡°ÎŞÓÃ¡±µÄÊı¾İ£¨²ÄÖÊ²»Ê¹ÓÃµÄÊı¾İ£©£¬
+±ÈÈç£ºÇĞÏß£¬·¢ÏÖ£¬¶¨µãÉ«£¬¶àÓàµÄ uv µÈ£¬ÒÔ´Ë¼õÉÙÊı¾İÁ¿ºÍ×îÖÕ¹¹½¨µÄÓÎÏ·°üµÄ´óĞ¡£¬ËùÒÔÈç¹ûÓĞ¶¯Ì¬ÇĞ»»²ÄÖÊÕâÊ±ºò¾Í»á³öÏÖºÜ¹ÖÒìµÄÏÖÏó
+
+Activator.CreateInstance £ºÊ¹ÓÃÓëÖ¸¶¨²ÎÊıÆ¥Åä³Ì¶È×î¸ßµÄ¹¹Ôìº¯ÊıÀ´´´½¨Ö¸¶¨ÀàĞÍµÄÊµÀı¡£
+void CreateInstance(Type tp)
+{
+    MsgData msgdata = Activator.CreateInstance(tp) as MsgData;
+    //todo
+}
+
+2019.3.4
+apk+obb
+GetAPKPath: /storage/emulated/0/Android/obb/com.qld.lmxt/main.1.com.qld.lmxt.obb!assets/UI_Bundles/ui/prefabs/versionupdate.unity3d (obb)
+GetAPKPath: /data/app/com.qld.lmxt-vIxgzQg8gHYR2QPSke0p1Q==/base.apk!assets/UI_Bundles/ui/prefabs/versionupdate.unity3d (°üÄÚ)
+
+obb:
+Application.streamingAssetsPath: jar:file:///storage/emulated/0/Android/obb/com.qld.lmxt/main.1.com.qld.lmxt.obb!/assets
+Application.dataPath: /storage/emulated/0/Android/obb/com.qld.lmxt/main.1.com.qld.lmxt.obb
+
+Õı³£°ü£º
+Application.streamingAssetsPath: jar:file:///data/app/com.qld.lmxt-lrNOqcVegh94CgFt9O-PZQ==/base.apk!/assets
+Application.dataPath: /data/app/com.qld.lmxt-lrNOqcVegh94CgFt9O-PZQ==/base.apk
+
+1.Publishing SettingsµÄSplit Application Binary´ò¹³  //PlayerSettings.Android.useAPKExpansionFiles = true;
+2.APKÎÄ¼şÖ÷Òª°üÀ¨Java¡¢Native´úÂë¡¢ÓÎÏ·½Å±¾¡¢²å¼şÒÔ¼°µÚÒ»¸ö³¡¾°°üº¬µÄËùÓĞ×ÊÔ´
+3.Obb°ü°ÑËùÓĞµÄ×ÊÔ´ÎÄ¼ş£¨°üÀ¨ streaming Assets£©´ò°üµ½assetsÄ¿Â¼ÏÂ£¨Android/obb/<package-name>/  Ä¿Â¼ÖĞ£©
+4.ObbÀ©Õ¹ÎÄ¼şÔÚGoogle Play¿ª·¢Õß¿ØÖÆÌ¨ÖĞÉÏ´«£¬¿ÉÒÔ±»¶à¸öAPK°æ±¾Ëù¸´ÓÃ£¬Ò²¾ÍÊÇËµ¿ÉÒÔÖ»¸üĞÂAPK£¬²»¸üĞÂAPKÀ©Õ¹ÎÄ¼ş
+5.Google Play¸üĞÂAPKÎÄ¼şÊ±ÒªÇóÃ¿´ÎµÄ°æ±¾ºÅ¶¼Òª±ÈÉÏ´ÎµÄ´ó
+6.ÓÃ»§´ÓGoogle PlayÉÏÏÂÔØÓ¦ÓÃÊ±£¬Google Play»á×Ô¶¯½«APKÎÄ¼şºÍÀ©Õ¹ÎÄ¼şÍ¬Ê±ÏÂÔØÏÂÀ´£¬ Ó¦ÓÃÆô¶¯Ê±¾Í¿ÉÒÔÖ±½ÓÊ¹ÓÃÀ©Õ¹ÎÄ¼şÁË¡£µ«ÊÇGoogle Play²¢²»×ÜÊÇ±£Ö¤Ò»¶¨»áÏÂÔØÀ©Õ¹ÎÄ¼ş
+
+2019.3.8
+Î»ÔËËãÖĞµÄÒì»òÔËËã£¨Âú×ã½»»»ÂÉ£©£º
+1 ^ 1 = 0
+0 ^ 1 = 1
+x ^ 1 ¿ÉÊµÏÖ·­×ª
+Èç²»Ê¹ÓÃÁÙÊ±±äÁ¿£¬ÊµÏÖÁ½¸öÖµµÄ½»»»£º
+a = a^b
+b = b^a  ±ä³ÉÔ­À´aÖµ
+a = a^b  ±ä³ÉÔ­À´bÖµ
+
+1 ^ 0 = 1
+0 ^ 0 = 0
+x ^ 0 ¿ÉÊµÏÖ±£³Ö
+ÓÉ B ^ A ^ A = B ¿ÉÊµÏÖ¼ÓÃÜ½âÃÜ
+
+2019.3.22
+1.unity ´ò±¬64kÎÊÌâ£¬sdkÊÇ aarÊ±»á±¨ÀàÕÒ²»µ½
+2.unity±àÒëÊ±Ê¹ÓÃgradle¶ø²»ÊÇÆÕÍ¨µÄinternalÊ±£¬uintyÏÈ»áÈ¥ÕÒÄãÏîÄ¿Plugins/Android/mainTemplate.gradle,
+ Èç¹ûÓĞ,ËüÔò»áfollowÄãµÄgradleÎÄ¼ş,È»ºó·ÅÆúËü°²×°Ä¿Â¼ÏÂµÄmainTmplate.gradle
+
+2019.5.8
+Android6.0£¨API23£©¿ªÊ¼£¬Ò»Ğ©Ãô¸ĞÈ¨ÏŞÔÚÇåµ¥ÎÄ¼şÖĞÒÑ¾­ÉêÇëµÄ»¹ÒªÓÃ»§ÊÚÈ¨
+È¨ÏŞ·ÖÎªÁ½Àà£¬Ò»ÀàÊÇNormalPermissions£¬ÕâÀàÈ¨ÏŞÒ»°ã²»Éæ¼°ÓÃ»§ÒşË½£¬ÊÇ²»ĞèÒªÓÃ»§½øĞĞÊÚÈ¨µÄ£¬±ÈÈçÊÖ»úÕğ¶¯¡¢·ÃÎÊÍøÂçµÈ£»
+ÁíÒ»ÀàÊÇDangerous Permission£¬Ò»°ãÊÇÉæ¼°µ½ÓÃ»§ÒşË½µÄ£¬ĞèÒªÓÃ»§½øĞĞÊÚÈ¨£¬±ÈÈç¶ÁÈ¡sdcard¡¢·ÃÎÊÍ¨Ñ¶Â¼µÈ
+°²×¿drawableÄ¿Â¼×ÊÔ´ÃüÃûĞèĞ¡Ğ´
+ÖØÆôÓ¦ÓÃ£º
+final Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+startActivity(intent);
+android.os.Process.killProcess(android.os.Process.myPid());

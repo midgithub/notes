@@ -8,15 +8,16 @@ using SG;
 public class LoginOut : MonoBehaviour
 {
     private UIInitGame InitUI;
+    private RawImage _bgImg;
 
     void Start () {
         GameObject go = CoreEntry.gResLoader.ClonePre("UI/Prefabs/Start/FirstRes/UIInit", null, false);
         InitUI = go.transform.GetComponent<UIInitGame>();
 
-        RawImage bg = go.transform.Find("Back").GetComponent<RawImage>();
-        if (null != bg)
+        _bgImg = go.transform.Find("Back").GetComponent<RawImage>();
+        if (null != _bgImg)
         {
-            CommonTools.SetLoadImage(bg, ClientSetting.Instance.GetStringValue("InitBg"));
+            CommonTools.SetLoadImage(_bgImg, "Bg_loading");
         }
 
         InitUI.SetProgress(0);
@@ -25,11 +26,23 @@ public class LoginOut : MonoBehaviour
         StartCoroutine(InitProcess());
     }
 
+    private void OnDestroy()
+    {
+        if (null != _bgImg)
+        {
+            _bgImg.texture = null;
+        }
+    }
+
     private void ClearScene()
     {
+        MainPanelMgr.Instance.Release();
+
         AtlasSpriteManager.Instance.ClearCache();
         CoreEntry.gSceneMgr.ClearPools(MapMgr.Instance.GetCurSceneID());
         CoreEntry.gObjPoolMgr.ReleaseObjectPool();
+        CoreEntry.gGameObjPoolMgr.ClearPool();
+        FlyAttrManager.CloseAllFlyAttr();
 
         CoreEntry.gResLoader.ClearPrefabs();
         LoadModule.Instance.Clear();
@@ -69,7 +82,9 @@ public class LoginOut : MonoBehaviour
 
         InitUI.SetProgress(1);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return StartCoroutine(MainPanelMgr.LoadStreamTexture(ClientSetting.Instance.GetStringValue("BackLogin"), string.Empty));
+        yield return StartCoroutine(MainPanelMgr.LoadStreamTexture(ClientSetting.Instance.GetStringValue("LoginLogo2"), string.Empty));
+        yield return StartCoroutine(MainPanelMgr.LoadStreamTexture(ClientSetting.Instance.GetStringValue(string.Format("Bg_loading{0}", UnityEngine.Random.Range(0, 4))), "Bg_loading"));
 
         MapMgr.Instance.EnterLoginScene();
     }

@@ -47,11 +47,10 @@ TexturePacker预先生成好正方形的IOS PVRTC4图集和非正方形的Android ETC1图集
 引擎层做了一次纹理过滤把非2幂的纹理拉伸或压缩到2的幂再传入（比如Mipmap层级），由此实现允许任意纹理传入。
 有些GUP不支持NPOT，遇到NPOT会有一个转换POT的过程，浪费性能
 
-在项目中，尽可能是使用ETC1和PVRTV4等GPU直接支持的图片格式，不仅内存占用低、性能也更好
-1. 更新不透明贴图的压缩格式为ETC 4bit，因为android市场的手机中的GPU有多种，每家的GPU支持不同的压缩格式，但他们都兼容ETC格式，
-2. 对于透明贴图，我们只能选择RGBA 16bit 或者RGBA 32bit。
-
+安卓上建议使用ETC2(支持Alpha通道)，搭配Unity的Crunched算法，效果更佳。RGB24/RGBA32确实不建议使用，主要是会占用显存带宽，但是效果确实好。
+ASTC可以考虑在iOS上用起来
 尽量少的使用反光阴影啦之类的，因为那会使物体多次渲染。
+
 
 开发中做到：
 1.ugui中Raycast Target 不要打勾（不要事件） ngui中不要碰撞体
@@ -130,3 +129,32 @@ CPU优化:
 
 Animator组件在Enable时，需要重建内部数据，导致了异常的卡顿
 尽量避免使用SetActive，改成SetLayer+Behaviour.Enable=false的效率能好很多
+
+动画文件优化：只裁剪动画文件的压缩精度，没有引起Curve减少。BlobSize是不会有任何变化的，因为每个浮点数固定占32bit，而文件大小、AB大小、Editor下的内存都会变小；
+裁剪动画文件的精度：裁剪精度所以动画的点更稀疏了，而连续相同的点更多，所以Dense Curve是减少了，Constant Curve是增多了，总的内存是减小了
+
+1.FBX上的Read/Write Enabled关闭后，内存中便不再保存其Mesh的副本（只存在显存中），供粒子系统使用的Mesh是需要开启Read/Write Enabled的
+2.资源冗余得越多，切换场景时，UnloadUnusedAssets的开销越大，进而增加了场景的切换时间
+
+sz:
+1.后处理性能优化(后处理对性能影响很大)：
+ImageEffects Temp (2038x1080, ARGB32, 8M): 
+void OnRenderImage(RenderTexture src,RenderTexture dest)  //导致严重的掉帧,如果不后处理一定不要有这个函数，每帧都被调用，而且还为了参数创建了RT！
+{
+    Graphics.Blit(src, dest, mat)
+} 
+如果相机未赋值RT,unity会自动创建RT来渲染整个GPU信息，
+解决方案: 在OnPreRender(在摄像机开始渲染场景之前调用)中，奖rendertexture赋值给camera，在OnPostRender(场景渲染完成之后调用)中，处理后处理渲染(只有在不需要HDR效果下，才有优化效果)
+
+2.GrabPass Temp (2038x1080, ARGB32, 16M): 
+GrabPass 捕捉屏幕纹理/做火焰的扭曲效果或者地震波效果: 用来截屏，截屏后把纹理传给下一个通道使用
+将BackBuffer中的内容拷贝到一张叫做_GrabTexture的贴图
+a. 效率极低，因为是要从显存到内存，然后再到显存，对带宽要求很高。
+
+3.Occlusion Culling遮挡剔除
+a.摄像机自带视椎剔除(相机视角内的物体才会渲染)
+b.剔除动态物体，需要使用Occlusion Area 组件, 存在静态遮挡物（occluder static）的情况下，可以把在Occlusion Area范围内运动被静态遮挡物遮挡的动态物体剔除
+c.摄像机要在Occlusion Area内才能遮挡物剔除（当然不创建Occlusion Area的话默认整个场景），否则只有自带的视椎剔除，另外地形烘焙会略微增加运行时cpu消耗和发布文件大小。记得物体的静态设置，物体的大小对遮挡很有影响。
+
+4.lua字符串gc
+5.UI预设none,马甲包资源缓存

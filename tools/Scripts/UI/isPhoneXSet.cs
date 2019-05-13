@@ -5,13 +5,13 @@ using System.Collections;
 [Hotfix]
 public class isPhoneXSet : MonoBehaviour
 {
-
     public bool isPhoneX = false;
     public int leftright = 1;
     public float retatime = 0.2f;
     IEnumerator Start()
     {
-
+        yield break;
+#if UNITY_ANDROID && !UNITY_EDITOR
         float org = (float)Screen.width / (float)Screen.height;
         if (org > 2) isPhoneX = true;
         yield return new WaitForSeconds(retatime);
@@ -22,6 +22,7 @@ public class isPhoneXSet : MonoBehaviour
         float rx = rc.anchoredPosition.x;
         rc.anchoredPosition = new Vector2(rx + leftright * 48, rc.anchoredPosition.y);
         // Debug.LogError(rc.localPosition.x);
+#endif
     }
 
 }

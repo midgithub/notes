@@ -1115,7 +1115,11 @@ namespace SG
 
         GE_DYB_RECHARGE_MSG,                   //第一拨平台服务器返回充值结果
         GE_DYB_SERVERLIST,                    //第一拨平台返回服务器列表
-        
+
+
+        GE_SQW_RECHARGE_MSG,                   //37玩平台服务器返回充值结果
+        GE_SQW_SERVERLIST,                    //37玩平台返回服务器列表
+
         GE_SETTING_CHANGE,
         GE_SETTING_ACTORDISPLAYNUM,
 

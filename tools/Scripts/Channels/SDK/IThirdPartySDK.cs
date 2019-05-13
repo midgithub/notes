@@ -41,6 +41,8 @@ public interface IThirdPartySDK  {
 
     void Exit();
 
+    void SetExtUpData(int nType);
+
     void SetExtData(Dictionary<string, string> data);
 
     void ReleaseResource();
@@ -55,4 +57,11 @@ public interface IThirdPartySDK  {
 }
 
 
-
+//sdk 子渠道
+public enum SUB_CHANNEL
+{
+    Dyb_DEFAULT = 200,      //第一波默认
+    Dyb_QY = 201,           //奇遇
+    Dyb_QF = 202,           //清风
+    Dyb_XY = 203,           //迅游
+}

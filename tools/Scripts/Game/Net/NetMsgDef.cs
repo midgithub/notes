@@ -21,9 +21,11 @@ namespace SG
         public const Int16 C_GETSERVERLIST = 1906;//请求最近服务器列表(西游) msgId:1906;
         public const Int16 C_GETRECHARGEORDER = 2915;//请求创建支付订单 msgId:2915;
         public const Int16 C_CREATECHARGEORDER_DYB = 2925; //（第一拨）创建支付订单 msgId:2925;
+        public const Int16 C_CREATECHARGEORDER_SQW = 2924; //（37玩）创建支付订单 msgId:2926;
         public const Int16 S_GETRECHARGEORDER = 7913;//返回:创建订单 msgId:7913;
         public const Int16 S_RechargeRet = 7960; //订单支付通知
         public const Int16 S_GETRECHARGEORDER_DYB = 7930;  //(第一拨)返回创建订单  msgId:7930;
+        public const Int16 S_GETRECHARGEORDER_SQW = 7931;  //(37玩)返回创建订单  msgId:7931;
         public const Int16 S_VERIFYACCOUNT = 6007;//返回西游数据检验数据 msgId:6007;
 
         //////////////////////////////////////心跳////////////////////////////////////

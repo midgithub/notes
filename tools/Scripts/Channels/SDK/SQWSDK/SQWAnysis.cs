@@ -6,20 +6,24 @@ using XLua;
 using LitJson;
 
 /**
-* @file     : DYBAnysis
-* @brief    : 第一波SDK解析器
-* @details  : SDK接口子类，调用DYBSDK进行操作
+* @file     : SQWSDK
+* @brief    : 37玩SDK接口文件
+* @details  :SDK接口子类，调用SQWSDK进行操作
 * @author   : 
-* @date     : 2018.10.10
-*/
+* @dat
+**/
 
 [LuaCallCSharp]
 [Hotfix]
-public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
+public class SQWAnysis : MonoBehaviour, IThirdPartySDK {
 
     //初始化字段
     private string sdkLoginData = "";
     private string sdkPayOrderId = "";
+    private string sdkTime = "";
+    private string sdkSign = "";
+    private string sdkFlag = "";
+
     private string sdkPayExtension = "";
     private string sdkServerList = "";
     private string sdkDefalutList = ""; //历史登录服务器
@@ -30,36 +34,33 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
 
     public void Start()
     {
-        SG.CoreEntry.gEventMgr.AddListener(SG.GameEvent.GE_DYB_RECHARGE_MSG, GE_DYB_RECHARGE_MSG);
-      
+        SG.CoreEntry.gEventMgr.AddListener(SG.GameEvent.GE_SQW_RECHARGE_MSG, GE_SQW_RECHARGE_MSG_FUN);      
     }
-
     public void OnDestroy()
     {
-        SG.CoreEntry.gEventMgr.RemoveListener(SG.GameEvent.GE_DYB_RECHARGE_MSG, GE_DYB_RECHARGE_MSG);
+        SG.CoreEntry.gEventMgr.RemoveListener(SG.GameEvent.GE_SQW_RECHARGE_MSG, GE_SQW_RECHARGE_MSG_FUN);
     }
-
     /// <summary>
     /// 初始化 主要传入Unity 对象和各回调函数名称
     /// </summary>
     /// <param name="gameObject"></param>
     public void Init(string gameObject)
     {
-        Debug.Log("初始化第一波SDK");
+        Debug.Log("初始37玩SDK");
         sdkGameObject = gameObject;
-        DYBSDK.Instance.init(sdkGameObject, "initCallback", "loginCallback", "logoutCallback", "payCallBackMethod", "exitCallback");
+        SQWSDK.Instance.init(sdkGameObject, "initCallback", "loginCallback", "logoutCallback", "payCallBackMethod", "exitCallback");
     }
 
     public void Login()
     {
-        Debug.Log("第一波SDK登录");
-        DYBSDK.Instance.login();
+        Debug.Log("37玩SDK登录");
+        SQWSDK.Instance.login();
     }
 
     public void Logout()
     {
-        Debug.Log("第一波SDK登出");
-        DYBSDK.Instance.logout();
+        Debug.Log("37玩SDK登出");
+        SQWSDK.Instance.logout();
     }
 
     /// <summary>
@@ -68,71 +69,18 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
     /// <param name="configID"></param>
     public void Pay(int configID)
     {
-        Debug.Log("第一波SDK支付");
-        XLua.LuaTable G = LuaMgr.Instance.GetLuaEnv().Global;
-        Dictionary<int, XLua.LuaTable> diamond = G.Get<Dictionary<int, XLua.LuaTable>>("t_diamonddyb");
-        if (diamond == null)
-        {
-            Debug.LogError("payerror:" + configID.ToString());
-            return;
+        Debug.Log("37玩SDK支付 configID:" + configID);
+        if (configID > 0)
+        {            
+            Debug.Log("SendReqGetRechargeorder_SQW: AccountId ::" + Account.Instance.AccountId.ToString());
+            NetLogicGame.Instance.SendReqGetRechargeorder_SQW(configID, 1, Account.Instance.ServerId, Account.Instance.AccountId, Account.Instance.ServerName);
+            //这里向游戏服发起充值 
         }
-        Dictionary<int, XLua.LuaTable> monthcard = G.Get<Dictionary<int, XLua.LuaTable>>("t_monthcard");
-        if (monthcard == null)
-        {
-            Debug.LogError("payerror:" + configID.ToString());
-            return;
-        }
-        //int amount = 1;
-        //string itemName = "错误";
-        XLua.LuaTable tbl = null;
-        if (diamond.TryGetValue(configID, out tbl))
-        {
-            //int nbuy_android = tbl.Get<int>("buy_android");
-            //int nbuy_ios = tbl.Get<int>("buy_ios");
-            //int ndiamond = tbl.Get<int>("diamond");
-            //amount = nbuy_android;
-            //itemName = ndiamond.ToString() + uLocalization.Get("钻石");
-        }
-        else if (monthcard.TryGetValue(configID, out tbl))
-        {
-            //int card_price = tbl.Get<int>("card_price");
-            //int card_type = tbl.Get<int>("card_type");
-            //amount = card_price;
-            //itemName = uLocalization.Get("月卡") + card_type.ToString();
-        }
-        else
-        {
-            Debug.LogError("payerror:" + configID.ToString());
-            return;
-        }
-        NetLogicGame.Instance.SendReqGetRechargeorder_DYB(configID, 1, Account.Instance.ServerId, DYBSDK.Instance.GetCurrPID(), Account.Instance.ServerName);
-        //这里向游戏服发起充值 
-    
     }
 
     public void Exit()
     {
-        //DYBSDK.Instance.exit();
-    }
-
-    public void SetExtUpData(int nType)
-    {
-        //进入游戏
-        int level = PlayerData.Instance.BaseAttr.Level;
-        System.Collections.Generic.Dictionary<string, string> data = new System.Collections.Generic.Dictionary<string, string>();
-        data["dataType"] = nType.ToString();
-        data["roleLevel"] = level.ToString();
-        data["roleId"] = PlayerData.Instance.RoleID.ToString();
-        data["roleName"] = PlayerData.Instance.Name;
-        data["vipLevel"] = PlayerData.Instance.BaseAttr.VIPLevel.ToString();
-        //金币
-        data["roleBalance"] = PlayerData.Instance.BindGold.ToString();
-        data["serverName"] = Account.Instance.ServerName;
-        data["serverId"] = Account.Instance.ServerId.ToString();
-        data["society"] = PlayerData.Instance.GuildData.GuildName;
-        if (data["society"] == "")
-            data["society"] = "无";
-        SetExtData(data);
+        //SQWSDK.Instance.exit();
     }
 
     //设置角色信息
@@ -144,9 +92,9 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
 #if UNITY_EDITOR
 #elif UNITY_IOS
         //ios平台 走这里
-       DYBSDK.Instance.SetUseData(JsonMapper.ToJson(data));
+       SQWSDK.Instance.SetUseData(JsonMapper.ToJson(data));
 #elif UNITY_ANDROID
-        DYBSDK.Instance.SetUseData(JsonMapper.ToJson(data));
+        SQWSDK.Instance.SetUseData(JsonMapper.ToJson(data));
 #endif
     }
 
@@ -159,13 +107,13 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
     /// </summary>
     public void EnterUserCenter()
     {
-        DYBSDK.Instance.userCenter();
+        SQWSDK.Instance.userCenter();
     }
 
     //是否已登录
     public bool IsLogin()
     {
-        return DYBSDK.isLogin;
+        return SQWSDK.isLogin;
     }
 
     /// <summary>
@@ -173,9 +121,10 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
     /// </summary>
     /// <param name="ge"></param>
     /// <param name="parameter"></param>
-    private void GE_DYB_RECHARGE_MSG(SG.GameEvent ge, SG.EventParameter parameter)
-    {       
-        MsgData_sGetRechargeorder_DYB data = parameter.msgParameter as MsgData_sGetRechargeorder_DYB;
+    private void GE_SQW_RECHARGE_MSG_FUN(SG.GameEvent ge, SG.EventParameter parameter)
+    {
+        Debug.Log("GE_SQW_RECHARGE_MSG_FUN : ");
+        MsgData_sGetRechargeorder_SQW data = parameter.msgParameter as MsgData_sGetRechargeorder_SQW;
         Debug.Log("订单号 : " + data.data.ToString());
         Debug.Log("大小  : " + data.dataSize.ToString());
         Debug.Log("ID : " + data.ItemID.ToString());
@@ -183,19 +132,43 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
         string jsonData = data.data.ToArray().BytesToString();
         Debug.Log("xy rechargeData: " + jsonData);
         JsonData json = JsonMapper.ToObject(jsonData);
-        var tmp = json["orderNo"];
+        var tmp = json["order_no"];
         if (tmp.IsString)
             sdkPayOrderId = (string)tmp;
         else
             sdkPayOrderId = "";
 
-        tmp = json["extension"];
+        tmp = json["ext"];
         if (tmp.IsObject || tmp.IsArray)
             sdkPayExtension = tmp.ToJson();
         else
             sdkPayExtension = (string)tmp;
 
-        Debug.Log("sdkPayOrderId :" + sdkPayOrderId + " sdkPayExtension:" + sdkPayExtension + " itemID:" + data.ItemID);
+        tmp = json["sign"];
+        if (tmp.IsString)
+            sdkSign = (string)tmp;
+        else
+            sdkSign = "";
+
+        tmp = json["flag"];
+        if (tmp.IsString)
+            sdkFlag = (string)tmp;
+        else
+            sdkFlag = "";
+
+        tmp = json["time"];
+        if (tmp.IsString)
+            sdkTime = (string)tmp;
+        else
+            sdkTime = "";
+
+        tmp = json["userid"];
+        if (tmp.IsString)
+            userID = (string)tmp;
+        else
+            userID = "";
+
+        Debug.Log("sdkPayOrderId :" + sdkPayOrderId + "time :" + sdkTime + "sdkSign :" + sdkSign + " sdkPayExtension:" + sdkPayExtension + " itemID:" + data.ItemID);
         int configid = data.ItemID;
         CallBackPay(configid);
     }
@@ -205,16 +178,16 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
     {
         Debug.Log("服务器订单回调：：：：" + configID);
         XLua.LuaTable G = LuaMgr.Instance.GetLuaEnv().Global;
-        Dictionary<int, XLua.LuaTable> diamond = G.Get<Dictionary<int, XLua.LuaTable>>("t_diamonddyb");
+        Dictionary<int, XLua.LuaTable> diamond = G.Get<Dictionary<int, XLua.LuaTable>>("t_diamondsqw");
         if (diamond == null)
         {
-            Debug.LogError("payerror:" + configID.ToString());
+            Debug.LogError("payerror: t_diamonddyb" + configID.ToString());
             return;
         }
         Dictionary<int, XLua.LuaTable> monthcard = G.Get<Dictionary<int, XLua.LuaTable>>("t_monthcard");
         if (monthcard == null)
         {
-            Debug.LogError("payerror:" + configID.ToString());
+            Debug.LogError("payerror: t_monthcard" + configID.ToString());
             return;
         }
         int amount = 1;
@@ -277,18 +250,17 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
         if (data["society"] == "")
             data["society"] = "无";
         data["exchangeRate"] = "";     //兑换率
-        data["extraInfo"] = sdkPayExtension;            //额外信息          
+        data["extraInfo"] = sdkPayExtension; //额外信息   
+        data["serverTime"] = sdkTime;      //服務器時間 
+        data["sign"] = sdkSign;            //加密碼
+        data["flag"] = sdkFlag;            //表示
+        data["userId"] = userID;            //賬號ID
+        data["accountId"] = Account.Instance.AccountId;            //賬號ID
         Account.Instance.isRecharging = true;
-        int nType = 0;
-        //DYBSDK.Instance.pay(nType, sdkPayOrderId, sdkPayExtension, amount, data["productId"], itemName, itemDesc);
-#if UNITY_EDITOR
-#elif UNITY_IOS
-        //ios平台 走这里
-        Debug.Log("第一波 ios平台 充值接口:");
-        DYBSDK.Instance.pay(nServerId, sdkPayOrderId, sdkPayExtension, amount, iosshopid, itemName, itemDesc);
-#elif UNITY_ANDROID
-        DYBSDK.Instance.setPayData(JsonMapper.ToJson(data));
-#endif
+
+        //SQWSDK.Instance.pay(nType, sdkPayOrderId, sdkPayExtension, amount, data["productId"], itemName, itemDesc);
+        Debug.Log("37玩 平台 充值接口:");
+        SQWSDK.Instance.payJson(JsonMapper.ToJson(data));
     }
 
 
@@ -299,19 +271,18 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
         Debug.Log("initCallback:" + result);
         string resultCode = result;
         //判断是否成功
-        if (resultCode == DYBSDK.SUCCESS)
+        if (resultCode == SQWSDK.SUCCESS)
         {
             SG.CoreEntry.gEventMgr.TriggerEvent(SG.GameEvent.GE_THIRDPARTY_INIT, null);      
         }
         else
         {
-            SG.CoreEntry.gEventMgr.TriggerEvent(SG.GameEvent.GE_THIRDPARTY_INIT, EventParameter.Get(0));
-          
+            SG.CoreEntry.gEventMgr.TriggerEvent(SG.GameEvent.GE_THIRDPARTY_INIT, EventParameter.Get(0));          
         }
     }
 
     /// <summary>
-    /// 登录回调，第一波需要重写
+    /// 登录回调，37玩需要重写
     /// </summary>
     /// <param name="result"></param>
     public void loginCallback(string result)
@@ -320,42 +291,42 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
         Debug.Log("loginCallback:" + result);
         string resultCode = result.Substring(0, 1);
         string data = result.Substring(1);      
-        //JsonData dataJson = JsonMapper.ToObject(data);
-        //Debug.Log("data:" + dataJson.ToString());
-        //Debug.Log("tokens:" + dataJson["tokens"].ToString());
-        //Debug.Log("userId:" + dataJson["userId"].ToString());
-        //Debug.Log("userName:" + dataJson["userName"].ToString());
+        JsonData dataJson = JsonMapper.ToObject(data);
+        Debug.Log("data:" + dataJson.ToString());
+        Debug.Log("tokens:" + dataJson["pst"].ToString());
+        Debug.Log("userId:" + dataJson["clientid"].ToString());
+        Debug.Log("gameid:" + dataJson["game_id"].ToString());
         Debug.Log("resultCode:" + resultCode);
-        if (resultCode == DYBSDK.SUCCESS)
+        if (resultCode == SQWSDK.SUCCESS)
         {
-            Debug.Log("DYBSDK.SUCCESS:" + data.ToString());
+            Debug.Log("SQWSDK.SUCCESS:" + data.ToString());
             sdkLoginData = data;
-            DYBSDK.isLogin = true;
+            SQWSDK.isLogin = true;
             CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_THIRDPARTY_LOGIN, null);
         }
          //切换账号
-        else if (resultCode == DYBSDK.SUCCESS_WITCHACCOUNT)
+        else if (resultCode == SQWSDK.SUCCESS_WITCHACCOUNT)
         {
             sdkLoginData = data;
-            DYBSDK.isLogin = true;
-            Debug.Log("DYBSDK.SUCCESS_WITCHACCOUNT:" + data.ToString());
+            SQWSDK.isLogin = true;
+            Debug.Log("SQWSDK.SUCCESS_WITCHACCOUNT:" + data.ToString());
             CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_THIRDPARTY_LOGIN, null);
           
         }
-        else if (resultCode == DYBSDK.FAIL)
+        else if (resultCode == SQWSDK.FAIL)
         {
-            DYBSDK.isLogin = false;
+            SQWSDK.isLogin = false;
             sdkLoginData = data;
-            Debug.Log("DYBSDK.FAIL:" + data.ToString());
-            //DYBSDK.Instance.login();
+            Debug.Log("SQWSDK.FAIL:" + data.ToString());
+            //SQWSDK.Instance.login();
         }
-        else if (resultCode == DYBSDK.USERID)
+        else if (resultCode == SQWSDK.USERID)
         {
-            //DYBSDK.Instance.userID = dataJson["userId"].ToString();
-            DYBSDK.Instance.userID = data;
-            Debug.Log("DYBSDK.USERID:" + DYBSDK.Instance.userID);
-            DYBSDK.isLogin = true;
-            //获取DYB服务器列表
+            //SQWSDK.Instance.userID = dataJson["userId"].ToString();
+            SQWSDK.Instance.userID = data;
+            Debug.Log("SQWSDK.USERID:" + SQWSDK.Instance.userID);
+            SQWSDK.isLogin = true;
+            //获取SQWSDK服务器列表
             startFreshServerList();
         }
         
@@ -365,11 +336,11 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
     {
         Debug.Log("logoutCallback:" + result);
         string resultCode = result.Substring(0, 1);
-        if (resultCode == DYBSDK.SUCCESS)
+        if (resultCode == SQWSDK.SUCCESS)
         {
             SDKMgr.Instance.SendDYBData("4");
             CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_THIRDPARTY_LOGOUT, null);
-            DYBSDK.isLogin = false;
+            SQWSDK.isLogin = false;
         }
     }
 
@@ -392,22 +363,14 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
             }
         }
         //进入游戏
-        System.Collections.Generic.Dictionary<string, string> data = new System.Collections.Generic.Dictionary<string, string>();
-        data["dataType"] = "4";
-        data["roleLevel"] = level.ToString();
-        data["roleId"] = PlayerData.Instance.RoleID.ToString();
-        data["roleName"] = PlayerData.Instance.Name;
-        data["vipLevel"] = PlayerData.Instance.BaseAttr.VIPLevel.ToString();
-        //金币
-        data["roleBalance"] = PlayerData.Instance.BindGold.ToString();
-        data["serverName"] = Account.Instance.ServerName;
-        data["serverId"] = Account.Instance.ServerId.ToString();
-        data["society"] = PlayerData.Instance.GuildData.GuildName;
-        if (data["society"] == "")
-            data["society"] = "无";
-        this.SetExtData(data);
-        CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_THIRDPARTY_EXIT, EventParameter.Get(exitCode));
-        DYBSDK.isLogin = false;
+        SetExtUpData(4);
+        SQWSDK.isLogin = false;
+    }
+
+    public void SetExtUpData(int nType)
+    {
+        Debug.Log("nType:" + nType + " ServerId:" + Account.Instance.ServerId.ToString() + " ServerName" + Account.Instance.ServerName);
+        SQWSDK.Instance.SubmitUpData(nType, Account.Instance.ServerId.ToString(), Account.Instance.ServerName);
     }
 
     /// <summary>
@@ -416,9 +379,8 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
     /// <returns></returns>
     public string appversion()
     {
-        return DYBSDK.Instance.appversion();
+        return SQWSDK.Instance.appversion();
     }
-
 
     /// <summary>
     /// 获取渠道信息
@@ -433,64 +395,61 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
         }
         else if (type == ThirdParty_ExtNameType.APP_SERVERlIST)
         {
-            return DYBSDK.Instance.sdkServerList;
+            return SQWSDK.Instance.sdkServerList;
         }
         else if (type == ThirdParty_ExtNameType.APP_DEFAULTLIST)
-            return DYBSDK.Instance.sdkDefalutList;
+            return SQWSDK.Instance.sdkDefalutList;
         return "";
     }
 
-
     /// <summary>
-    /// 获取第一波服务器列表
+    /// 获取37玩服务器列表
     /// </summary>
     /// <returns></returns>
-    private IEnumerator GetDYBServerList()
+    private IEnumerator GetSQWServerList()
     {
-        if (DYBSDK.isLogin)
+        if (SQWSDK.isLogin)
         {        
             int  isfail = 0;
             //获取历史和推荐服务器
             WWWForm form = new WWWForm();
-            form.AddField("userID", DYBSDK.Instance.userID);
+            form.AddField("userID", SQWSDK.Instance.userID);
             //token加密
-            string md5=Md5Util.MD5Encrypt(DYBSDK.Instance.userID + "6842c6012614bd474f75d1067f3e805f");
+            string md5=Md5Util.MD5Encrypt(SQWSDK.Instance.userID + "6842c6012614bd474f75d1067f3e805f");
             form.AddField("token", md5);
-            Debug.Log("发送参数：" + "userID: " + DYBSDK.Instance.userID + "key; " + "6842c6012614bd474f75d1067f3e805f");
+            Debug.Log("发送参数：" + "userID: " + SQWSDK.Instance.userID + "key; " + "6842c6012614bd474f75d1067f3e805f");
             Debug.Log("加密后：" + form.data.BytesToString());
 			
 			form.AddField("package", Application.bundleIdentifier);
             Debug.Log("package：" + Application.bundleIdentifier);
-
+           
             int sdkType = ClientSetting.Instance.GetIntValue("thirdPartyComponent");
             int subChannel = ClientSetting.Instance.GetIntValue("SubChannel");
-            string urlList = SDKMgr.Instance.GetDefaultServersURL(sdkType,subChannel); //
-           
-            WWW history = new WWW(urlList, form);
+            string strLoginListUrl = SDKMgr.Instance.GetDefaultServersURL(sdkType, subChannel); //
+
+            WWW history = new WWW(strLoginListUrl, form);
             yield return history;
             if (history.isDone)
             {                
-                DYBSDK.Instance.sdkDefalutList = history.text;
-                Debug.Log("推荐服务器列表：" + DYBSDK.Instance.sdkDefalutList);
+                SQWSDK.Instance.sdkDefalutList = history.text;
+                Debug.Log("LoginListUrl:" + strLoginListUrl + "  推荐服务器列表：" + SQWSDK.Instance.sdkDefalutList);
                 //获取公共服务器列表
- 
                 WWWForm formServers = new WWWForm();
-                formServers.AddField("userID", DYBSDK.Instance.userID);
+                formServers.AddField("userID", SQWSDK.Instance.userID);
                 formServers.AddField("package", Application.bundleIdentifier);
                 formServers.AddField("version", ClientSetting.Instance.GetIntValue("PackageVersion"));
-                
-                string key = "7ada175d3828b656db7eda80dc7d58b3";
-                string token = Md5Util.MD5Encrypt(key + DYBSDK.Instance.userID + Application.bundleIdentifier + ClientSetting.Instance.GetIntValue("PackageVersion"));
-                formServers.AddField("token", token);
 
-                string urlServerlistPackUrl = SDKMgr.Instance.GetServersURL(sdkType,subChannel);
-                Debug.Log("发送服务器列表参数：" + "userID: " + DYBSDK.Instance.userID + "package: " + Application.bundleIdentifier + "version: " + ClientSetting.Instance.GetIntValue("PackageVersion"));
-				WWW ser = new WWW(urlServerlistPackUrl, formServers);
+                string key = "7ada175d3828b656db7eda80dc7d58b3";
+                string token = Md5Util.MD5Encrypt(key + SQWSDK.Instance.userID + Application.bundleIdentifier + ClientSetting.Instance.GetIntValue("PackageVersion"));
+                formServers.AddField("token", token);
+                string strServerListUrl = SDKMgr.Instance.GetServersURL(sdkType, subChannel); 
+                Debug.Log("ServerListUrl:" + strServerListUrl + "  发送服务器列表参数：" + "userID: " + SQWSDK.Instance.userID + "package: " + Application.bundleIdentifier + "version: " + ClientSetting.Instance.GetIntValue("PackageVersion"));
+				WWW ser = new WWW(strServerListUrl, formServers);
                 yield return ser;
                 if (ser.isDone)
                 {
                     Debug.Log("服务器列表： " + ser.text);
-                    DYBSDK.Instance.sdkServerList = ser.text;
+                    SQWSDK.Instance.sdkServerList = ser.text;
                 }
                 else if (!string.IsNullOrEmpty(ser.error))
                 {
@@ -508,11 +467,11 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
             EventParameter ev = EventParameter.Get();
             ev.intParameter = isfail;//获取状态 0成功 1失败
             Debug.Log("服务器列表：" + isfail);
-            CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_DYB_SERVERLIST, ev);
+            CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_SQW_SERVERLIST, ev);
             if (1 == isfail)
             {                
                 UITips.ShowTips("重新刷新服务器列表");
-                StartCoroutine(GetDYBServerList());
+                StartCoroutine(GetSQWServerList());
             }
         }
        
@@ -523,7 +482,7 @@ public class DYBAnysis : MonoBehaviour, IThirdPartySDK {
     /// </summary>
     public void startFreshServerList()
     {
-        StartCoroutine(GetDYBServerList());
+        StartCoroutine(GetSQWServerList());
     }
     #endregion
 }

@@ -222,6 +222,7 @@ namespace SG
 
                 long ctime = UiUtil.ConvertDateTimeToUnix(System.DateTime.Now) / 1000;
                 UiUtil.CSTimeOffset = data.ServerTime - ctime;
+                SDKMgr.Instance.SetExtUpData(1);
 #if UNITY_EDITOR
                 LogMgr.Log("Time Server:{0} Client:{1} Gap:{2}", data.ServerTime, ctime, UiUtil.CSTimeOffset);
 #endif
@@ -264,6 +265,7 @@ namespace SG
             mSelectIndex = roleInfoList.Count - 1;
 
             AddEverServer();
+            SDKMgr.Instance.SetExtUpData(2);
         }
 
         private void GE_SC_ENTER_SCENE(GameEvent ge, EventParameter parameter)
@@ -271,6 +273,7 @@ namespace SG
             if (MapMgr.Instance.CurMapType == MapMgr.MapType.Map_SelectRole)
             {
                 AddEverServer();
+                SDKMgr.Instance.SetExtUpData(4);
             }
         }
 
@@ -285,7 +288,6 @@ namespace SG
         public void SendReqCreateRole(string roleName, int job, int icon, string channel, string exts)
         {
             LogMgr.Log("SendReqCreateRole: roleName : " + roleName);
-
             MsgData_cCreateRole data = new MsgData_cCreateRole();
             NetLogicGame.str2Bytes(roleName, data.RoleName);
             NetLogicGame.str2Bytes(channel, data.Channel);
@@ -294,7 +296,6 @@ namespace SG
             data.Icon = icon;
             data.AccountGUID = AccountGuid;
             data.CurrentRoleID = 0;
-
             CoreEntry.netMgr.send(NetMsgDef.C_CREATEROLE, data);
         }
 
@@ -326,16 +327,21 @@ namespace SG
             //xy channel
             if (ClientSetting.Instance.GetBoolValue("useThirdPartyLogin"))
             {
-                if(ClientSetting.Instance.GetIntValue("thirdPartyComponent") == 1)
+                int sdkType = ClientSetting.Instance.GetIntValue("thirdPartyComponent");
+                if (sdkType == 1)
                 {
                     NetLogicGame.str2Bytes(XYSDK.Instance.getMasterID(), data.Channel);
-                    Debug.Log("getMasterID" + XYSDK.Instance.getMasterID());
+                    Debug.Log("getMasterID:XYSDK" + XYSDK.Instance.getMasterID());
                 }
-                 //dyb channel
-                else if (ClientSetting.Instance.GetIntValue("thirdPartyComponent") == 2)
+                else if (sdkType == 2)
                 {
                     NetLogicGame.str2Bytes(DYBSDK.Instance.getMasterID(), data.Channel);
-                    Debug.Log("getMasterID" + DYBSDK.Instance.getMasterID());
+                    Debug.Log("getMasterID:DYBSDK" + DYBSDK.Instance.getMasterID());
+                }
+                else if (sdkType == 3)
+                {
+                    NetLogicGame.str2Bytes(SQWSDK.Instance.getMasterID(), data.Channel);
+                    Debug.Log("getMasterID:SQWSDK" + SQWSDK.Instance.getMasterID());
                 }
             } 
             
@@ -345,12 +351,10 @@ namespace SG
             data.LoginType = 2;
 #endif
             data.ServerID = serverID;
-            //data.LoginType = loginType;
             data.ActivityID = activityID;
             data.PID = pid;
             data.SelectedRole = rid;
             data.AccountGUID = AccountGuid;
-
             CoreEntry.netMgr.send(NetMsgDef.C_ENTERGAME, data);
         }
 
@@ -364,7 +368,6 @@ namespace SG
         private void ReadEverServer()
         {
             recordServers.Clear();
-
             string file = "";
 #if UNITY_EDITOR
             file = Application.dataPath + "/../server.txt";

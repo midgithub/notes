@@ -20,28 +20,15 @@ public static WWW LoadFromCacheOrDownload(string url, Hash128 hash);
 然而hash就是需要借助AssetBundleManifest.GetAssetBundleHash的方法来获取了.
 AssetBundle.LoadAsset("AssetBundleManifest")，就可以把那个没有后缀名的文件转成AssetBundleManifest对象mainfest。
 
-AssetBundleManifest,的类
-GetAllAsssetBundles()
-GetAllDependencies() 传入一个assetbundle的名字来获取其依赖的assetbundle
-GetAssetBundleHash（）
-
 类 AssetBundle ：
 LoadFromFile(string path, uint crc = 0)：分同步和异步方式，同LoadFromCacheOrDownload解压到外部硬盘
 LoadFromMemory(byte[] binary, uint crc = 0)：一般用在经过加密的数据上，经过加密的流数据经过解密之后我们可以调用该方法动态的创建AssetBundle对象
 
-
 AssetBundle 是一种使用LZMA压缩方式(默认的，还有LZ4)压缩的资源文件，使用LZMA格式压缩的AssetBundle的包体积最小（高压缩比），但是相应的会增加解压缩时的时间。
 生成一个.manifest文件，这个文件描述了assetbundle包大小、crc验证、包之间的依赖关系等等
-AssetBundles 技术的主要的目的是在需要的时候能够从远端的服务器上按需请求特定的资源，并加载到游戏中。AssetBundles 可以包含 Unity 可以识别的任何类型的资源，包括自定义的二进制数据。唯一的例外是，脚本资源是不被允许的。
 
 AssetBundle的名字固定为小写(如cfg.ab)，Variant，其实就是一个后缀，有不同分辨率的同名资源，可以使用这个来做区分。设置后修改资源对应的.meta文件，可以查看
-
-assetbundle打包完毕后，加载manifest文件获取所有资源信息，与当前已存在的资源列表进行比对，合并。多个项目之间只要维护好一份统一的资源列表就可以了。
 
 导出AssetBundle和自动设置名称：
 每一个小的资源都会有一个唯一的哈希Id的，是一串很长的字母和数字组合。我们可以通过AssetDatabase.AssetPathToGUID来获得这个ID。.meta文件 guid字段
 
-AssetBundle的链式结构和增量打包表现：一个小的部分改变了，它将会改变的地方只有总的AssetBundle.mainfest，还有直接依赖于它本身的manifest。其他不依赖的部分是没重新打包的。
-
-除了manifest文件以外，还有一个没有后缀名称的AssetBundle文件。这个文件其实才是包含了所有的依赖关系的  总的依赖关系配置文件， 刚才我们能用txt打开的manifest文件，都只是用来做本地依赖关系和增量打包的时候用的。
-我们加载AssetBundle的时候，完全不需要加载那些manifest文件的，只需要那个没有后缀名称的AssetBundle文件（具体名字和你导出的文件夹同名）就行了，它代表的是该项目的所有AssetBundle的依赖关系。

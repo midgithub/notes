@@ -1112,6 +1112,28 @@ namespace SG
                 }
             }
         }
+        public void ZhuanSheng()
+        {
+            GameObject mLvupEffectObj = CoreEntry.gGameObjPoolMgr.Instantiate("Effect/skill/buff/fx_buff_zhuansheng");
+            if (null != mLvupEffectObj)
+            {
+                mLvupEffectObj.transform.parent = transform;
+                mLvupEffectObj.transform.localPosition = Vector3.zero;
+                mLvupEffectObj.transform.localRotation = Quaternion.identity;
+                mLvupEffectObj.transform.localScale = Vector3.one;
+                SceneEfxPool efx = mLvupEffectObj.GetComponent<SceneEfxPool>();
+
+                if (efx == null)
+                {
+                    efx = mLvupEffectObj.AddComponent<SceneEfxPool>();
+                }
+                if (efx != null)
+                {
+                    //CoreEntry.gAudioMgr.PlayUISound(900007, mLvupEffectObj);
+                    efx.Init(transform.position, 5f);
+                }
+            }
+        }
 
         GameObject finishTaskEffectObj;
         void OnTaskFinish(GameEvent ge, EventParameter parameter)

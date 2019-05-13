@@ -43,7 +43,11 @@ namespace SG
                 LuaTable desc = ConfigManager.Instance.Skill.GetBuffConfig(buffData.buffType);
                 if(desc != null)
                 {
-              
+                    if(TargetObj.GetBuff(buffData.BufferInstanceID) != null)
+                    {
+                        //Debug.LogError("重复BUFF  " + buffData.BufferInstanceID + "   " + buffData.buffType);
+                        return;
+                    }
                     TargetObj.Addbuff(buffData, TargetObj);
 
                     //  buffList.Add(buffData.BufferInstanceID, TargetObj);

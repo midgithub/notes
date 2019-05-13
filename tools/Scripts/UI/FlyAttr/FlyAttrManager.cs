@@ -176,7 +176,7 @@ namespace SG
             //float delay = 0;
             for (int i = 0; i < ShowAttr.Length; ++i)
             {
-                int change = (int)(newattrs[i] - oldattrs[i]);
+                var change =  (newattrs[i] - oldattrs[i]);
                 if (change != 0)
                 {
                     if (ShowAttr[i] != BasicAttrEnum.Power)
@@ -186,7 +186,7 @@ namespace SG
                     else
                     {
                         //战斗力直接显示
-                        ShowAttrChange(ShowAttr[i], (int)oldattrs[i], (int)newattrs[i], 0);
+                        ShowAttrChange(ShowAttr[i], oldattrs[i], newattrs[i], 0);
                     }
                 }
             }
@@ -251,9 +251,9 @@ namespace SG
         /// <param name="oldvalue">改变前的值。</param>
         /// <param name="newvalue">改变值。</param>
         /// <param name="delay">显示延迟。</param>
-        public void ShowAttrChange(BasicAttrEnum type, int oldvalue, int newvalue, float delay)
+        public void ShowAttrChange(BasicAttrEnum type, double oldvalue, double newvalue, float delay)
         {
-            int change = newvalue - oldvalue;
+            var change = newvalue - oldvalue;
             if (type == BasicAttrEnum.Power)
             {
                 //同一时间只显示一个战斗变化
@@ -271,24 +271,21 @@ namespace SG
             else
             {
                 ItemFlyAttr item = GetFlyAttr(change > 0 ? 2 : 3);
-                item.Init(type, oldvalue, newvalue, 200, 50, delay);
+                item.Init(type, (float)oldvalue, (float)newvalue, 200, 50, delay);
                 CurFlyAttr.Add(item);
             }
         }
 
         public static void CloseAllFlyAttr()
         {
-            if(flyAttr != null)
+            if (flyAttr != null)
             {
                 flyAttr.m_CacheFlyAttr.Clear();
                 flyAttr.NeedShow.Clear();
+                flyAttr.CurFlyAttr.Clear();
 
-                while(flyAttr.CurFlyAttr.Count > 0)
-                {
-                    flyAttr.RemoveFlyAttr(flyAttr.CurFlyAttr[0]);
-                }
+                Destroy(flyAttr.FlyAttrRoot.gameObject);
             }
-            
         }
 
         public void ShowTextChange(string text,int oldvalue, int newvalue, float delay)

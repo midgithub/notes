@@ -14,6 +14,7 @@ public class WinUpdate : MonoBehaviour
     public static event Action OnSplashOver;
 
     GameObject _splashUI;
+    RawImage _splashImg;
     RawImage _companyImg;
 
     GameObject _updateUI;
@@ -21,11 +22,13 @@ public class WinUpdate : MonoBehaviour
     Text _updatePro;
     Text _txtTip;
     Text _version;
+    RawImage _imageBg;
 
     GameObject _tipPanle;
     Text _texDesc;
     Button _okBtn;
     Button _cancleBtn;
+    Button _sureBtn;
 
     string apkUrl = string.Empty;
     
@@ -37,7 +40,7 @@ public class WinUpdate : MonoBehaviour
             string file = FileHelper.CheckBundleName(uiPath);
             string path = FileHelper.SearchFilePath("UI_Bundles", file);
             path = FileHelper.GetAPKPath(path);
-            AssetBundle bundle = AssetBundle.LoadFromFile(path);
+            AssetBundle bundle = FileHelper.GetAssetBundle(path);
             if (null != bundle)
             {
                 var pre = bundle.LoadAsset("VersionUpdatePanel", typeof(GameObject));
@@ -81,27 +84,30 @@ public class WinUpdate : MonoBehaviour
 
     private void OnDestroy()
     {
+        _splashImg.texture = null;
+        _companyImg.texture = null;
+        _imageBg.texture = null;
         CVersionManager.Instance.OnVersionProgressEvent -= OnUpdateResEvent;
     }
 
     void Init () {
+        bool xySdk = ClientSetting.Instance.GetBoolValue("useThirdPartyLogin") && ClientSetting.Instance.GetIntValue("thirdPartyComponent") == 1;
         _splashUI = transform.Find("Splash").gameObject;
-        _splashUI.SetActive(true);
-        RawImage splash = _splashUI.GetComponent<RawImage>();
-        if(null != splash)
+        _splashUI.SetActive(!xySdk);
+        _splashImg = _splashUI.GetComponent<RawImage>();
+        if (null != _splashImg)
         {
-            StartCoroutine(SetTexture(splash, ClientSetting.Instance.GetStringValue("ThirdPartyBg")));
+            StartCoroutine(SetTexture(_splashImg, ClientSetting.Instance.GetStringValue("ThirdPartyBg")));
         }
         
         _companyImg = transform.Find("Splash/companyImg").GetComponent<RawImage>();
         if (null != _companyImg)
         {
             _companyImg.enabled = false;
-            //StartCoroutine(SetTexture(_companyImg, ClientSetting.Instance.GetStringValue("ThirdPartyBg")));
         }
 
         _updateUI = transform.Find("UpdateUI").gameObject;
-        _updateUI.SetActive(false);
+        _updateUI.SetActive(xySdk);
 
         _proBar = transform.Find("UpdateUI/Slider").GetComponent<Slider>();
         _proBar.gameObject.SetActive(false);
@@ -126,10 +132,13 @@ public class WinUpdate : MonoBehaviour
         _cancleBtn = transform.Find("UpdateUI/TipWindow/Frame/Cancel").GetComponent<Button>();
         _cancleBtn.onClick.AddListener(OnCancleBtnClick);
 
-        RawImage imageBg = transform.FindChild("UpdateUI").GetComponent<RawImage>();
-        if (imageBg)
+        _sureBtn = transform.Find("UpdateUI/TipWindow/Frame/Sure").GetComponent<Button>();
+        _sureBtn.onClick.AddListener(OnSureBtnClick);
+
+        _imageBg = transform.FindChild("UpdateUI").GetComponent<RawImage>();
+        if (_imageBg)
         {
-            StartCoroutine(SetTexture(imageBg, ClientSetting.Instance.GetStringValue("InitBg")));
+            StartCoroutine(SetTexture(_imageBg, ClientSetting.Instance.GetStringValue("InitBg")));
         }
 
         StartCoroutine(SplashAct());
@@ -138,18 +147,35 @@ public class WinUpdate : MonoBehaviour
     IEnumerator SplashAct()
     {
         yield return new WaitForEndOfFrame();
-        CommonTools.LoadImagSets();
-        yield return null;
 
         _splashUI.SetActive(false);
 
-        _version.text = string.Format("{0}.{1}", CVersionManager.Instance.GetAppVersion(), CVersionManager.Instance.GetLocalResVersion()); 
+        _version.text = string.Format("{0}.{1}", CVersionManager.Instance.GetAppVersion(), CVersionManager.Instance.GetLocalResVersion());
+        HideSplash();
         _updateUI.SetActive(true);
 
         if(null != OnSplashOver)
         {
             OnSplashOver();
         }
+    }
+
+    private void HideSplash()
+    {
+#if !UNITY_EDITOR && UNITY_ANDROID
+        try
+        {
+            AndroidJavaObject context = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
+            if (context != null)
+            {
+                context.Call("hideSplash");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("CallJava " + ex.Message);
+        }
+#endif
     }
 
     IEnumerator SetTexture(RawImage rawImg,string res)
@@ -162,6 +188,7 @@ public class WinUpdate : MonoBehaviour
         if (www != null && string.IsNullOrEmpty(www.error))
         {
             rawImg.texture = www.texture;
+            ThirdPartyEntry._textureBg = www.texture;
         }
         else
         {
@@ -218,6 +245,10 @@ public class WinUpdate : MonoBehaviour
                 _txtTip.text = string.Empty;
 
                 apkUrl = string.Empty;
+
+                _okBtn.gameObject.SetActive(false);
+                _cancleBtn.gameObject.SetActive(false);
+                _sureBtn.gameObject.SetActive(true);
                 ShowTipPanel("无可用网络信号,请检查网络!");
                 break;
             case EVersionState.ApkUpdate:   //发现大版本
@@ -225,6 +256,10 @@ public class WinUpdate : MonoBehaviour
                 _txtTip.text = string.Empty;
 
                 apkUrl = data.info;
+
+                _okBtn.gameObject.SetActive(true);
+                _cancleBtn.gameObject.SetActive(true);
+                _sureBtn.gameObject.SetActive(false);
                 ShowTipPanel("发现大版本更新,是否前往链接!");
                 break;
             case EVersionState.ResUpdating:  //资源更新中
@@ -262,6 +297,7 @@ public class WinUpdate : MonoBehaviour
             case EVersionState.PackageUpdateSuccess:  //登入所有分包更新完
                 _txtTip.text = "准备游戏";
                 _updatePro.text = string.Empty;
+
                 break;
             case EVersionState.PackageUpdateFail:  //分包更新失败
                 _txtTip.text = "资源更新失败";
@@ -303,22 +339,27 @@ public class WinUpdate : MonoBehaviour
 
     private void OnCancleBtnClick()
     {
-        if (string.IsNullOrEmpty(apkUrl))
+        if (CVersionManager.Instance.ContinueUpdateRes)
         {
-            Application.Quit();
+            Debug.Log("取消大版本更新继续资源更新---- ");
+            _tipPanle.SetActive(false);
+            CVersionManager.Instance.ContinueCheckResUpdate();
         }
         else
         {
-            if (CVersionManager.Instance.ContinueUpdateRes)
-            {
-                Debug.Log("取消大版本更新继续资源更新---- ");
-                _tipPanle.SetActive(false);
-                CVersionManager.Instance.ContinueCheckResUpdate();
-            }
-            else
-            {
-                Application.Quit();
-            }
+            Application.Quit();
         }
+    }
+
+    private void OnSureBtnClick()
+    {
+        _tipPanle.SetActive(false);
+        StartCoroutine(DelayCheckInternet());
+    }
+
+    private IEnumerator DelayCheckInternet()
+    {
+        yield return new WaitForSeconds(1f);
+        CVersionManager.Instance.CheckResVersion();
     }
 }

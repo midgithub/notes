@@ -814,33 +814,38 @@ namespace SG
                 while (!IsTerminateFlagSet())
                 {
                     bool sleep = false;
+                    SendBuffer buffer = null;
 
                     lock (m_sendMsgs)
                     {
                         if (m_sendMsgs.Count > 0)
                         {
-                            SendBuffer buffer = m_sendMsgs.Dequeue();
-                            try
-                            {
-                                NetStream.Write(buffer.msg, 0, buffer.Length);
-                                NetStream.Flush();
-                            }
-                            catch (IOException e)
-                            {
-                                LogMgr.UnityError("SenderThread, Message: " + e.Message);
-                                LogMgr.UnityError("SenderThread, StackTrace: " + e.StackTrace);
-                                LogMgr.UnityError("SenderThread, InnerException.Message: " + e.InnerException.Message);
-                            }
-
-                            lock(cacheSendMsgs)
-                            {
-                                cacheSendMsgs.Cache(buffer);
-                            }
+                            buffer = m_sendMsgs.Dequeue();
+                            
                         }
                         else
                         {
                             sleep = true;
                             //LogMgr.UnityError("======sendMsgs.Count ==0 =====");
+                        }
+                    }
+                    if (buffer != null)
+                    {
+                        try
+                        {
+                            NetStream.Write(buffer.msg, 0, buffer.Length);
+                            NetStream.Flush();
+                        }
+                        catch (IOException e)
+                        {
+                            LogMgr.UnityError("SenderThread, Message: " + e.Message);
+                            LogMgr.UnityError("SenderThread, StackTrace: " + e.StackTrace);
+                            LogMgr.UnityError("SenderThread, InnerException.Message: " + e.InnerException.Message);
+                        }
+
+                        lock (cacheSendMsgs)
+                        {
+                            cacheSendMsgs.Cache(buffer);
                         }
                     }
 

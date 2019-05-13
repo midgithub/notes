@@ -183,6 +183,21 @@ namespace SG
             CoreEntry.netMgr.send((Int16)NetMsgDef.C_CREATECHARGEORDER_DYB, msgdata);
         }
 
+        public void SendReqGetRechargeorder_SQW(int ItemID, int ItemNum, int serverID, string pid, string serverName)
+        {
+            LogMgr.Log("ItemID:" + ItemID + " ItemNum:" + ItemNum + " serverID:" + serverID + " pid:" + pid + "  serverName: " + serverName);
+            MsgData_cGetRechargeorder_DYB msgdata = new MsgData_cGetRechargeorder_DYB();
+            msgdata.ItemID = ItemID;
+            msgdata.ItemNum = ItemNum;
+            msgdata.ServerID = serverID;
+            msgdata.PidSize = (sbyte)System.Text.Encoding.UTF8.GetBytes(pid).Length;
+            msgdata.ServerNameSize = (sbyte)System.Text.Encoding.UTF8.GetBytes(serverName).Length;
+            str2Bytes(pid, msgdata.Pid);
+            str2Bytes(serverName, msgdata.ServerName);
+            Debug.Log("发送37玩订单申请");
+            CoreEntry.netMgr.send((Int16)NetMsgDef.C_CREATECHARGEORDER_SQW, msgdata);
+        }
+
         /// <summary>
         /// 登录返回
         /// </summary>
@@ -190,7 +205,7 @@ namespace SG
         public void OnLogin(MsgData msg)
         {
             //MsgData_sLogin data = msg as MsgData_sLogin;
-
+            
             CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_LOGIN_MSG, EventParameter.Get(msg));
         }
 
@@ -212,6 +227,7 @@ namespace SG
             MsgData_sEnterScene data = msg as MsgData_sEnterScene;
             LogMgr.UnityLog(string.Format("OnEnterScene :  Result :{0},PosX:{1},PosY:{2},Dir:{3},MapID:{4},FubenID:{5},EnterType:{6},ServerTime:{7},MegerServerTime:{8}", data.Result, data.PosX, data.PosY, data.Dir, data.MapID, data.FubenID, data.EnterType, data.ServerTime, data.MegerServerTime));
             CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_SC_ENTER_SCENE, EventParameter.Get(msg));
+
         }        
 
 
@@ -1834,6 +1850,15 @@ namespace SG
             CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_DYB_RECHARGE_MSG, EventParameter.Get(msg));
         }
 
+        /// <summary>
+        /// 37玩平台回复订单
+        /// </summary>
+        /// <param name="msg"></param>
+        public void OnGetRechargeOrder_SQW(MsgData msg)
+        {
+            Debug.Log("37玩创建订单回复");
+            CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_SQW_RECHARGE_MSG, EventParameter.Get(msg));
+        }
 
         public void OnGetVerifyAccount(MsgData msg)
         {
@@ -2292,6 +2317,7 @@ namespace SG
                 CoreEntry.netMgr.bindMsgHandler(NetMsgDef.S_GETRECHARGEORDER, OnGetRechargeOrder);
                 CoreEntry.netMgr.bindMsgHandler(NetMsgDef.S_RechargeRet, OnRechargeRet);
                 CoreEntry.netMgr.bindMsgHandler(NetMsgDef.S_GETRECHARGEORDER_DYB, OnGetRechargeOrder_DYB); //回复创建订单
+                CoreEntry.netMgr.bindMsgHandler(NetMsgDef.S_GETRECHARGEORDER_SQW, OnGetRechargeOrder_SQW); //回复创建订单
                 CoreEntry.netMgr.bindMsgHandler(NetMsgDef.S_VERIFYACCOUNT, OnGetVerifyAccount);
 
                 CoreEntry.netMgr.bindMsgHandler(NetMsgDef.S_GuildQuestSweep, OnGuildQuestSweep);  //返回帮派任务一键完成奖励信息 msgId:8942

@@ -27,7 +27,7 @@ namespace SG
         //private bool IsCountinueToReconnecting = false;
         private int tryDialogTimes = 0;
 
-        public bool needShowNotice = true;
+        public bool needShowNotice = false;
 
         public NetReconnect()
         {
@@ -102,8 +102,8 @@ namespace SG
             IsShowReconnectedDialog = false;
             tryDialogTimes = 0;
             PressButtonTime = 0;
-            needShowNotice = true;
-    }
+            needShowNotice = false;
+        }
 
         public void Update()
         {

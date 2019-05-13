@@ -895,7 +895,7 @@ namespace SG
             }
             if (oldpower != mBasicAttr.Power)
             {
-                int powerDiff =(int)(mBasicAttr.GetBasicAttrValue((int)BasicAttrEnum.Power) - fOldPower);
+                long powerDiff = (long)(mBasicAttr.GetBasicAttrValue((int)BasicAttrEnum.Power) - fOldPower);
                 long powerDiffInt = mBasicAttr.Power - oldpower;
                 oldpower = oldpower -  (powerDiff - powerDiffInt);
                 EventParameter ep = EventParameter.Get();

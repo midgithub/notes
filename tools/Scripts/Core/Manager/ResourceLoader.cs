@@ -12,6 +12,16 @@ namespace SG
         private Dictionary<string, GameObject> m_prefabs = new Dictionary<string, GameObject>();
         public void ClearPrefabs()
         {
+            if (AppConst.UseAssetBundle)
+            {
+                foreach (string prefab in m_prefabs.Keys)
+                {
+                    if (null != m_prefabs[prefab])
+                    {
+                        DestroyImmediate(m_prefabs[prefab],true);
+                    }
+                }
+            }
             m_prefabs.Clear();
         }
 

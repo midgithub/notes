@@ -78,7 +78,7 @@ namespace SG
         public void Init(MsgData_sTeamRole role)
         {
             int dress = SceneLoader.GetClothesModelID(role.FashionsDress, role.Dress, role.Prof,0);
-            int weapon = SceneLoader.GetWeaponModelID(role.FashionsArms, 0, role.Arms, role.Prof);
+            int weapon = SceneLoader.GetWeaponModelID(role.FashionsArms, role.MagicWeapon, role.Arms, role.Prof);
             int wing = SceneLoader.GetWingModelID(role.FashionsHead, role.Wing, role.Prof);
             ShowDress(dress);
             ShowWeapon(weapon, role.Prof);

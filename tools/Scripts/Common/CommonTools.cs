@@ -388,111 +388,27 @@ public static class CommonTools {
         return false;
     }
 
-    public static void LoadImagSets()
+    public static void SetLoadImage(Component pCompont, string strImage, int nType = 0)
     {
-        var configData = ClientSetting.Instance.ConfigData;
-        foreach(var val in configData)
+        Texture2D texImage = MainPanelMgr.GetTexture2D(strImage);
+        Debug.Log("SetLoadImage ::: Start::" + strImage);
+        if (texImage)
         {
-            string strImage = val.Value;
-            if (strImage.Contains(".png"))
+            if (nType == 0)
             {
-                string urlImage = Application.streamingAssetsPath + "/" + strImage;
-                if (Application.platform == RuntimePlatform.Android)
-                {
-                    urlImage = Application.streamingAssetsPath + "/" + strImage;
-                }
-                else
-                {
-                    urlImage = "file://" + Application.streamingAssetsPath + "/" + strImage;
-                }
-
-                //Debug.Log("LoadImage:::" + urlImage);
-                WWW t_WWW = new WWW(urlImage);
-                while (!t_WWW.isDone)
-                {
-
-                }
-                if (t_WWW.error != null)
-                {
-                    Debug.Log("error : " + urlImage);
-                }
-                else
-                {
-                    if (t_WWW.texture != null)
-                    {
-                        MapMgr.Instance.AddTexture2D(strImage, t_WWW.texture);
-                    }
-                }
+                var imageBg = pCompont as RawImage;
+                imageBg.texture = texImage;
+                Debug.Log("SetLoadImage ::: RawImage!!!" + strImage);
+            }
+            else if (nType == 1)
+            {
+                var imageBg = pCompont as UnityEngine.UI.Image;
+                imageBg.sprite = Sprite.Create(texImage, new Rect(0, 0, texImage.width, texImage.height), new Vector2(0, 0));
+                Debug.Log("SetLoadImage ::: Sprite!!!" + strImage);
             }
         }
-
     }
-
-    public static object SetLoadImage(Component pCompont, string strImage, int nType = 0)
-    {
-        //bool bChange = ClientSetting.Instance.GetBoolValue("Is_ChangeImage");
-        //if (bChange)
-        {
-            Texture2D texImage = MapMgr.Instance.GetTexture2D(strImage);
-            Debug.Log("SetLoadImage ::: Start::" + strImage);
-            if (texImage)
-            {
-                if (nType == 0)
-                {
-                    var imageBg = pCompont as RawImage;
-                    imageBg.texture = texImage;
-                    Debug.Log("SetLoadImage ::: RawImage!!!" + strImage);
-                }
-                else if (nType == 1)
-                {
-                    var imageBg = pCompont as UnityEngine.UI.Image;
-                    imageBg.sprite = Sprite.Create(texImage, new Rect(0, 0, texImage.width, texImage.height), new Vector2(0, 0));
-                    Debug.Log("SetLoadImage ::: Sprite!!!" + strImage);
-                }
-            }
-        }
-        return null;
-    }
-
-        public static IEnumerator  LoadImage(Component pCompont, string strImage, int nType = 0)
-    {
-        yield return SetLoadImage(pCompont, strImage, nType);
-        //string urlImage = Application.streamingAssetsPath + "/" + strImage; ;
-        //if (Application.platform == RuntimePlatform.Android)
-        //{
-        //    urlImage = Application.streamingAssetsPath + "/" + strImage;
-        //}
-        //else
-        //{
-        //    urlImage = "file://" + Application.streamingAssetsPath + "/" + strImage;
-        //}
-
-        //Debug.Log("LoadImage:::" + urlImage);
-        //WWW tWwwInfo = new WWW(urlImage);
-        //yield return tWwwInfo;
-        //if (nType == 0)
-        //{
-        //    var imageBg = pCompont as RawImage;
-        //    if (tWwwInfo.texture != null)
-        //    {
-        //        imageBg.texture = tWwwInfo.texture;
-        //    }
-        //    imageBg.enabled = true;
-        //}
-        //else if (nType == 1)
-        //{
-        //    var imageBg = pCompont as UnityEngine.UI.Image;
-        //    if (tWwwInfo.texture != null)
-        //    {
-        //        Texture2D tex = tWwwInfo.texture;
-        //        Sprite temp = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
-        //        imageBg.sprite = temp;
-        //    }
-        //    imageBg.enabled = true;
-        //}
-        Debug.Log("加载完成！");
-    }
-
+ 
     public static void LoadImageIO(Component pCompont, string strImage, Vector2 imageSize, int nType = 0)
     {
         string url = "file://" + Application.streamingAssetsPath + "/" + strImage;

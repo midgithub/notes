@@ -259,6 +259,25 @@ public class XYAnalyser : MonoBehaviour, IThirdPartySDK
         //XYSDK.Instance.exit();
     }
 
+    public void SetExtUpData(int nType)
+    {
+        //进入游戏
+        //int level = PlayerData.Instance.BaseAttr.Level;
+        //System.Collections.Generic.Dictionary<string, string> data = new System.Collections.Generic.Dictionary<string, string>();
+        //data["dataType"] = nType.ToString();
+        //data["roleLevel"] = level.ToString();
+        //data["roleId"] = PlayerData.Instance.RoleID.ToString();
+        //data["roleName"] = PlayerData.Instance.Name;
+        //data["vipLevel"] = PlayerData.Instance.BaseAttr.VIPLevel.ToString();
+        ////金币
+        //data["roleBalance"] = PlayerData.Instance.BindGold.ToString();
+        //data["serverName"] = Account.Instance.ServerName;
+        //data["serverId"] = Account.Instance.ServerId.ToString();
+        //data["society"] = PlayerData.Instance.GuildData.GuildName;
+        //if (data["society"] == "")
+        //    data["society"] = "无";
+        //SetExtData(data);
+    }
 
     /// <summary>
     /// data 参数
@@ -654,7 +673,7 @@ public class XYAnalyser : MonoBehaviour, IThirdPartySDK
 
     IEnumerator TrackingInfo()
     {
-        Debug.Log("========TrackingInfo============");
+        LogMgr.Log("========TrackingInfo============");
         yield return new WaitForSeconds(2f);
         if (!isGetServerInfo)
         {
@@ -663,7 +682,7 @@ public class XYAnalyser : MonoBehaviour, IThirdPartySDK
         }
         if (isRes)
         {
-            Debug.Log("========注册============" + Account.Instance.sdkUserId);
+            LogMgr.Log("========注册============" + Account.Instance.sdkUserId);
             XYSDK.Instance.TrackingRegister(Account.Instance.sdkUserId.ToString());
         }
         yield return new WaitForSeconds(1f);

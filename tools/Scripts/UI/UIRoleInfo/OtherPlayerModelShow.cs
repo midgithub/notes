@@ -177,7 +177,7 @@ namespace SG
             int wing = OtherPlayerData.Instance.GetWingModelID();
             if (wing != 0)
             {
-                Transform mBackHolder = ActorObj.RecursiveFindChild(transform, "E_back");
+                Transform mBackHolder = ActorObj.RecursiveFindChild(mPlayerObject.transform, "E_back");
                 GameObject obj = SceneLoader.LoadModelObject(wing);
                 if (obj != null)
                 {

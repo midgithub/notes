@@ -15,7 +15,7 @@ public class LuaMgr : MonoBehaviour
     {
         get
         {
-#if  MANAGER_SELF_OBJ            
+#if MANAGER_SELF_OBJ
             if (m_instance == null)
             {
                 GameObject obj = new GameObject();
@@ -24,10 +24,8 @@ public class LuaMgr : MonoBehaviour
                 GameObject.DontDestroyOnLoad(obj);
             }
 #else
-        m_instance = CoreEntry.gLuaMgr;
+            m_instance = CoreEntry.gLuaMgr;
 #endif
-
-
             return m_instance;
         }
     }
@@ -73,7 +71,7 @@ public class LuaMgr : MonoBehaviour
             luaEnv = new LuaEnv();
             luaEnv.AddBuildin("rapidjson", XLua.LuaDLL.Lua.LoadRapidJson);
             luaEnv.AddBuildin("lpeg", XLua.LuaDLL.Lua.LoadLpeg);
-            luaEnv.AddBuildin("protobuf.c", XLua.LuaDLL.Lua.LoadProtobufC);			
+            luaEnv.AddBuildin("protobuf.c", XLua.LuaDLL.Lua.LoadProtobufC);
         }
         luaEnv.AddLoader(CustomLoader);
         DoString("require 'Lua/main'");
@@ -82,7 +80,7 @@ public class LuaMgr : MonoBehaviour
     public static byte[] CustomLoader(ref string filename)
     {
         TextAsset luaCfg;
-		if (filename.Split('/')[0].Equals("Lua"))
+        if (filename.Split('/')[0].Equals("Lua"))
 		{
 			luaCfg = CoreEntry.gResLoader.LoadTextAsset(filename + ".lua", SenLib.AssetType.Txt);
 		}
@@ -96,11 +94,16 @@ public class LuaMgr : MonoBehaviour
             ProfilerData.AddLuaFile(filename, luaCfg);
         }
 
+        byte[] ret = null;
         if (luaCfg != null)
         {
-            return luaCfg.bytes;
+            ret = luaCfg.bytes;
         }
-        return null;
+
+        Resources.UnloadAsset(luaCfg);
+        luaCfg = null;
+
+        return ret;
     }
 
     public object[] DoString(string filename)

@@ -32,23 +32,23 @@ namespace SG
         private BasicAttrEnum mType;
         //private int mValue;
 
-        public void Init(BasicAttrEnum type, int oldvalue, int newvalue, float x, float y, float delay)
+        public void Init(BasicAttrEnum type, double oldvalue, double newvalue, float x, float y, float delay)
         {
 
             mType = type;
-            int change = newvalue - oldvalue;            
+            var change = newvalue - oldvalue;            
             if (type == BasicAttrEnum.Power)
             {
                 //战斗力表现方式不一样                
-                Scroll.SetValue(oldvalue, false);
-                Scroll.SetValue(newvalue, true);
+                Scroll.SetValue((long)oldvalue, false);
+                Scroll.SetValue((long)newvalue, true);
                 ChangeText.text = change > 0 ? ("+" + change.ToString()) : change.ToString();
 
                 PowerToText fun = LuaMgr.Instance.GetLuaEnv().Global.GetInPath<PowerToText>("Common.PowerToText");
-                int len = Mathf.Max(oldvalue, newvalue).ToString().Length * 30;
+                int len =  (oldvalue > newvalue ? oldvalue : newvalue).ToString().Length * 30;
                 if (fun != null)
                 {
-                    len = fun(Mathf.Max(oldvalue, newvalue)).Length * 30;
+                    len = fun((oldvalue > newvalue ? oldvalue : newvalue)).Length * 30;
                 }
 
                 int clen = ChangeText.text.Length * 30;

@@ -13,7 +13,17 @@ using LitJson;
 namespace SG
 {
     [LuaCallCSharp]
-[Hotfix]
+    [Hotfix]
+    public enum SDK_TYPE : int
+    {
+        SG = 0,
+        XY = 1,
+        DYB = 2,
+        SQW = 3,
+    }
+
+    [LuaCallCSharp]
+    [Hotfix]
     public class SDKMgr
     {
         /// <summary>
@@ -51,20 +61,30 @@ namespace SG
             {
                 mSKDType = ClientSetting.Instance.GetIntValue("thirdPartyComponent");
                 Debug.Log("SDk Type ：" + mSKDType);
-                if (mSKDType == 0)
+                if (mSKDType == (int)SDK_TYPE.SG)
                 {
+                    Debug.Log("三国 SDK 初始化");
                     thirdPartySDK = obj.AddComponent<SGAnalyser>();
                 }
-                else if(mSKDType == 1)
+                else if(mSKDType == (int)SDK_TYPE.XY)
                 {
+                    Debug.Log("西游 SDK 初始化");
                     SDKMgr.Instance.TrackGameLog("1000", "游戏启动");
                     thirdPartySDK = obj.AddComponent<XYAnalyser>();
                 }
                 //第一波SDK初始化
-                else if (mSKDType == 2)
+                else if (mSKDType == (int)SDK_TYPE.DYB)
                 {
-                    Debug.Log("第一波 SDk 初始化");
+                    Debug.Log("第一波 SDK 初始化");
+                    SDKMgr.Instance.TrackGameLog("1000", "游戏启动");
                     thirdPartySDK = obj.AddComponent<DYBAnysis>();
+                }
+                //37玩SDK初始化
+                else if (mSKDType == (int)SDK_TYPE.SQW)
+                {
+                    Debug.Log("37玩 SDK 初始化");
+                    SDKMgr.Instance.TrackGameLog("1000", "游戏启动");
+                    thirdPartySDK = obj.AddComponent<SQWAnysis>();
                 }
 
                 if (null != thirdPartySDK)
@@ -116,7 +136,17 @@ namespace SG
                 thirdPartySDK.Logout();
             }
         }
-        
+
+        /// <param name="data"></param>
+        public void SetExtUpData(int nType)
+        {
+            if (null != thirdPartySDK)
+            {
+                Debug.Log("SetExtUpData nType ::" + nType);
+                thirdPartySDK.SetExtUpData(nType);
+            }
+        }
+
         /// <summary>
         /// 上报数据
         /// </summary>
@@ -345,11 +375,11 @@ namespace SG
             form.AddField("data", serverInfo);
 
             Debug.Log("上报信息token: serverID : " + serverID + " userID:" + userID + " playerID:" + playerID + " key:" + key);
-            
-            //进入游戏上报
-            MonoInstance.Instance.StartCoroutine(PostPhp("http://init.wqyry.szdiyibo.com/server/logged.php", form));
-           
 
+            //进入游戏上报
+            int sdkType = ClientSetting.Instance.GetIntValue("thirdPartyComponent");
+            int subChannel = ClientSetting.Instance.GetIntValue("SubChannel");
+            MonoInstance.Instance.StartCoroutine(PostPhp(GetLoggedUrl(sdkType,subChannel), form));
         }
 
         public void GE_CLEANUP_USER_DATA(GameEvent ge, EventParameter param)
@@ -392,8 +422,6 @@ namespace SG
 
         public void TrackGameLog(string step, string desc)
         {
-            Debug.Log("Debug.Log:::" + step + desc);
-
             if (bSDK && mSKDType == 1)
             {
                 string ic = "TrackEvent";
@@ -649,16 +677,91 @@ namespace SG
 
             this.SetExtData(data);
         }
-    
-    
-    
-    
-    
+
+        public string GetDefaultServersURL(int nsdkType,int channel)
+        {
+            string url = string.Empty;
+            if (nsdkType == (int)SDK_TYPE.DYB)
+            {
+                url = "http://init.wqyry.szdiyibo.com/server/loginlist.php";
+                if (channel == (int)SUB_CHANNEL.Dyb_QY)
+                {
+                    url = "http://qiyuinit.wqyry.szdiyibo.com/server/loginlist.php";
+                }
+                else if (channel == (int)SUB_CHANNEL.Dyb_QF)
+                {
+                    url = "http://qfinit.wqyry.szdiyibo.com/server/loginlist.php";
+                }
+                else if (channel == (int)SUB_CHANNEL.Dyb_XY)
+                {
+                    url = "http://xunyouinit.wqyry.szdiyibo.com/server/loginlist.php";
+                }
+            }
+            else if(nsdkType == (int)SDK_TYPE.SQW)
+            {
+                url = "http://37init.wqyry.szdiyibo.com/server/loginlist.php";
+            }
+
+            Debug.Log("GetDefaultServersURL: " + url);
+            return url;
+        }
+
+        public string GetServersURL(int nsdkType, int channel)
+        {
+            string url = string.Empty;
+            if (nsdkType == (int)SDK_TYPE.DYB)
+            {
+                url = "http://init.wqyry.szdiyibo.com/server/serverlist_pack.php";
+                if (channel == (int)SUB_CHANNEL.Dyb_QY)
+                {
+                    url = "http://qiyuinit.wqyry.szdiyibo.com/server/serverlist.php";
+                }
+                else if (channel == (int)SUB_CHANNEL.Dyb_QF)
+                {
+                    url = "http://qfinit.wqyry.szdiyibo.com/server/serverlist.php";
+                }
+                else if (channel == (int)SUB_CHANNEL.Dyb_XY)
+                {
+                    url = "http://xunyouinit.wqyry.szdiyibo.com/server/serverlist.php";
+                }
+            }
+            else if (nsdkType == (int)SDK_TYPE.SQW)
+            {
+                url  = "http://37init.wqyry.szdiyibo.com/server/serverlist.php";
+            }
+
+            Debug.Log("GetServersURL: " + url);
+            return url;
+        }
+
+        //登入上报后台
+        public string GetLoggedUrl(int nsdkType, int channel)
+        {
+            string url = string.Empty;
+            if (nsdkType == (int)SDK_TYPE.DYB)
+            {
+                url = "http://init.wqyry.szdiyibo.com/server/logged.php";
+                if (channel == (int)SUB_CHANNEL.Dyb_QY)
+                {
+                    url = "http://qiyuinit.wqyry.szdiyibo.com/server/logged.php";
+                }
+                else if (channel == (int)SUB_CHANNEL.Dyb_QF)
+                {
+                    url = "http://qfinit.wqyry.szdiyibo.com/server/logged.php";
+                }
+                else if (channel == (int)SUB_CHANNEL.Dyb_XY)
+                {
+                    url = "http://xunyouinit.wqyry.szdiyibo.com/server/logged.php";
+                }
+            }
+            else if (nsdkType == (int)SDK_TYPE.SQW)
+            {
+                url = "http://37init.wqyry.szdiyibo.com/server/logged.php";
+            }
+
+            Debug.Log("GetLoggedUrl: " + url);
+            return url;
+        }
     }
-
-
-
-
-
 }
 

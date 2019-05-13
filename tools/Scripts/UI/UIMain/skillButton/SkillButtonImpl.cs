@@ -530,10 +530,11 @@ namespace SG
                     }
                     else
                     {
+                        m_TextCDCountDown.enabled = false;
                         float f = m_ImageCD.fillAmount;
                         if (CoreEntry.gMorphMgr.IsMorphing)
                         {
-                            f = (BeautyChangeTime - fDurTime) / BeautyChangeTime;
+                            f = (BeautyChangeTime - fDurTime) / BeautyChangeTime;                         
                         }
                         else
                         {
@@ -543,6 +544,21 @@ namespace SG
                             {
                                 BeautyEffect.gameObject.SetActive(false);
                             }
+              
+                            int CDTime = (Mathf.RoundToInt(totalTime - fDurTime));
+                            if (CDTime > 0)
+                            {
+                                m_TextCDCountDown.enabled = true;
+                                m_TextCDCountDown.text = CDTime.ToString();                                
+
+                            }
+                            else
+                            {
+                                m_TextCDCountDown.enabled = false;
+                                m_TextCDCountDown.text = "";
+                              
+                            }
+                            
                         }
                         if ((m_ImageCD.fillAmount - f > 0 ? m_ImageCD.fillAmount - f : f - m_ImageCD.fillAmount) > 0.01f)
                         {
@@ -586,6 +602,7 @@ namespace SG
                     }
                     else
                     {
+                        m_TextCDCountDown.enabled = false;
                         if (m_ImageCD.fillAmount != 1)
                         {
                             m_ImageCD.fillAmount = 1f;

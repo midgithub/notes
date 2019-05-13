@@ -111,7 +111,7 @@ public class LoadedBundleCtrl
     /// </summary>
     /// <param name="abName"></param>
     /// <returns></returns>
-    public LoadedBundle UnReferenceLoadedBundle(string abName, bool handLoad = false)
+    public LoadedBundle UnReferenceLoadedBundle(string abName)
     {
         LoadedBundle cache = null;
         if (!m_loadedBundles.TryGetValue(abName, out cache))
@@ -121,11 +121,6 @@ public class LoadedBundleCtrl
         }
 
         --cache.ReferencedCount;
-
-        if(handLoad && 0 == cache.ReferencedCount)   
-        {
-            cache.ReferencedCount = 1;    
-        }
 
         if ((AppConst.AssetCacheTime == 0) && cache.IsCanRemove)  //无缓存时间的直接删
         {

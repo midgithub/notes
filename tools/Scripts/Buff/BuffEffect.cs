@@ -47,6 +47,10 @@ namespace SG
             effectDesc = desc;
 
             effectPath = "Effect/skill/buff/" + desc.Get<string>("buff_param3");
+            if (string.IsNullOrEmpty(desc.Get<string>("buff_param3")))
+            {
+                effectPath = string.Empty;
+            }
 
             int p4 = desc.Get<int>("buff_param4");
             if (p4 == 0)
@@ -92,6 +96,11 @@ namespace SG
             //    return;
 
             //boneEffect = (GameObject)Object.Instantiate(obj);
+
+            if (string.IsNullOrEmpty(effectPath))
+            {
+                return;
+            }
 
             boneEffect = CoreEntry.gGameObjPoolMgr.InstantiateEffect(effectPath);
 

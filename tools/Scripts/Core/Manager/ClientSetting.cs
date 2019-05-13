@@ -64,7 +64,7 @@ public class ClientSetting
             string file = FileHelper.CheckBundleName(dataPath);
             string path = FileHelper.SearchFilePath("Lua_Bundles", file);
             path = FileHelper.GetAPKPath(path);
-            AssetBundle bundle = AssetBundle.LoadFromFile(path);
+            AssetBundle bundle = FileHelper.GetAssetBundle(path);
             if (null != bundle)
             {
                 TextAsset text = bundle.LoadAsset("ClientSetting", typeof(TextAsset)) as TextAsset;
@@ -113,7 +113,6 @@ public class ClientSetting
                 Debug.LogError("ResData ClientSetting.csv 读取失败！！！请检查配置文件是否正常");
             }
             StreamReader srReadFile = new StreamReader(new MemoryStream(strStream), System.Text.Encoding.UTF8);
-            Debug.Log("StreamReader 文件：" + srReadFile);
             char[] separator = new char[] { '=' };
             while (!srReadFile.EndOfStream)
             {
@@ -223,7 +222,7 @@ public class ClientSetting
 
     public virtual string GetStringValue(string key)
     {
-        string value = "";
+        string value = string.Empty;
         if (mData != null && mData.TryGetValue(key, out value))
         {
         }

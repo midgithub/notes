@@ -46,22 +46,25 @@ public class InitGame : MonoBehaviour
     void Start()
     {
         SDKMgr.Instance.TrackGameLog("3000", "开始加载lua配置");
-
         LuaTable G = LuaMgr.Instance.GetLuaEnv().Global;
-        m_LuaInitCall = G.GetInPath<InitGameDelegate>("InitGame");
-        m_LuaGetInitProCall = G.GetInPath<GetInitProgressDelegate>("GetInitProgress");
-
-        GameObject go = CoreEntry.gResLoader.ClonePre("UI/Prefabs/Start/FirstRes/UIInit", null, false);
-        InitUI = go.transform.GetComponent<UIInitGame>();
-
-        RawImage bg = go.transform.Find("Back").GetComponent<RawImage>();
-        if (null != bg)
+        UnityEngine.Debug.Log("0000000000000000000");
+        if (G != null)
         {
-            CommonTools.SetLoadImage(bg, ClientSetting.Instance.GetStringValue("InitBg"));
-        }
+            m_LuaInitCall = G.GetInPath<InitGameDelegate>("InitGame");
+            UnityEngine.Debug.Log("1111111111111111111");
+            m_LuaGetInitProCall = G.GetInPath<GetInitProgressDelegate>("GetInitProgress");
+            UnityEngine.Debug.Log("2222222222222222222");
+            GameObject go = CoreEntry.gResLoader.ClonePre("UI/Prefabs/Start/FirstRes/UIInit", null, false);
+            InitUI = go.transform.GetComponent<UIInitGame>();
+            RawImage bg = go.transform.Find("Back").GetComponent<RawImage>();
+            if (null != bg)
+            {
+                bg.texture = ThirdPartyEntry._textureBg;
+            }
 
-        InitUI.SetProgress(0);
-        StartCoroutine(InitProcess());
+            InitUI.SetProgress(0);
+            StartCoroutine(InitProcess());
+        }
     }
 
     IEnumerator InitProcess()
@@ -99,7 +102,7 @@ public class InitGame : MonoBehaviour
         {
             while (displayProgress < lastPercent)    //预加载
             {
-                displayProgress += 0.005f; 
+                displayProgress += 0.005f;
                 InitUI.SetProgress(displayProgress);
                 yield return wait;
             }
@@ -122,7 +125,9 @@ public class InitGame : MonoBehaviour
         InitEnd();
         InitUI.SetProgress(1);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return StartCoroutine(MainPanelMgr.LoadStreamTexture(ClientSetting.Instance.GetStringValue("BackLogin"),string.Empty));
+        yield return StartCoroutine(MainPanelMgr.LoadStreamTexture(ClientSetting.Instance.GetStringValue("LoginLogo2"),string.Empty));
+        yield return StartCoroutine(MainPanelMgr.LoadStreamTexture(ClientSetting.Instance.GetStringValue(string.Format("Bg_loading{0}", UnityEngine.Random.Range(0, 4))), "Bg_loading"));
 
         MapMgr.Instance.EnterLoginScene();
     }

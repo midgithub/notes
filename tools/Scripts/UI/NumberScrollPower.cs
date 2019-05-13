@@ -13,7 +13,7 @@ using UnityEngine.UI;
 using System;
 
 [CSharpCallLua]
-public delegate string PowerToText(float v);
+public delegate string PowerToText(double v);
 [CSharpCallLua]
 public delegate string ShowItemTips(int v);
 namespace SG
@@ -65,7 +65,7 @@ namespace SG
 
             float time = Math.Max(0.1f, ScrollTime);
             mScrollCount = Mathf.Max(0, mScrollCount - Time.deltaTime);
-            int value = (int)Mathf.Lerp(mValue, mOldValue, mScrollCount / time);
+            long value = (long)Mathf.Lerp(mValue, mOldValue, mScrollCount / time);
             if (value != mShowValue)
             {
                 mShowValue = value;

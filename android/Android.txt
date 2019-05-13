@@ -1,7 +1,21 @@
 res目录:所有的资源文件都会在R.java文件下生成对应的资源id
 assets目录:通过AssetManager以二进制流的形式来读取
 
-Activity:
+四大组件间的 枢纽——Intent
+a. 显式Intent：通过组件名指定启动的目标组件,比如startActivity(new Intent(A.this,B.class)); 每次启动的组件只有一个~
+b. 隐式Intent:  指定Intent的Action,Data,或Category,当我们启动组件时, 会去匹配AndroidManifest.xml相关组件的Intent-filter,逐一匹配出满足属性的组件,当不止一个满足时, 会弹出一个让我们选择启动哪个的对话框~
+1.Action(动作):
+<action android:name="android.intent.action.CALL"/>  
+intent.setAction(Intent.CALL_ACTION)    //Intent只能有一个Action
+2.Category(类别)
+<category android:name="android.intent.category.DEFAULT"/>
+intent.addCategorie(Intent.CATEGORY_DEFAULT)  //Intent可以有多个Category
+3.Extras(额外)
+intent.putExtra(key, value)
+  
+
+四大组件：
+1.Activity:
 android 系统使用Task(栈）来存储Activity
 1.打开一个application的时候，该application的task来到前台，如果没有该application的task存在(application最近没有被打开过)，
 一个新的task将会被创建同时应用程序的主activity作为根activity在stack中打开
@@ -9,3 +23,92 @@ android 系统使用Task(栈）来存储Activity
 3.按返回键，当前的activity从栈顶被弹出(被destroy了)，之前的activity 恢复(resume)。栈中的activities重不会重新被排序，只有进栈和出栈
 4.onPause()和onStop()被调用的前提是： 打开了一个新的Activity！而前者是旧Activity还可见的状态；后者是旧Activity已经不可见！
 5.生命周期函数不能手动调用，只有finish（）关闭某个Activity
+
+Activity间的数据传递：
+单个数据：
+Intent it = new Intent();                        Intent it = getIntent();
+it.setAction("my_action");			
+it.addCategory("my_category");
+intent.putExtra("sms_body", "Hello");     getStringExtra(key)/;
+startActivity(it);
+
+多数据：
+Bundle bd = new Bundle();	  Intent it = getIntent();		
+bd.putInt(key,1)		  Bundle  bd = it.getExtras();	
+bd.putString(key,value)               int n = bd.getInt(key)
+it.putExtra(bd);
+startActivity(it);
+
+2.Service 不能自己启动的，运行在后台的程序
+1.Service不是一个单独的进程,它和它的应用程序在同一个进程中
+2.Service不是一个线程,这样就意味着我们应该避免在Service中进行耗时操作
+
+//创建启动Service的Intent,以及Intent属性  
+final Intent intent = new Intent();  
+intent.setAction("com.jay.example.service.TEST_SERVICE1");  
+Activity中调用：
+startService(intent);   //继承于Service，重写onStartCommand方法处理自己后台事件
+stopService(intent);
+
+<!-- 配置Service组件,同时配置一个action -->  
+<service android:name=".TestService1">  
+            <intent-filter>  //筛选
+                <action android:name="com.jay.example.service.TEST_SERVICE1"/>  
+            </intent-filter>  
+</service> 
+
+3.BroadcastReceiver(广播接收者)
+两种广播类型：1.标准(广播接收器同时收到通知)  2.有序广播(同时只有一个接收者)
+接收系统广播（比如电量低，刚启动完，插入耳机）
+MainActivity.java中动态注册广播： （动态注册有个缺点就是需要程序启动才可以接收广播）
+myReceiver = new MyBRReceiver();   //继承BroadcastReceiver重写 onReceive
+IntentFilter itFilter = new IntentFilter();
+itFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+registerReceiver(myReceiver, itFilter);  	//unregisterReceiver(myReceiver);
+
+静态注册（接收开机广播）
+<receiver android:name=".BootCompleteReceiver">
+    <intent-filter>
+        <action android:name = "android.intent.cation.BOOT_COMPLETED">
+    </intent-filter>
+</receiver>
+
+<!-- 权限 -->
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+发送广播：MainActivity中 sendBroadcast(new Intent("com.example.broadcasttest.MY_BROADCAST"));
+
+4.ContentProvider(内容提供者)
+1.我们想在自己的应用中访问别的应用，或者说一些ContentProvider暴露给我们的一些数据， 比如手机联系人，短信等！我们想对这些数据进行读取或者修改，这就需要用到ContentProvider了！
+2.我们自己的应用，想把自己的一些数据暴露出来，给其他的应用进行读取或操作，我们也可以用 到ContentProvider，另外我们可以选择要暴露的数据，就避免了我们隐私数据的的泄露！
+
+使用系统提供的ContentProvider：
+ContentResolver resolver = getContentResolver();
+Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;   /资源标识符，定位资源所在路径
+//查询联系人数据
+cursor = resolver.query(uri, null, null, null, null);   //查询
+while(cursor.moveToNext())
+{
+    //获取联系人姓名,手机号码
+    String cName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+    String cNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+    System.out.println("姓名:" + cName);
+    System.out.println("号码:" + cNum);
+    System.out.println("======================");
+}
+cursor.close();
+xml读联系人的权限: <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+1.自定义ContentProvider类，实现onCreate()，getType()，根据需求重写对应的增删改查方法
+2.AndroidManifest.xml中为ContentProvider进行注册：
+<!--属性依次为：全限定类名,用于匹配的URI,是否共享数据 -->
+<provider android:name="com.jay.example.bean.NameContentProvider"
+            android:authorities="com.jay.example.providers.myprovider"
+            android:exported="true" />
+3.在别的项目操作
+//读取contentprovider 数据  
+final ContentResolver resolver = this.getContentResolver();
+Uri uri = Uri.parse("content://com.jay.example.providers.myprovider/test");
+resolver.insert(uri, values);   //插入
+4.通过ContentObserver监听ContentProvider的数据变化
+自定义类继承ContentObserver重写onChange方法，在Activity中getContentResolver().registerContentObserver

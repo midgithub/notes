@@ -134,21 +134,10 @@ public class CVersionManager : MonoBehaviour
         Instance = this;
         transform.name = "CVersionManager";
         DontDestroyOnLoad(gameObject);
-
-        if (Application.isMobilePlatform)
-        {
-            string dataPath = Util.DataPath;
-            if (SenLib.Helper.CheckSecondInstall(dataPath))
-            {
-                PlayerPrefs.SetInt("HightAccoutShowed", 0);
-                PlayerPrefs.Save();
-            }
-        }
-		
-		#if UNITY_IOS
-			AppConst.BundleFlag = ClientSetting.Instance.GetStringValue("BundleFlag");
-			ClientSetting.Instance.ReLoadClientSettingData();
-		#endif
+#if UNITY_IOS
+        AppConst.BundleFlag = ClientSetting.Instance.GetStringValue("BundleFlag");
+        ClientSetting.Instance.ReLoadClientSettingData();
+#endif
 
         WinUpdate.OnSplashOver += CheckExtractResource;
         WinUpdate.ShowUI();
@@ -449,7 +438,7 @@ public class CVersionManager : MonoBehaviour
     }
 
     // 检测版本更新入口
-    private void CheckResVersion()
+    public void CheckResVersion()
     {
         InitLocalResVersion();
 
@@ -460,9 +449,20 @@ public class CVersionManager : MonoBehaviour
             return;
         }
 
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            m_eventVersion.state = EVersionState.NoInternet;
+            TriggerVersionProgressEvent();
+
+            return;
+        }
+
         string content = ClientSetting.Instance.GetStringValue("PublicIp");
-        m_publicIp = SenLib.Helper.GetIp(content);
-        Debug.Log("ip 地址：" + m_publicIp);
+        if (!string.IsNullOrEmpty(content))
+        {
+            m_publicIp = SenLib.Helper.GetIp(content);
+            Debug.Log("ip 地址：" + m_publicIp);
+        }
 
         StartCoroutine(LoadBackStageFile());
     }
@@ -500,14 +500,6 @@ public class CVersionManager : MonoBehaviour
     //下载对应app版本当前资源版本信息
     private IEnumerator LoadResVersionFile()
     {
-        if(Application.internetReachability == NetworkReachability.NotReachable)
-        {
-            m_eventVersion.state = EVersionState.NoInternet;
-            TriggerVersionProgressEvent();
-
-            yield break;
-        }
-
         string strVersinURL = GetResMaxVersionURL();
         Util.Log("LoadResNewVersion " + " " + strVersinURL);
 
@@ -724,6 +716,10 @@ public class CVersionManager : MonoBehaviour
     private IEnumerator GetPublicIpAddress()
     {
         string url = ClientSetting.Instance.GetStringValue("CheckIpUrl");
+        if (string.IsNullOrEmpty(url))
+        {
+            yield break;
+        }
         Debug.Log("CheckIpUrl: " + url);
 
         WWW www = new WWW(url);
@@ -1373,9 +1369,6 @@ public class CVersionManager : MonoBehaviour
         if (!m_loginLoadOver)
         {
             m_loginLoadOver = true;  //
-            m_eventVersion.state = EVersionState.PackageUpdateSuccess;
-            TriggerVersionProgressEvent();
-
             OnResourceInited();
         }
 

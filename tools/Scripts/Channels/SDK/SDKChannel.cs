@@ -49,6 +49,8 @@ public class SDKChannel  {
     [DllImport("__Internal")]
     protected static extern void _getServerList();
     [DllImport("__Internal")]
+    protected static extern void _submitUpData(int type, string serverID, string strServerName);
+    [DllImport("__Internal")]
     protected static extern void _submitExtraData(int type, string serverID, string serverName, string roleID, string roleName, string roleLevel, string money, string roleCTime, string roleLevelIMTime, string vip, string power);
     [DllImport("__Internal")]
     protected static extern void _submitCustomData(string act, string des);
@@ -66,6 +68,8 @@ public class SDKChannel  {
     protected static extern string _getCurrIP();
     [DllImport("__Internal")]
     protected static extern string _getPlistByKey();
+    [DllImport("__Internal")]
+    protected static extern void _payJson(string jsData);
     [DllImport("__Internal")]
     protected static extern void _pay(int type, string orderID, string extension, int money, string productID, string productName, string productDesc);
     [DllImport("__Internal")]

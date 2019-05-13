@@ -18,6 +18,10 @@ public class OnExitBuffEffect : BuffEffect
     {
         base.Init(desc, _owner, _giver);
         effectPath = "Effect/skill/buff/" + desc.Get<string>("buff_param3");
+        if (string.IsNullOrEmpty(desc.Get<string>("buff_param3")))
+        {
+            effectPath = string.Empty;
+        }
 
             int p4 = desc.Get<int>("buff_param4");
             if (p4 == 0)
@@ -48,7 +52,11 @@ public class OnExitBuffEffect : BuffEffect
     {
         base.OnExit();
 
-        //boneEffect = GameObject.Instantiate(CoreEntry.gResLoader.LoadResource(effectPath)) as GameObject;
+            //boneEffect = GameObject.Instantiate(CoreEntry.gResLoader.LoadResource(effectPath)) as GameObject;
+        if (string.IsNullOrEmpty(effectPath))
+        {
+            return;
+        }
         boneEffect = CoreEntry.gGameObjPoolMgr.InstantiateEffect(effectPath);
 
         if (boneEffect == null)

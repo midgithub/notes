@@ -14,6 +14,9 @@ public class ThirdPartyEntry : SingletonMonoBehaviour<ThirdPartyEntry>
     /// </summary>
     public static string ChannelID = "UNITY_CHANNELID";
     public static string AccountType = "unknow";
+    public static Texture2D _textureBg = null;
+
+    private Image _imageBg;
 
     void Start()
     {
@@ -83,14 +86,13 @@ public class ThirdPartyEntry : SingletonMonoBehaviour<ThirdPartyEntry>
         else
         {
             SimulatedEvent();
-            //StartCoroutine(DelayEnterDownload());
         }
 
         Debug.Log("打开版权信息页面:");
-        Image imageBgWindow = transform.FindChild("Window").GetComponent<Image>();
-        if (imageBgWindow)
+        _imageBg = transform.FindChild("Window").GetComponent<Image>();
+        if (_imageBg != null && _textureBg != null)
         {
-            CommonTools.SetLoadImage(imageBgWindow, ClientSetting.Instance.GetStringValue("InitBg"), 1);
+            _imageBg.sprite = Sprite.Create(_textureBg, new Rect(0, 0, _textureBg.width, _textureBg.height), new Vector2(0, 0));
         }
     }
 
@@ -146,8 +148,6 @@ public class ThirdPartyEntry : SingletonMonoBehaviour<ThirdPartyEntry>
                 return;
             }
         }
-
-        //StartCoroutine(DelayEnterDownload());
     }
 
     public void OnClickExit()
@@ -161,16 +161,9 @@ public class ThirdPartyEntry : SingletonMonoBehaviour<ThirdPartyEntry>
         Application.OpenURL(Application.persistentDataPath);
     }
 
-    public IEnumerator DelayEnterDownload()
-    {
-        yield return new WaitForEndOfFrame();
-        Debug.Log("打开版权信息页面:");
-
-        //MapMgr.Instance.EnterInitScene();
-    }
-
     protected override void OnDestroy()
     {
+        _imageBg.sprite = null;
         CoreEntry.gEventMgr.RemoveListener(SG.GameEvent.GE_THIRDPARTY_INIT, OnThirdPartyInit);
     }
 

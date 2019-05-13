@@ -126,7 +126,8 @@ namespace SG
                     break;
                 }
                 if (pointList.Count < 1)
-                {                                        
+                {
+                    currentDestination.y = pathFinder.GetTerrainHeight(currentDestination.x, currentDestination.z); 
                     BaseTool.SetPosition(transform, currentDestination);
 
                     Stop();

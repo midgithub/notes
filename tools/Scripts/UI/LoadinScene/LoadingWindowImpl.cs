@@ -13,7 +13,7 @@ namespace SG
 [Hotfix]
     public class LoadingWindowImpl : MonoBehaviour
     {
-        public Sprite[] BackSprite;
+        public Sprite[] BackSprite;   //兼容外网保留
 
         public Text TipInfo;
         public Slider LoadingProgress;
@@ -37,6 +37,8 @@ namespace SG
         {
             strNextLevel = strLevel;
             CoreEntry.gSceneMgr.LoadScene("Scene/allMap/ui/loadingscene"); //SceneManager.LoadScene("loadingscene");                         //改成空场景过渡 减少最大内存消耗
+
+            MainPanelMgr.Instance.Release();
             MainPanelMgr.Instance.ShowPanel("PanelLoadingWindow");
         }
 
@@ -79,9 +81,18 @@ namespace SG
             AtlasSpriteManager.Instance.ClearCache();
             CoreEntry.gSceneMgr.ClearPools(MapMgr.Instance.GetCurSceneID());
             CoreEntry.gObjPoolMgr.ReleaseObjectPool();
+            CoreEntry.gGameObjPoolMgr.ClearPool();
+            FlyAttrManager.CloseAllFlyAttr();
 
             CoreEntry.gResLoader.ClearPrefabs();
-            LoadModule.Instance.Clear();
+
+            bool cache = true;
+            Scene cur = SceneManager.GetActiveScene();
+            if (cur.name.Equals("RoleUI"))
+            {
+                cache = false;
+            }
+            LoadModule.Instance.Clear(cache);
         }
 
         void SetIS_REVIEW()
@@ -107,6 +118,7 @@ namespace SG
 
         void OnDestroy()
         {
+            BackImage.sprite = null;
             MainPanelMgr.Instance.Init();
       
             if(ArenaMgr.Instance.IsArenaScene == false)
@@ -129,51 +141,7 @@ namespace SG
 
         void SetBackSprite()
         {
-            if (BackSprite.Length > 2) return;
-            string[] bg_path = new string[3]
-            {
-                "UI/Atlas/RAW/Bg_loading2",
-                "UI/Atlas/RAW/Bg_loading3",
-                "UI/Atlas/RAW/Bg_loading4"
-            };
-            List<Sprite> splist = new List<Sprite>();
-            splist.Add(BackSprite[0]);
-            for (int i = 0; i < bg_path.Length; ++i)
-            {
-                UnityEngine.Object o = CoreEntry.gResLoader.LoadResource(bg_path[i]);
-                if (o == null) continue;
-
-                splist.Add((o as GameObject).GetComponent<Image>().sprite);
-
-            }
-            BackSprite = new Sprite[splist.Count];
-            for (int i = 0; i < BackSprite.Length; ++i)
-            {
-                BackSprite[i] = splist[i];
-                // Debug.LogError("===" + BackSprite[i].name);
-            }
-
-            if (BackSprite != null && BackSprite.Length > 0)
-            {
-                int index = UnityEngine.Random.Range(0, BackSprite.Length);
-                if (index < BackSprite.Length)
-                {
-                    string strBgImage = "Bg_loading" + index;
-                    if(index == 0)
-                    {
-                        strBgImage = "Bg_loading";
-                    }
-                    if (BackImage)
-                    {
-                        if (BackImage)
-                        {
-                            Debug.Log("-------------------------------------------------" + strBgImage);
-                            CommonTools.SetLoadImage(BackImage, ClientSetting.Instance.GetStringValue(strBgImage),1);
-                        }
-                    }
-                    //BackImage.sprite = BackSprite[index];
-                }
-            }
+            CommonTools.SetLoadImage(BackImage, "Bg_loading", 1);
         }
 
         void GE_LOADSCENE_PROGRESS(AsyncOperation oprate, float step)
@@ -233,6 +201,9 @@ namespace SG
                 }
                 yield return _wait;
             }
+
+            MainPanelMgr.ClearTexture2D();
+            yield return StartCoroutine(MainPanelMgr.LoadStreamTexture(ClientSetting.Instance.GetStringValue(string.Format("Bg_loading{0}", UnityEngine.Random.Range(0, 4))), "Bg_loading"));
 
             toProgress = 100;
             while (displayProgress < toProgress)

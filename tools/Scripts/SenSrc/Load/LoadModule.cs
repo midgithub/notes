@@ -52,7 +52,7 @@ public class LoadModule : MonoBehaviour
         }
 
         FileHelper.AddBigBundleName("UI/Materials");
-        LoadedBundleCtrl.Instance.SetPersistentBundles(new string[] { "shaders", "ui/atlas/common" });
+        LoadedBundleCtrl.Instance.SetPersistentBundles(new string[] { "shaders" });
 
         if (null != onInit)
         {
@@ -159,7 +159,7 @@ public class LoadModule : MonoBehaviour
     /// <summary>
     /// 只在场景切换过度的loading场景调用
     /// </summary>
-	public void Clear()
+	public void Clear(bool cache = true)
 	{
         if (AppConst.UseAssetBundle)
         {
@@ -169,6 +169,11 @@ public class LoadModule : MonoBehaviour
             }
             m_handLoad.Clear();
             LoadedBundleCtrl.Instance.ClearNoneRefBundle(false);
+
+            if (!cache)
+            {
+                LoadedBundleCtrl.Instance.ClearNoneRefBundle(false);
+            }
         }
 		
 		Resources.UnloadUnusedAssets();  
@@ -371,11 +376,15 @@ public class LoadModule : MonoBehaviour
 				if(abCache != null)
 				{
                     string abName = FileHelper.CheckBundleName(path);
-                    LoadedBundleCtrl.Instance.UnReferenceLoadedBundle(abName, true);
-
-                    if (!m_handLoad.Contains(abName))
+                    var cache = LoadedBundleCtrl.Instance.UnReferenceLoadedBundle(abName);
+                    if (cache != null && 0 == cache.ReferencedCount)
                     {
-                        m_handLoad.Add(abName);
+                        cache.ReferencedCount = 1;
+
+                        if (!m_handLoad.Contains(abName))
+                        {
+                            m_handLoad.Add(abName);
+                        }
                     }
 
                     if (!string.IsNullOrEmpty (assetName))

@@ -8,7 +8,7 @@ public class LoadingWindowRoot : MonoBehaviour {
 
     private void Awake()
     {
-        MainPanelMgr.Instance.ShowPanel("PanelLoadingWindow");
+        //MainPanelMgr.Instance.ShowPanel("PanelLoadingWindow");
     }
 
     //// Use this for initialization

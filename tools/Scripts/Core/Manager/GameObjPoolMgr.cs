@@ -32,12 +32,16 @@ public class GameObjPoolMgr : MonoBehaviour
         GameObject.DontDestroyOnLoad(gameObjPool);
         spawnPool = gameObjPool.AddComponent<SpawnPool>();
         CoreEntry.gEventMgr.AddListener(GameEvent.GE_FuBen_exit, OnExitFuBen);
-
-
-
     }
 
     public void OnExitFuBen(GameEvent ge, EventParameter parameter)
+    {
+        m_autoReleaseList.Clear();  //清理自动释放列表
+        DestroyImmediate(spawnPool);
+        spawnPool = gameObjPool.AddComponent<SpawnPool>();
+    }
+
+    public void ClearPool()
     {
         m_autoReleaseList.Clear();  //清理自动释放列表
         DestroyImmediate(spawnPool);

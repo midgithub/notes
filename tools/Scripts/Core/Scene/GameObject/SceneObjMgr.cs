@@ -61,7 +61,7 @@ namespace SG
 
             
         }
-
+        public Dictionary<long, ActorObj> mObjRecord = new Dictionary<long, ActorObj>();
         void Update()
         {
             if (!bSceneLoaded)
@@ -91,7 +91,16 @@ namespace SG
                         break;
                     case EnEntType.EnEntType_Monster:
                         MsgData_sSceneObjectEnterMonster monsterStruct = sceneObj.ObjData as MsgData_sSceneObjectEnterMonster;
-                        CoreEntry.gSceneLoader.LoadMonster(monsterStruct);
+                        //Debug.LogError("创建怪物：" + monsterStruct.Guid);
+                        if (!mObjRecord.ContainsKey(monsterStruct.Guid))
+                        {
+                            CoreEntry.gSceneLoader.LoadMonster(monsterStruct);
+                            mObjRecord.Add(monsterStruct.Guid, CoreEntry.gActorMgr.GetActorByServerID(monsterStruct.Guid));
+                        }
+                        else
+                        {
+                            //Debug.LogError("重复怪物:" + monsterStruct.Guid);
+                        }
                         break;
                     case EnEntType.EnEntType_NPC:
                         MsgData_sSceneObjectEnterNPC npcStruct = sceneObj.ObjData as MsgData_sSceneObjectEnterNPC;
@@ -200,6 +209,7 @@ namespace SG
             mDeathCache.Clear();
             mLeaveCache.Clear();
             mBackgroundPlayer.Clear();
+            mObjRecord.Clear();
         }
 
         private void OnSceneLoaded(GameEvent ge, EventParameter parameter)
@@ -555,7 +565,11 @@ namespace SG
         {
             MsgData_sSceneObjectLeaveNotify data = parameter.msgParameter as MsgData_sSceneObjectLeaveNotify;
             long serverID = (long)data.ObjectID;
-            
+            if (mObjRecord.ContainsKey(serverID))
+            {
+                mObjRecord.Remove(serverID);
+                //Debug.LogError("怪物消失" + serverID);
+            }
             if (mBackgroundPlayer.ContainsKey(serverID))
             {
                 mBackgroundPlayer.Remove(serverID);
@@ -692,27 +706,32 @@ namespace SG
             for (int i = 0; i < data.ObjectID.Count; i++)
             {
                 long serverID = (long)data.ObjectID[i];
+                //Debug.LogError("LeaveMonster: " + i + " " + serverID);
                 ActorObj actor = CoreEntry.gActorMgr.GetActorByServerID(serverID);
                 if (null != actor)
                 {
-                    if (!actor.mActorState.IsDeathEnd())
-                    {
-                        if (!mLeaveCache.Contains(actor))
-                        {
-                            mLeaveCache.Add(actor);
-                        }
-                        return;
-                    }
-                    if (actor as MonsterObj)
-                    {
-                        CoreEntry.gActorMgr.RemoveActorByServerID(serverID);
-                        actor.RecycleObj();
-
-                        EventParameter param = EventParameter.Get();
-                        param.longParameter = serverID;
-                        CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_ACTOR_REMOVE, param);
-
-                    }
+//                     if (!actor.mActorState.IsDeathEnd())
+//                     {
+//                         if (!mLeaveCache.Contains(actor))
+//                         {
+//                             Debug.LogError("LeaveMonster __  leave1: " + i + " " + serverID);
+//                             actor.mActorState.DeathEnd = true;
+// 
+//                             mLeaveCache.Add(actor);
+//                         }
+//                         //return;
+//                     }
+//                     if (actor as MonsterObj)
+//                     {
+//                         CoreEntry.gActorMgr.RemoveActorByServerID(serverID);
+//                         actor.RecycleObj();
+// 
+//                         Debug.LogError("LeaveMonster __  leave2: " + i + " " + serverID);
+//                         EventParameter param = EventParameter.Get();
+//                         param.longParameter = serverID;
+//                         CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_ACTOR_REMOVE, param);
+// 
+//                     }
                 }
             }
 
@@ -724,6 +743,7 @@ namespace SG
             mSceneDataList.Clear();
             mSceneCache.Clear();
             mBackgroundPlayer.Clear();
+            mObjRecord.Clear();
 
             //回收场景对象,本地不用回收
             List<ActorObj> actors = CoreEntry.gActorMgr.GetAllActors();
@@ -791,23 +811,20 @@ namespace SG
             if (null == msg)
                 return;
 
-            for (int i = 0; i < mSceneDataList.Count; i++)
-            {
-                if (mSceneDataList[i].ObjGuid == msg.ID)
-                {
-                    mSceneDataList.RemoveAt(i);
+ 
+//             for (int i = 0; i < mSceneCache.Count; i++)
+//             {
+//                 if (mSceneCache[i].ObjGuid == msg.ID)
+//                 {
+//                     mSceneCache.RemoveAt(i);
+//                     Debug.LogError("---------------------------------killid ___ 2:" + msg.KillerID + " bkill:" + msg.ID);
+//                     return;
+//                 }
+//             }
 
-                    break;
-                }
-            }
-            for (int i = 0; i < mSceneCache.Count; i++)
+            if (mObjRecord.ContainsKey(msg.ID))
             {
-                if (mSceneCache[i].ObjGuid == msg.ID)
-                {
-                    mSceneCache.RemoveAt(i);
-
-                    return;
-                }
+                mObjRecord.Remove(msg.ID);
             }
 
             ActorObj behitActor = CoreEntry.gActorMgr.GetActorByServerID(msg.ID);
@@ -817,10 +834,11 @@ namespace SG
                 {
                     mDeathCache.Add(msg);
                 }
+                //Debug.LogError("---------------------------------怪物死亡 1:" + msg.ID + " monst count:" + mObjRecord.Count);
 
                 return;
             }
-            //Debug.LogError("---------------------------------"+ msg.KillerID);
+            //Debug.LogError("---------------------------------怪物死亡 2  :" + msg.ID + " monst count:" + mObjRecord.Count);
             ActorObj attackActor = CoreEntry.gActorMgr.GetActorByServerID(msg.KillerID);
 
             BehitParam behitParam = new BehitParam();

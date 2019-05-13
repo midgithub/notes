@@ -21,6 +21,10 @@ namespace SG
     public delegate string GetHeroDesc(int id,int starlevel,string name,int qua,Text txt);
     [CSharpCallLua]
     public delegate string GetVipScColor(int vipLevel,long serverid);
+    [CSharpCallLua]
+    public delegate string GetNewLevel(int Level);
+
+    
 
 [Hotfix]
     public class HPBar : MonoBehaviour
@@ -71,6 +75,7 @@ namespace SG
         protected float m_AniSpeed;                                 //动画播放速度
 
         private string lordName = "";
+        private string VipName = "";
         private string playerName = "";
         private int playerLvl = 1;
         private bool self = false;
@@ -110,12 +115,14 @@ namespace SG
             }
             lordName = TitleMgr.Instance.GetCurLordText(attr.Lord, true);
             playerName = attr.Name;
+            VipName = "";
             if(attr.VIPLevel > 0)
             {
                 GetVipScColor fun = LuaMgr.Instance.GetLuaEnv().Global.GetInPath<GetVipScColor>("Common.GetVipScColor");
                 if(fun!=null)
                 {
-                    playerName = string.Format("{0} {1}", fun(attr.VIPLevel,actor.ServerID),attr.Name); 
+                    VipName = fun(attr.VIPLevel, actor.ServerID);
+                    //playerName = string.Format("{0} {1}", fun(attr.VIPLevel,actor.ServerID),attr.Name); 
                 }
             }
 
@@ -177,7 +184,7 @@ namespace SG
                 SetPetLevel(actor);
             }
             else
-            {
+            { 
                 NameText.text = string.Format("{0} {1}级", attr.Name, attr.Level);
             }
         }
@@ -189,22 +196,46 @@ namespace SG
             {
                 return;
             }
+
+
+            //playerName = string.Format("{0} {1}", fun(attr.VIPLevel, actor.ServerID), attr.Name); 
             if (self)
             {
                 if(MapMgr.Instance.IsCrossMap())
                 {
-                    colorName = string.Format("<color=#{0}>[{1}]{2}</color>", rgb, Account.Instance.ServerId, playerName);
+                    colorName = string.Format("{0} <color=#{1}>[{2}]{3}</color>",VipName, rgb, Account.Instance.ServerId, playerName);
                 }
                 else
                 {
-                    colorName = string.Format("<color=#{0}>{1}</color>", rgb, playerName);
+                    colorName = string.Format("{0} <color=#{1}>{2}</color>",VipName, rgb, playerName);
                 }
             }
             else
             {
-                colorName = string.Format("<color=#{0}>{1} {2}级</color>", rgb, playerName, playerLvl);
+                GetNewLevel fun = LuaMgr.Instance.GetLuaEnv().Global.GetInPath<GetNewLevel>("Common.GetNewLevel");
+                if(fun != null)
+                { 
+                    colorName = string.Format("{0} <color=#{1}>{2} {3}级</color>", VipName, rgb, playerName, fun(playerLvl));
+                }
+                else
+                {
+                    colorName = string.Format("{0} <color=#{1}>{2} {3}级</color>", VipName, rgb, playerName, playerLvl); 
+                }
             }
-            NameText.text = lordName + " " + colorName;
+            //NameText.text = lordName + " " + colorName;
+
+            var rbl = NameText.GetComponent<SG.RichLable>();
+             
+            if (rbl != null)
+            {
+                rbl.text = lordName + " " + colorName;
+            }
+            else
+            {
+                NameText.text = lordName + " " + colorName;
+            } 
+
+
         }
 
         void SetHpImageType(bool isPk)

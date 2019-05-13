@@ -175,14 +175,14 @@ public class BundleLoader : Loader
 				m_wwwRequest = new WWW (path);
 			} else {
                 string path = FileHelper.GetAPKPath(m_path);
-                m_abRequest = AssetBundle.LoadFromFileAsync(path);
+                m_abRequest = FileHelper.GetAssetBundleCreateRequest(path);
             }
 		} else {
 			AssetBundle ab = null;
 			try {
 				if (ab == null) {
                     string path = FileHelper.GetAPKPath(m_path);
-                    ab = AssetBundle.LoadFromFile(path);
+                    ab = FileHelper.GetAssetBundle(path);
                 }
 			} catch (System.Exception e) {
                 Util.LogError (e.Message);

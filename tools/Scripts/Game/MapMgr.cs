@@ -80,8 +80,6 @@ namespace SG
             get { return m_PlayerInitDir; }
         }
 
-        public Dictionary<string, Texture2D> m_TextureSet = new Dictionary<string, Texture2D>();
-
         public MapMgr()
         {
             CoreEntry.gEventMgr.AddListener(GameEvent.GE_SC_ENTER_SCENE, GE_SC_ENTER_SCENE);            
@@ -129,27 +127,6 @@ namespace SG
         {
             get;
             set;
-        }
-
-        public Texture2D GetTexture2D(string strKey)
-        {
-            if(m_TextureSet.ContainsKey(strKey))
-            {
-                return m_TextureSet[strKey];
-            }
-            return null;
-        }
-
-        public void AddTexture2D(string strKey, Texture2D value)
-        {
-            if (m_TextureSet.ContainsKey(strKey))
-            {
-                m_TextureSet[strKey] = value;
-            }
-            else
-            {
-                m_TextureSet.Add(strKey, value);
-            }
         }
 
         public bool FirstLoad;
@@ -239,7 +216,7 @@ namespace SG
             CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_BEGIN_LOADSCENE_LOGIN, null);
 
             Scene cur = SceneManager.GetActiveScene();
-            if (!cur.name.Equals("LoginUI"))
+            if (!cur.name.Equals("LoginUI") && !cur.name.Equals("RoleUI"))
             {
                 SceneManager.LoadScene("LoginOut");
             }
@@ -280,6 +257,7 @@ namespace SG
 
             EnterType = 0;
             FirstLoad = true;
+            
         }
 
         private MapType GetMapType(int type)

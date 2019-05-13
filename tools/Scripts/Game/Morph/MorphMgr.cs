@@ -350,7 +350,7 @@ namespace SG
             {
                 CoreEntry.gActorMgr.MainPlayer.OnDead(0, null, null, null);
             }
-
+            if (((PlayerObj)curObj) != null)((PlayerObj)curObj).HideMoveArrow();
             curObj.RecycleObj();
             curObj.HideBlobShadow();
 

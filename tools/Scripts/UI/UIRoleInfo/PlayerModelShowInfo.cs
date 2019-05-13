@@ -426,6 +426,7 @@ namespace SG
                 mPlayerObject.transform.forward = ModelParent.forward;                
                 mRightHand = ActorObj.RecursiveFindChild(mPlayerObject.transform, "DM_R_Hand");
                 mLeftHand = ActorObj.RecursiveFindChild(mPlayerObject.transform, "DM_L_Hand");
+                mCurClothesID = 0;
             }
 
             //创建初始武器
@@ -434,6 +435,7 @@ namespace SG
                 //创建武器
                 ChangeWeapon(PlayerData.Instance.GetWeaponModelID());
             }
+            mCurClothesID = 0;
             mCurWing = PlayerData.Instance.GetWingModelID();
             mCurWeaponID = PlayerData.Instance.GetWeaponModelID();
             ChangeClothes(PlayerData.Instance.GetDressModelID());

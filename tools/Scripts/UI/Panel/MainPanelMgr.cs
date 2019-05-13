@@ -603,4 +603,55 @@ public class MainPanelMgr : PanelManager
     private static float FocusMoveSpeedDelta = 1;
 
     #endregion
+    private static Dictionary<string, Texture2D> m_TextureSet = new Dictionary<string, Texture2D>();
+    public static Texture2D GetTexture2D(string strKey)
+    {
+        if (m_TextureSet.ContainsKey(strKey))
+        {
+            return m_TextureSet[strKey];
+        }
+        return null;
+    }
+
+    public static void ClearTexture2D()
+    {
+        m_TextureSet.Clear();
+    }
+
+    public static IEnumerator LoadStreamTexture(string strImage,string realName)
+    {
+        string urlImage = Application.streamingAssetsPath + "/" + strImage;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            urlImage = Application.streamingAssetsPath + "/" + strImage;
+        }
+        else
+        {
+            urlImage = "file://" + Application.streamingAssetsPath + "/" + strImage;
+        }
+
+        Debug.Log("load path: " + urlImage);
+        WWW www = new WWW(urlImage);
+        yield return www;
+
+        if (www != null && string.IsNullOrEmpty(www.error))
+        {
+            if (string.IsNullOrEmpty(realName))
+            {
+                m_TextureSet[strImage] = www.texture;
+            }else
+            {
+                m_TextureSet[realName] = www.texture;
+            }
+        }
+        else
+        {
+            Debug.LogError(www.error);
+        }
+
+        if (www.isDone)
+        {
+            www.Dispose();
+        }
+    }
 }

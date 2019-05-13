@@ -210,6 +210,26 @@ public class SGAnalyser : MonoBehaviour, IThirdPartySDK
         CoreEntry.gEventMgr.TriggerEvent(GameEvent.GE_THIRDPARTY_EXIT, EventParameter.Get(exitCode));
         
     }
+
+    public void SetExtUpData(int nType)
+    {
+        //进入游戏
+        int level = PlayerData.Instance.BaseAttr.Level;
+        System.Collections.Generic.Dictionary<string, string> data = new System.Collections.Generic.Dictionary<string, string>();
+        data["dataType"] = nType.ToString();
+        data["roleLevel"] = level.ToString();
+        data["roleId"] = PlayerData.Instance.RoleID.ToString();
+        data["roleName"] = PlayerData.Instance.Name;
+        data["vipLevel"] = PlayerData.Instance.BaseAttr.VIPLevel.ToString();
+        //金币
+        data["roleBalance"] = PlayerData.Instance.BindGold.ToString();
+        data["serverName"] = Account.Instance.ServerName;
+        data["serverId"] = Account.Instance.ServerId.ToString();
+        data["society"] = PlayerData.Instance.GuildData.GuildName;
+        if (data["society"] == "")
+            data["society"] = "无";
+        SetExtData(data);
+    }
     public string appversion()
     {
         return "";

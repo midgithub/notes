@@ -35,15 +35,19 @@ public class UIInitGame : MonoBehaviour
     }
     private void Start()
     {
+      
+    }
+
+    private void OnDestroy()
+    {
         RawImage imageBg = transform.FindChild("Back").GetComponent<RawImage>();
         if (imageBg)
         {
-            if (imageBg)
-            {
-                CommonTools.SetLoadImage(imageBg, ClientSetting.Instance.GetStringValue("InitBg"));
-            }
+            imageBg.texture = null;
         }
+        ThirdPartyEntry._textureBg = null;
     }
+
     private void SetHideProgress()
     {
         if (IS_REVIEW == 0)

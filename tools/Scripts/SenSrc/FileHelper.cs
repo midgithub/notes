@@ -174,7 +174,51 @@ public static class FileHelper
         }
     }
 
-	public static bool CheckFileExist(string path, bool isFile = true)
+    public static AssetBundle GetAssetBundle(string path)
+    {
+        try
+        {
+            if (path.Contains(Util.DataPath))
+            {
+                return AssetBundle.LoadFromFile(path);
+            }
+            else
+            {
+                byte[] buff = LoadFileDecryptBytes(path);
+                return AssetBundle.LoadFromMemory(buff);
+            }
+        }
+        catch (Exception e)
+        {
+            Util.LogError(e.Message);
+        }
+
+        return null;
+    }
+
+    public static AssetBundleCreateRequest GetAssetBundleCreateRequest(string path)
+    {
+        try
+        {
+            if (path.Contains(Util.DataPath))
+            {
+                return AssetBundle.LoadFromFileAsync(path);
+            }
+            else
+            {
+                byte[] buff = LoadFileDecryptBytes(path);
+                return AssetBundle.LoadFromMemoryAsync(buff);
+            }
+        }
+        catch (Exception e)
+        {
+            Util.LogError(e.Message);
+        }
+
+        return null;
+    }
+
+    public static bool CheckFileExist(string path, bool isFile = true)
 	{
 		bool exist = false;
 		if (isFile)
@@ -218,6 +262,21 @@ public static class FileHelper
         try
         {
             bytes = File.ReadAllBytes(path);
+        }
+        catch (Exception e)
+        {
+            Util.LogError(e.Message);
+        }
+
+        return bytes;
+    }
+
+    public static byte[] LoadFileDecryptBytes(string path)
+    {
+        byte[] bytes = null;
+        try
+        {
+            bytes = AES.AESDecrypt(File.ReadAllBytes(path), Application.bundleIdentifier);
         }
         catch (Exception e)
         {

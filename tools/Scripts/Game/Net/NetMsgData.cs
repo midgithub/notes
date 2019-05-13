@@ -215,6 +215,29 @@ namespace SG
 		}
 	}
 
+	// C->S C->S 请求（第一拨）创建支付订单 msgId:2924
+	public class MsgData_cGetRechargeorder_SQW : MsgData
+	{
+		public int ItemID;	// 购买物品ID
+		public int ItemNum;	// 购买数量
+		public long ServerID;	// 服务器ID
+		public sbyte PidSize;	// pid长度
+		public sbyte ServerNameSize;	// 服务器名长度
+		public byte[] Pid = new byte[128];	// pid
+		public byte[] ServerName = new byte[128];	// 服务器名
+
+		public override void pack(NetWriteBuffer buffer)
+		{
+			buffer.WriteInt32(ItemID);
+			buffer.WriteInt32(ItemNum);
+			buffer.WriteInt64(ServerID);
+			buffer.WriteInt8(PidSize);
+			buffer.WriteInt8(ServerNameSize);
+			buffer.WriteBytes(Pid);
+			buffer.WriteBytes(ServerName);
+		}
+	}
+
 	// S->C 返回:创建订单 msgId:7913
 	public class MsgData_sGetRechargeorder : MsgData
 	{
@@ -232,6 +255,21 @@ namespace SG
 
 	// S->C S->C 返回:创建订单 msgId:7930
 	public class MsgData_sGetRechargeorder_DYB : MsgData
+	{
+		public int ItemID;	// 购买物品ID
+		public int dataSize;	// 数据长度
+		public List<byte> data = new List<byte>();	// pid
+
+		public override void unpack(NetReadBuffer buffer)
+		{
+			ItemID = buffer.ReadInt32();
+			dataSize = buffer.ReadInt32();
+			buffer.ReadBytes(data, (int)dataSize);
+		}
+	}
+
+	// S->C S->C 返回:创建订单 msgId:7931
+	public class MsgData_sGetRechargeorder_SQW : MsgData
 	{
 		public int ItemID;	// 购买物品ID
 		public int dataSize;	// 数据长度
@@ -1204,8 +1242,8 @@ namespace SG
 		public int FashionDress;	// 时装衣服
 		public int FashionWeapon;	// 时装武器
 		public int Level;	// 等级
-		public int CurHp;	// 当前血量
-		public int MaxHp;	// 最大血量
+		public long CurHp;	// 当前血量
+		public long MaxHp;	// 最大血量
 		public int WuHunId;	// 武魂编号
 		public long TeamID;	// 队伍编号
 		public long GuildID;	// 公会编号
@@ -1279,8 +1317,8 @@ namespace SG
 			FashionDress = buffer.ReadInt32();
 			FashionWeapon = buffer.ReadInt32();
 			Level = buffer.ReadInt32();
-			CurHp = buffer.ReadInt32();
-			MaxHp = buffer.ReadInt32();
+			CurHp = buffer.ReadInt64();
+			MaxHp = buffer.ReadInt64();
 			WuHunId = buffer.ReadInt32();
 			TeamID = buffer.ReadInt64();
 			GuildID = buffer.ReadInt64();
@@ -3253,8 +3291,8 @@ namespace SG
 		public byte[] RoleName = new byte[32];	// 角色名字
 		public int Prof;	// 职业
 		public int Level;	// 等级
-		public int HP;	// 当前血量
-		public int MaxHP;	// 血量上限
+		public long HP;	// 当前血量
+		public long MaxHP;	// 血量上限
 		public int MP;	// 当前法力
 		public int MaxMP;	// 法力上限
 		public long Power;	// 战力
@@ -3311,8 +3349,8 @@ namespace SG
 			buffer.ReadBytes(RoleName);
 			Prof = buffer.ReadInt32();
 			Level = buffer.ReadInt32();
-			HP = buffer.ReadInt32();
-			MaxHP = buffer.ReadInt32();
+			HP = buffer.ReadInt64();
+			MaxHP = buffer.ReadInt64();
 			MP = buffer.ReadInt32();
 			MaxMP = buffer.ReadInt32();
 			Power = buffer.ReadInt64();

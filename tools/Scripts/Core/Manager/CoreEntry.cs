@@ -366,8 +366,10 @@ namespace SG
             {
                 if (ReferenceEquals(null, m_LuaMgr))
                 {
+                    //UnityEngine.Debug.Log("AddComponent.gLuaMgr ");
                     m_LuaMgr = CoreRootObj.AddComponent<LuaMgr>();
                 }
+                //UnityEngine.Debug.Log("return AddComponent.gLuaMgr ");
                 return m_LuaMgr;
             }
 

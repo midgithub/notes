@@ -220,6 +220,10 @@ namespace SG
                 {
                     mProcessText.Enqueue(string.Format("经验 +{0} （魔神加成{1}%）", NumberConvert((long)msg.exp),msg.rate*100));
                 }
+                else if (msg.src == 284 && msg.rate > 0)
+                {
+                    mProcessText.Enqueue(string.Format("经验 +{0} （魔宠加成{1}%）", NumberConvert((long)msg.exp), msg.rate * 100));
+                }
                 else
                 {
                     mProcessText.Enqueue(string.Format("经验 +{0}", NumberConvert((long)msg.exp)));

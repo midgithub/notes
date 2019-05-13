@@ -487,6 +487,7 @@ namespace SG
             CoreEntry.netMgr.registerMsgType((Int16)NetMsgDef.S_DailyActivy, typeof(MsgData_sDailyActivyList));
             CoreEntry.netMgr.registerMsgType((Int16)NetMsgDef.S_GETRECHARGEORDER, typeof(MsgData_sGetRechargeorder));
             CoreEntry.netMgr.registerMsgType((Int16)NetMsgDef.S_GETRECHARGEORDER_DYB, typeof(MsgData_sGetRechargeorder_DYB));   //C->S 第一拨创建支付订单
+            CoreEntry.netMgr.registerMsgType((Int16)NetMsgDef.S_GETRECHARGEORDER_SQW, typeof(MsgData_sGetRechargeorder_SQW));   //C->S 37玩创建支付订单
             CoreEntry.netMgr.registerMsgType((Int16)NetMsgDef.S_VERIFYACCOUNT, typeof(MsgData_sVerifyAccount));
             CoreEntry.netMgr.registerMsgType((Int16)NetMsgDef.S_SCENE_OBJ_HONGYAN_LEVEL, typeof(MsgData_sSceneObjHoneYanLevel));
             CoreEntry.netMgr.registerMsgType((Int16)NetMsgDef.S_AddExpInfo, typeof(MsgData_sAddExpInfo));
