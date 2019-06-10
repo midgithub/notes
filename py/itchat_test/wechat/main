@@ -1,0 +1,15 @@
+# coding:utf8
+from wechat import dbhelper
+
+
+class WechatExpand(object):
+    def __init__(self):
+        self.obj_dbhelper = dbhelper.Dbhelper()
+
+    def start(self):
+        pass
+
+
+if __name__ == '__main__':
+    obj_wechatEx = WechatExpand()
+    obj_wechatEx.start()

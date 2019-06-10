@@ -35,9 +35,10 @@ tag：无所压缩 文件大 支持透明
 dds : 无损压缩 文件最小 支持透明 不支持iOS
 
 纹理压缩策略：
-1.RGBA32：高清晰无压缩.png，无需二次方大小
-2.RGBA16+Dithering  无需二次方大小
-3.ETC1+Alpha 、PVRTC4：低清晰高压缩 需要二次方
+1.RGBA32：高清晰无压缩.png，无需二次方大小   (适用于UI)
+2.RGBA16+Dithering(颜色数较高的有明显的色阶 ,平滑细节)  无需二次方大小   (适用于UI)
+3.ETC1不支持 Alpha  、ETC2:Android 4.3开始支持 GLES 3.0   需二次方 长宽可不一样(适用于3D物体的纹理)
+ PVRTC4：低清晰高压缩 需要二次方正方形  (适用于3D物体的纹理)
 TexturePacker预先生成好正方形的IOS PVRTC4图集和非正方形的Android ETC1图集
 
 在做ECT1和PRVC 处理的时候，一张1136*640，会被unity处理成1024*512。在UI上会有失真. 

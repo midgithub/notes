@@ -227,13 +227,20 @@ def log(func):
 
     return f
 
+def log1(func):
+    def f(*args, **kw):
+        print "call func %s()" % (func.__name__)  # 函数对象有一个__name__属性
+        return func(*args, **kw)
 
-@log  # @语法，把decorator置于函数的定义处
+    return f
+
+@log  # @语法，把decorator置于函数的定义处，如果
+@log1  #多个者倒着执行的，从下往上log1，再log
 def func3():
     print "log 2015-11-17"
 
 
-func3()  # func3变量指向了新的函数(log 的返回函数 f)
+func3()  # func3变量指向了新的函数f(log返回的函数 f)
 
 # 偏函数  把一个函数的某些参数给固定住
 print int("10", 2)  # "10"是个2进制的值，请转换为10进制的值

@@ -291,3 +291,7 @@ final Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageNa
 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 startActivity(intent);
 android.os.Process.killProcess(android.os.Process.myPid());
+
+2019.5.16
+5.3.8跟5.6.6底层资源管理方式不同，5.6.6如果依赖的bundle被unload，依赖的资源也会丢失
+不同Unity版本的AB文件大小不一致（Unity 5.6的Bundle中Shader已经被编译为二进制，而Unity 5.3的Bundle中仍然是Text的Shader，从而导致了Bundle的不同）
